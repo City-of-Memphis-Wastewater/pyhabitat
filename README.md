@@ -4,7 +4,7 @@
 
 **`pyhabitat`** is a focused, lightweight library designed to accurately and securely determine the execution context of a running Python script. It provides definitive checks for the Operating System (OS), common container/emulation environments (Termux, iSH), build states (PyInstaller, pipx), and the availability of GUI backends (Matplotlib, Tkinter).
 
-Stop writing verbose `sys.platform` and environment variable checks—use **`pyhabitat`** to make architectural decisions in your code.
+Stop writing verbose `sys.platform` and environment variable checks. Instead, use **`pyhabitat`** to implement architectural logic in your code.
 
 ## 🚀 Features
 
@@ -34,7 +34,7 @@ if is_pipx():
 elif is_frozen():
     print("Running as a frozen executable (PyInstaller, cx_Freeze, etc.).")
     
-elif is_termux(termux_has_gui=False): # Set True if you know X11 is configured
+elif is_termux(): 
     print("Running in the Termux environment on Android.")
     
 elif is_windows():
