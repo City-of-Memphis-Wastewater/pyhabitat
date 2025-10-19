@@ -74,7 +74,7 @@ All functions are Boolean checks and are cached after the first call (except for
 | :--- | :--- |
 | `is_windows()` | Returns `True` on Windows. |
 | `is_apple()` | Returns `True` on macOS (Darwin). |
-| `is_linux()` | Returns `True` on general Linux (not Termux/iSH). |
+| `is_linux()` | Returns `True` on Linux in general. |
 | `is_termux()` | Returns `True` if running in the Termux Android environment. |
 | `is_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `is_android()` | Returns `True` on any Android-based Linux environment. |
