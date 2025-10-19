@@ -66,8 +66,6 @@ else:
 
 ## 📚 API Reference
 
-All functions are Boolean checks and are cached after the first call (except for functions that take arguments, like matplotlib\_is\_available\_for\_gui\_plotting).
-
 ### OS and Environment
 
 | Function | Description |
