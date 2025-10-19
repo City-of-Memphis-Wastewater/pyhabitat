@@ -1,0 +1,27 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyhabitat"
+version = "0.1.0"
+authors = [
+  { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
+]
+description = "A robust library for detecting system environment, GUI, and build properties."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+keywords = ["environment", "os-detection", "gui", "build-system"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: System :: Systems Administration",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]  
+include = ["pyhabitat"] # Only include the main package

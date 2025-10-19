@@ -1,0 +1,50 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+myenv/
+test-pypi-venv/
+
+# Poetry lock files (optional, but recommended to commit poetry.lock)
+# poetry.lock
+
+# Environment variables, secrets, etc.
+.env
+**/secrets.yaml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# VS Code settings (optional)
+.vscode/
+
+# Log files
+logs/
+*.log
+
+
+# PyInstaller / Build Artifacts
+dist/
+build/
+*.spec
+version.rc
+*.pyz
+
+# Other
+!workspaces/
+!src/
+src/defunct/
+src/example/
+src/exploratory/
+*.sqlite3
+*.egg-info/
+Postman*
+.dockerignore
+.python-version
