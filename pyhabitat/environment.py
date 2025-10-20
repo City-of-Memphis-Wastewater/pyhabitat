@@ -449,22 +449,32 @@ def web_browser_is_available() -> bool:
         return False
     
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
-def open_text_file_in_default_app(filepath):
-    """Opens a file with its default application based on the OS."""
+def open_text_file_for_editing(filepath):
+    """
+    Opens a file with the environment's default application (Windows, Linux, macOS)
+    or a guaranteed console editor (nano) in constrained environments (Termux, iSH)
+    after ensuring line-ending compatibility.
+    """
     if is_windows():
         os.startfile(filepath)
     elif is_termux():
-        subprocess.run(['pkg','install', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(['dos2unix', filepath])
+        # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
+        subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        _run_dos2unix(filepath)
         subprocess.run(['nano', filepath])
     elif is_ish_alpine():
-        subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,check=True) # Will raise CalledProcessError if install fails
-        subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,check=True) # Will raise CalledProcessError if install fails
-        subprocess.run(['dos2unix', filepath])
+        # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
+        subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        _run_dos2unix(filepath)
         subprocess.run(['nano', filepath])
+    # --- Standard Unix-like Systems (Conversion + Default App) ---
     elif is_linux():
+        _run_dos2unix(filepath) # Safety conversion for user-defined console apps
         subprocess.run(['xdg-open', filepath])
+        
     elif is_apple():
+        _run_dos2unix(filepath) # Safety conversion for user-defined console apps
         subprocess.run(['open', filepath])
     else:
         print("Unsupported operating system.")
@@ -472,6 +482,21 @@ def open_text_file_in_default_app(filepath):
     """Why Not Use check=True on Termux:
     The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
     """
+    
+def _run_dos2unix(filepath):
+    """Attempt to run dos2unix, failing silently if not installed."""
+    try:
+        # We rely on shutil.which not being needed, as this is a robust built-in utility on most targets
+        # The command won't raise an exception unless the process itself fails, not just if the utility isn't found.
+        # We also don't use check=True here to allow silent failure if the utility is missing (e.g., minimalist Linux).
+        subprocess.run(['dos2unix', filepath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except FileNotFoundError:
+        # This will be raised if 'dos2unix' is not on the system PATH
+        pass 
+    except Exception:
+        # Catch other subprocess errors (e.g. permission issues)
+        pass
+        
 def _get_pipx_paths():
     """
     Returns the configured/default pipx binary and home directories.
