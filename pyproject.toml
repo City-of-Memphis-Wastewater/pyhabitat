@@ -29,4 +29,4 @@ include = ["pyhabitat"] # Only include the main package
 
 [tool.setuptools_scm] 
 # This tells setuptools_scm to look at your git history/tags for the version
-write_to = "pyhabitat/_version.py
+write_to = "pyhabitat/_version.py"
