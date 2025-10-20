@@ -418,12 +418,14 @@ def is_pipx(debug=False) -> bool:
 
 
 # --- TTY CHECK ---
-def is_interactive_terminal():
+def interactive_terminal_is_available():
     """
     Check if the script is running in an interactive terminal. 
     Assumpton: 
-        If is_interactive_terminal() returns True, 
-        then typer.prompt() will work reliably.
+        If interactive_terminal_is_available() returns True, 
+        then typer.prompt() or input() will work reliably,
+        without getting lost in a log or lost entirely.
+    
     """
     # Check if a tty is attached to stdin
     return sys.stdin.isatty() and sys.stdout.isatty()

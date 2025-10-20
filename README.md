@@ -10,26 +10,11 @@
 
 Stop writing verbose `sys.platform` and environment variable checks. Use **`pyhabitat`** to implement clean, **architectural logic** based on the execution habitat.
 
-This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, it helps automate work-arounds like using **localhost plotting** when `matplotlib` is unavailable or **web-based interfaces** when `tkinter` is missing. 
-
-Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
-
-Another key goal of this project is to facilitate the orchestration of wider system installation for **`pipx` CLI tools** for additional touch points, like addition to context menus and widgets.
-
-Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wastewater) aims to produce **reference-quality code** for the documented proper approach. We recognize that many people (and bots) are searching for ideal solutions, and our functions are built upon extensive research and testing to go **beyond simple `platform.system()` checks**.
-
 ---
 
 Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py).
 
 ---
-
-## 🚀 Features
-
-  * **Definitive Environment Checks:** Rigorous checks catered to Termux and iSH (iOS Alpine). Accurate, typical modern detection for Windows, macOS (Apple), Linux, FreeBSD, Android.
-  * **GUI Availability:** Rigorous, cached checks to determine if the environment supports a graphical popup window (Tkinter/Matplotlib TkAgg) or just headless image export (Matplotlib Agg).
-  * **Build/Packaging Detection:** Reliable detection of standalone executables built by tools like PyInstaller, and, crucially, correct identification and exclusion of pipx-managed virtual environments, which also user binaries that could conflate the check.
-  * **Executable Type Inspection:** Uses file magic numbers (ELF and MZ) to confirm if the running script is a monolithic, frozen binary (non-pipx).
 
 ## 📦 Installation
 
@@ -38,9 +23,38 @@ pip install pyhabitat
 ```
 ---
 
-## 📚 Function Reference
+<details>
+<summary> Motivation </summary>
+This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, it helps automate work-arounds like using **localhost plotting** when `matplotlib` is unavailable or **web-based interfaces** when `tkinter` is missing. 
 
-### OS and Environment
+Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
+
+Another key goal of this project is to facilitate the orchestration of wider system installation for **`pipx` CLI tools** for additional touch points, like context menus and widgets.
+
+Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wastewater) aims to produce **reference-quality code** for the documented proper approach. We recognize that many people (and bots) are searching for ideal solutions, and our functions are built upon extensive research and testing to go **beyond simple `platform.system()` checks**.
+
+</details>
+
+---
+
+<details>
+<summary> 🚀 Features </summary>
+
+  * **Definitive Environment Checks:** Rigorous checks catered to Termux and iSH (iOS Alpine). Accurate, typical modern detection for Windows, macOS (Apple), Linux, FreeBSD, Android.
+  * **GUI Availability:** Rigorous, cached checks to determine if the environment supports a graphical popup window (Tkinter/Matplotlib TkAgg) or just headless image export (Matplotlib Agg).
+  * **Build/Packaging Detection:** Reliable detection of standalone executables built by tools like PyInstaller, and, crucially, correct identification and exclusion of pipx-managed virtual environments, which also user binaries that could conflate the check.
+  * **Executable Type Inspection:** Uses file magic numbers (ELF and MZ) to confirm if the running script is a monolithic, frozen binary (non-pipx).
+
+</details>
+  
+---
+
+<details>
+<summary> 📚 Function Reference </summary>
+
+### OS and Environment Checking
+
+Key question: "What is this running on?"
 
 | Function | Description |
 | :--- | :--- |
@@ -51,7 +65,9 @@ pip install pyhabitat
 | `is_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `is_android()` | Returns `True` on any Android-based Linux environment. |
 
-### Build and Packaging
+### Packaging and Build Checking
+
+Key question: "What is the character of my executable?"
 
 | Function | Description |
 | :--- | :--- |
@@ -61,24 +77,30 @@ pip install pyhabitat
 | `is_windows_portable_executable()` | Checks if the executable is a Windows PE binary (MZ header), excluding pipx. |
 | `is_macos_executable()` | Checks if the executable is a macOS/Darwin Mach-O binary, excluding pipx. |
 
-### Capabilities
+### Capability Checking
+
+Key Question: "What could I do next?"
 
 | Function | Description |
 | :--- | :--- |
 | `tkinter_is_available()` | Checks if Tkinter is imported and can successfully create a window. |
 | `matplotlib_is_available_for_gui_plotting(termux_has_gui=False)` | Checks for Matplotlib and its TkAgg backend, required for interactive plotting. |
 | `matplotlib_is_available_for_headless_image_export()` | Checks for Matplotlib and its Agg backend, required for saving images without a GUI. |
-| `is_interactive_terminal()` | Checks if standard input and output streams are connected to a TTY (allows safe use of interactive prompts). |
+| `interactive_terminal_is_available()` | Checks if standard input and output streams are connected to a TTY (allows safe use of interactive prompts). |
 | `web_browser_is_available()` | Check if a web browser can be launched in the current environment (allows safe use of web-based prompts and localhost plotting). 	|
 
 ### Actions
+
 | Function | Description |
 | :--- | :--- |
 | `open_text_file_in_default_app()` | Smoothly opens a text file for editing (for configuration editing prompted by a CLI flag). |
 
+</details>
+
 ---
 
-## 💻 Usage Examples
+<details>
+<summary> 💻 Usage Examples </summary>
 
 The module exposes all detection functions directly for easy access.
 
@@ -110,7 +132,7 @@ elif is_windows():
 Use these functions to determine if you can show an interactive plot or if you must save an image file.
 
 ```python
-from pyhabitat import matplotlib_is_available_for_gui_plotting, matplotlib_is_available_for_headless_image_export
+from pyhabitat import matplotlib_is_available_for_gui_plotting, matplotlib_is_available_for_headless_image_export, 
 
 if matplotlib_is_available_for_gui_plotting():
     # We can safely call plt.show()
@@ -136,6 +158,8 @@ Ideal use case: Edit a configuration file, if prompted by a CLI command like 'co
 ```python
 open_text_file_in_default_app(filepath=Path('./config.json'))
 ```
+</details>
+
 ---
 
 ## 🤝 Contributing
