@@ -20,6 +20,10 @@ Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wast
 
 ---
 
+Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py).
+
+---
+
 ## 🚀 Features
 
   * **Definitive Environment Checks:** Rigorous checks catered to Termux and iSH (iOS Alpine). Accurate, typical modern detection for Windows, macOS (Apple), Linux, FreeBSD, Android.

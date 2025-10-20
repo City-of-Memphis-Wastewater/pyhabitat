@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyhabitat"
-version = "1.0.6"
+version = "1.0.7"
 #dynamic = ["version"] # 
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },

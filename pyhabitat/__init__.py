@@ -1,17 +1,48 @@
 # pyhabitat/__init__.py
 
 from .environment import (
-    is_termux, 
-    is_windows, 
-    is_pipx,
     matplotlib_is_available_for_gui_plotting,
-    # Add all key functions here
+    matplotlib_is_available_for_headless_image_export,
+    tkinter_is_available,
+    is_termux,
+    is_freebsd,
+    is_linux,
+    is_android,
+    is_windows,
+    is_apple,
+    is_ish_alpine,
+    pyinstaller,
+    is_frozen,
+    is_elf,
+    is_pyz,
+    is_windows_portable_executable,
+    is_macos_executable,
+    is_pipx,
+    is_interactive_terminal,
+    web_browser_is_available,
+    open_text_file_in_default_app,
 )
 
-# Optional: Set __all__ for explicit imports
+# Optional: Set __all__ for explicit documentation and cleaner imports
 __all__ = [
-    'is_termux',
-    'is_windows',
-    'is_pipx',
     'matplotlib_is_available_for_gui_plotting',
+    'matplotlib_is_available_for_headless_image_export',
+    'tkinter_is_available',
+    'is_termux',
+    'is_freebsd',
+    'is_linux',
+    'is_android',
+    'is_windows',
+    'is_apple',
+    'is_ish_alpine',
+    'pyinstaller',
+    'is_frozen',
+    'is_elf',
+    'is_pyz',
+    'is_windows_portable_executable',
+    'is_macos_executable',
+    'is_pipx',
+    'is_interactive_terminal',
+    'web_browser_is_available',
+    'open_text_file_in_default_app',
 ]
