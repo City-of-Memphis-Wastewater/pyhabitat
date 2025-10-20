@@ -18,7 +18,7 @@ from .environment import (
     is_windows_portable_executable,
     is_macos_executable,
     is_pipx,
-    is_interactive_terminal,
+    interactive_terminal_is_available,
     web_browser_is_available,
     open_text_file_in_default_app,
 )
@@ -42,7 +42,7 @@ __all__ = [
     'is_windows_portable_executable',
     'is_macos_executable',
     'is_pipx',
-    'is_interactive_terminal',
+    'interactive_terminal_is_available',
     'web_browser_is_available',
     'open_text_file_in_default_app',
 ]
