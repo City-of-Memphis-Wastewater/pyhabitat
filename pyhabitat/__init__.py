@@ -20,7 +20,7 @@ from .environment import (
     is_pipx,
     interactive_terminal_is_available,
     web_browser_is_available,
-    open_text_file_in_default_app,
+    open_text_file_for_editing,
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -44,5 +44,5 @@ __all__ = [
     'is_pipx',
     'interactive_terminal_is_available',
     'web_browser_is_available',
-    'open_text_file_in_default_app',
+    'open_text_file_for_editing',
 ]

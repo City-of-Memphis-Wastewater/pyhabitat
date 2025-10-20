@@ -95,7 +95,7 @@ Key Question: "What could I do next?"
 
 | Function | Description |
 | :--- | :--- |
-| `open_text_file_in_default_app()` | Smoothly opens a text file for editing (for configuration editing prompted by a CLI flag). |
+| `open_text_file_for_editing()` | Smoothly opens a text file for editing (for configuration editing prompted by a CLI flag). |
 
 </details>
 
@@ -162,7 +162,7 @@ Use this function to smoothly open a text file for editing.
 Ideal use case: Edit a configuration file, if prompted by a CLI command like 'config --textedit'.
 
 ```python
-open_text_file_in_default_app(filepath=Path('./config.json'))
+open_text_file_for_editing(filepath=Path('./config.json'))
 ```
 </details>
 
