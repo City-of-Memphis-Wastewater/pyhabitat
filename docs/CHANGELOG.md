@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.0.12] - 2025-10-20
+
+### Stability:
+- 1.0.11 is broken and will be redacted due to incomplete transition from is_interactive_terminal() to interactive_terminal_is_available(), namely in the `pyhabitat/__init__.py` file. Issue has been rectified.
+
 ---
 
 ## [1.0.11] - 2025-10-20
