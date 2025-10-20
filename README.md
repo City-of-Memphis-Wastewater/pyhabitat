@@ -1,8 +1,8 @@
 # pyhabitat 🧭
 
-## A Focused Introspection Library for Python Environments and Builds
+## An Introspection Library for Python Environments and Builds
 
-**`pyhabitat`** is a **focused, lightweight library for Python build and environment introspection**. It accurately and securely determines the execution context of a running script by providing definitive checks for:
+**`pyhabitat`** is a **lightweight library for Python build and environment introspection**. It accurately and securely determines the execution context of a running script by providing definitive checks for:
 
 * **OS and Environments:** Operating Systems and common container/emulation environments (e.g., Termux, iSH).
 * **Build States:** Application build systems (e.g., PyInstaller, pipx).
