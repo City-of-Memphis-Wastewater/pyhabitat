@@ -7,6 +7,14 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.13] - 2025-10-20
+
+### Stability Fix:
+- **Rectified Broken Function Transition:** Version 1.0.11 and 1.0.12 are considered broken and will be redacted due to an incomplete transition of the text editor launching function. The internal code for open_text_file_in_default_app() was not fully migrated to the new name, open_text_file_for_editing(), in the pyhabitat/__init__.py file, leading to runtime errors. This issue has been rectified in 1.0.13.
+
+
+---
+
 ## [1.0.12] - 2025-10-20
 
 ### Stability Fix:
