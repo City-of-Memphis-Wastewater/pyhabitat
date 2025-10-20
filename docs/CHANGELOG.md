@@ -9,8 +9,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.0.12] - 2025-10-20
 
-### Stability:
-- 1.0.11 is broken and will be redacted due to incomplete transition from is_interactive_terminal() to interactive_terminal_is_available(), namely in the `pyhabitat/__init__.py` file. Issue has been rectified.
+### Stability Fix:
+- **Rectified Broken Function Transition:** Version 1.0.11 is considered broken and will be redacted due to an incomplete transition of the environment check function. The internal code for is_interactive_terminal() was not fully migrated to the new name, interactive_terminal_is_available(), in the pyhabitat/__init__.py file, leading to runtime errors. This issue has been rectified in 1.0.12.
 
 ---
 
