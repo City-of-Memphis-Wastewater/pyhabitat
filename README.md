@@ -38,7 +38,7 @@ pip install pyhabitat
 ```
 ---
 
-## 📚 API Reference
+## 📚 Function Reference
 
 ### OS and Environment
 
