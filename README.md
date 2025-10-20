@@ -96,7 +96,7 @@ elif is_frozen():
 elif is_termux(): 
 	# Expected cases: 
 	#- pkg install python-numpy python-cryptography
-    #- Avoiding matplotlib unless the user explicitly confirms that termux_has_gui=False in matplotlib_is_available_for_gui_plotting(termux_has_gui=False).
+	#- Avoiding matplotlib unless the user explicitly confirms that termux_has_gui=False in matplotlib_is_available_for_gui_plotting(termux_has_gui=False).
 	#- Auto-selection of 'termux-open-url' and 'xdg-open' in logic.
 	#- Installation on the system, like orchestrating the construction of Termux Widget entries in ~/.shortcuts.
     print("Running in the Termux environment on Android.")
