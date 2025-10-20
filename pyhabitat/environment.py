@@ -454,9 +454,13 @@ def open_text_file_in_default_app(filepath):
     if is_windows():
         os.startfile(filepath)
     elif is_termux():
+        subprocess.run(['pkg','install', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(['dos2unix', filepath])
         subprocess.run(['nano', filepath])
     elif is_ish_alpine():
-        subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,check=True) # Will raise CalledProcessError if install fails
+        subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,check=True) # Will raise CalledProcessError if install fails
+        subprocess.run(['dos2unix', filepath])
         subprocess.run(['nano', filepath])
     elif is_linux():
         subprocess.run(['xdg-open', filepath])
@@ -464,7 +468,10 @@ def open_text_file_in_default_app(filepath):
         subprocess.run(['open', filepath])
     else:
         print("Unsupported operating system.")
-
+    
+    """Why Not Use check=True on Termux:
+    The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
+    """
 def _get_pipx_paths():
     """
     Returns the configured/default pipx binary and home directories.

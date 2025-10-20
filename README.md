@@ -108,7 +108,7 @@ The module exposes all detection functions directly for easy access.
 
 ### 0\. Current Use
 
-The `pipeline-eds` pacakge uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
+The `pipeline-eds` package uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
 
 ### 1\. Checking Environment and Build Type
 
