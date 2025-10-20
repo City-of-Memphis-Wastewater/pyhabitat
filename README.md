@@ -12,7 +12,7 @@ Stop writing verbose `sys.platform` and environment variable checks. Use **`pyha
 
 ---
 
-Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py).
+Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py). 🌐
 
 ---
 
@@ -21,10 +21,12 @@ Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabita
 ```bash
 pip install pyhabitat
 ```
+
 ---
 
 <details>
-<summary> Motivation </summary>
+<summary> 🧠 Motivation </summary>
+
 This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, it helps automate work-arounds like using **localhost plotting** when `matplotlib` is unavailable or **web-based interfaces** when `tkinter` is missing. 
 
 Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
@@ -103,6 +105,10 @@ Key Question: "What could I do next?"
 <summary> 💻 Usage Examples </summary>
 
 The module exposes all detection functions directly for easy access.
+
+### 0\. Current Use
+
+The `pipeline-eds` pacakge uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
 
 ### 1\. Checking Environment and Build Type
 
