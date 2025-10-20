@@ -6,10 +6,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyhabitat"
-version = "0.1.2"
+#version = "1.0.1"
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
+dynamic = ["version"] # 
 description = "A robust library for detecting system environment, GUI, and build properties."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -25,3 +26,7 @@ classifiers = [
 [tool.setuptools.packages.find]
 where = ["."]  
 include = ["pyhabitat"] # Only include the main package
+
+[tool.setuptools_scm] 
+# This tells setuptools_scm to look at your git history/tags for the version
+write_to = "pyhabitat/_version.py

@@ -1,14 +1,24 @@
 # pyhabitat 🧭
 
-## A Robust Environment and Build Introspection Library for Python
+## A Focused Introspection Library for Python Environments and Builds
 
-**`pyhabitat`** is a focused, lightweight library designed to accurately and securely determine the execution context of a running Python script. It provides definitive checks for the Operating System (OS), common container/emulation environments (Termux, iSH), build states (PyInstaller, pipx), and the availability of GUI backends (Matplotlib, Tkinter).
+**`pyhabitat`** is a **focused, lightweight library for Python build and environment introspection**. It accurately and securely determines the execution context of a running script by providing definitive checks for:
 
-Stop writing verbose `sys.platform` and environment variable checks. Instead, use **`pyhabitat`** to implement architectural logic in your code.
+* **OS and Environments:** Operating Systems and common container/emulation environments (e.g., Termux, iSH).
+* **Build States:** Application build systems (e.g., PyInstaller, pipx).
+* **GUI Backends:** Availability of graphical toolkits (e.g., Matplotlib, Tkinter).
 
-This library is especially useful for leveraging Python in mobile environments, namely `Termux` on Andoird and `iSH` on iOS, which have particular limitations and require special consideration. For example, localhost plotting is a common work-around when `matplotlib` is not available, and web-based interfaces are useful when `tkinter` is not available.
+Stop writing verbose `sys.platform` and environment variable checks. Use **`pyhabitat`** to implement clean, **architectural logic** based on the execution habitat.
 
-Another key goals is to facilitate the orchestration of wider system installation for `pipx` CLI tools for additonal touch points, like addition to context menus and widgets.  
+This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, it helps automate work-arounds like using **localhost plotting** when `matplotlib` is unavailable or **web-based interfaces** when `tkinter` is missing. 
+
+Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
+
+Another key goal of this project is to facilitate the orchestration of wider system installation for **`pipx` CLI tools** for additional touch points, like addition to context menus and widgets.
+
+Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wastewater) aims to produce **reference-quality code** for the documented proper approach. We recognize that many people (and bots) are searching for ideal solutions, and our functions are built upon extensive research and testing to go **beyond simple `platform.system()` checks**.
+
+---
 
 ## 🚀 Features
 
