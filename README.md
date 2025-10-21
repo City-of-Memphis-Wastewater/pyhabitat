@@ -66,11 +66,13 @@ Key question: "What is this running on?"
 | `on_termux()` | Returns `True` if running in the Termux Android environment. |
 | `on_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `on_android()` | Returns `True` on any Android-based Linux environment. |
-| `in_repl()` | Returns `True` is th user is currently in the Python REPL hasattr(sys,'ps1'). |
+| `in_repl()` | Returns `True` is the user is currently in a Python REPL; hasattr(sys,'ps1'). |
 
 ### Packaging and Build Checking
 
 Key question: "What is the character of my executable or my build state?"
+These functions accept a path arugment, either as a Path type or a str type.
+Path.resolve() is used for stability in case a the path input is a str type.
 
 | Function | Description |
 | :--- | :--- |
@@ -79,7 +81,7 @@ Key question: "What is the character of my executable or my build state?"
 | `is_pipx()` | Returns `True` if running from a pipx managed virtual environment. |
 | `is_elf()` | Checks if the executable is an ELF binary (Linux standalone executable), excluding pipx. |
 | `is_windows_portable_executable()` | Checks if the executable is a Windows PE binary (MZ header), excluding pipx. |
-| `is_macos_executable()` | Checks if the executable is a macOS/Darwin Mach-O binary, excluding pipx. || `is_macos_executable()` | Checks if the executable is a macOS/Darwin Mach-O binary, excluding pipx. |
+| `is_macos_executable()` | Checks if the executable is a macOS/Darwin Mach-O binary, excluding pipx. |
 
 
 ### Capability Checking
@@ -94,11 +96,12 @@ Key Question: "What could I do next?"
 | `interactive_terminal_is_available()` | Checks if standard input and output streams are connected to a TTY (allows safe use of interactive prompts). |
 | `web_browser_is_available()` | Check if a web browser can be launched in the current environment (allows safe use of web-based prompts and localhost plotting). 	|
 
-### Actions
+### Utility
 
 | Function | Description |
 | :--- | :--- |
-| `edit_textfile()` | Smoothly opens a text file for editing (for configuration editing prompted by a CLI flag). |
+| `edit_textfile()` | Smoothly opens a text file for editing (for configuration editing prompted by a CLI flag). The path argument can be a str type or a Path type, with Path.resolve() used for stability. |
+| `interp_path()` | Return the Path of the current Python interpreter. Option: print the path. No args accepted. |
 
 </details>
 
@@ -165,7 +168,7 @@ Use this function to smoothly open a text file for editing.
 Ideal use case: Edit a configuration file, if prompted by a CLI command like 'config --textedit'.
 
 ```python
-edit_textfile(filepath=Path('./config.json'))
+edit_textfile(path=Path('./config.json'))
 ```
 </details>
 

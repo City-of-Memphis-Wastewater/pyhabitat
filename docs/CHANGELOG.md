@@ -18,6 +18,24 @@ Function naming. Implemented in README.md, ./pyhabitat/__init__.py, and ./pyhabi
 - is_ -> as_ prefix change for build functions as_pyinstaller() and as_frozen()
 - is_ prefix kept for path checking executibles like is_elf().
 
+- Renamed system check functions to use `on_` prefix for clarity:
+  - `is_windows()` → `on_windows()`
+  - `is_termux()` → `on_termux()`
+  - `is_freebsd()` → `on_freebsd()`
+  - `is_linux()` → `on_linux()`
+  - `is_android()` → `on_android()`
+  - `is_apple()` → `on_apple()`
+  - `is_ish_alpine()` → `on_ish_alpine()`
+- Renamed build state checks to use `as_` prefix:
+  - `is_frozen()` → `as_frozen()`
+  - `is_pyinstaller()` → `as_pyinstaller()`
+- Renamed REPL check:
+  - `is_repl()` → `in_repl()`
+
+### Added:
+- `in_repl()`: Detects Python interactive REPL using `sys.ps1`.
+- `interp_path()`: Returns and optionally prints the Python interpreter path (`sys.executable`).
+
 ---
 
 ## [1.0.16] - 2025-10-21

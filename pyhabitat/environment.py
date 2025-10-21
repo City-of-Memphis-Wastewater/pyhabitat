@@ -256,7 +256,7 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     if exec_path is None:    
         exec_path = Path(sys.argv[0]).resolve()
     else:
-        exec_path = Path(path).resolve()
+        exec_path = Path(exec_path).resolve()
     if debug:
         print(f"exec_path = {exec_path}")
     if is_pipx():
@@ -283,7 +283,7 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     if exec_path is None:    
         exec_path = Path(sys.argv[0]).resolve()
     else:
-        exec_path = Path(path).resolve()
+        exec_path = Path(exec_path).resolve()
 
     if not exec_path.is_file():
         if debug: print("DEBUG:False (Not a file)")
@@ -299,7 +299,7 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     if not str(exec_path).endswith(".pyz"):
         return False
     
-    if not _check_if_zip():
+    if not _check_if_zip(exec_path):
         return False
 
 def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
@@ -314,7 +314,7 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
     else:
-        exec_path = Path(path).resolve()
+        exec_path = Path(exec_path).resolve()
 
     if debug:
         print(f"DEBUG: Checking executable path: {exec_path}")
@@ -356,7 +356,7 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
     else:
-        exec_path = Path(path).resolve()
+        exec_path = Path(exec_path).resolve()
 
     if is_pipx():
         if debug: print("DEBUG: is_macos_executable: False (is_pipx is True)")
@@ -395,7 +395,7 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
     else:
-        exec_path = Path(path).resolve()
+        exec_path = Path(exec_path).resolve()
 
     if not exec_path.is_file():
         if debug: print("DEBUG:False (Not a file)")
@@ -509,6 +509,9 @@ def edit_textfile(path: Path | str | None = None) -> None:
     Opens a file with the environment's default application (Windows, Linux, macOS)
     or a guaranteed console editor (nano) in constrained environments (Termux, iSH)
     after ensuring line-ending compatibility.
+
+    This function is known to fail on PyDroid3, where on_linus() is True but xdg-open 
+    is not available.
     """
     if path is None:
         return
@@ -554,7 +557,7 @@ def _run_dos2unix(path: Path | str | None = None):
         # We rely on shutil.which not being needed, as this is a robust built-in utility on most targets
         # The command won't raise an exception unless the process itself fails, not just if the utility isn't found.
         # We also don't use check=True here to allow silent failure if the utility is missing (e.g., minimalist Linux).
-        subprocess.run(['dos2unix', pathh], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(['dos2unix', path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except FileNotFoundError:
         # This will be raised if 'dos2unix' is not on the system PATH
         pass 
@@ -589,10 +592,10 @@ def _get_pipx_paths():
     return pipx_bin_path, pipx_venv_base.resolve()
 
 
-def _check_if_zip(path: Path | str) -> bool:
+def _check_if_zip(path: Path | str | None) -> bool:
     """Checks if the file at the given path is a valid ZIP archive."""
     if path is None:
-        return
+        return False
     path = Path(path).resolve()
 
     try:
