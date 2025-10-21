@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [1.0.15] - 2025-10-20
+
+### Stability Fix:
+- **Rectified Broken Function Reference:** All previous versions are considered broken. This is because check_if_zip() was still being referenced frpm pipeline. A line has been added to import zipfile, and the check_if_file() function has been duplicated locally as _check_if_file(). It has not been added to the available functions in __init__.py, because it only does what zipfile.is_zipfile(file_path) does.
+
 ---
 
 ## [1.0.13] - 2025-10-20

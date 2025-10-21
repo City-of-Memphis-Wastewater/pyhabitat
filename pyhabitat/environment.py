@@ -12,8 +12,7 @@ import shutil
 from pathlib import Path
 import subprocess
 import io
-
-from pipeline.helpers import check_if_zip
+import zipfile
 
 # Global cache for tkinter and matplotlib (mpl) availability
 _TKINTER_AVAILABILITY: bool | None = None
@@ -277,7 +276,7 @@ def is_pyz(exec_path: Path=None, debug=False) -> bool:
     if not str(exec_path).endswith(".pyz"):
         return False
     
-    if not check_if_zip():
+    if not _check_if_zip():
         return False
 
 def is_windows_portable_executable(exec_path: Path = None, debug=False) -> bool:
@@ -522,3 +521,13 @@ def _get_pipx_paths():
         pipx_venv_base = Path.home() / '.local' / 'share' / 'pipx' / 'venvs'
 
     return pipx_bin_path, pipx_venv_base.resolve()
+
+
+def _check_if_zip(file_path: str | Path) -> bool:
+    """Checks if the file at the given path is a valid ZIP archive."""
+    try:
+        return zipfile.is_zipfile(file_path)
+    except Exception:
+        # Handle cases where the path might be invalid, or other unexpected errors
+        return False
+        
