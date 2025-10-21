@@ -6,6 +6,20 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.17] - 2025-10-21
+
+### Changes, additions:
+- Implement Path resolution for stability, for each function that can accept a string or a Path.
+- Functions added, interp_path() and in_repl(). 
+
+### BREAKING:
+Function naming. Implemented in README.md, ./pyhabitat/__init__.py, and ./pyhabitat/environment.py.
+- is_ -> on_ prefix change for system check functions like on_linux()
+- is_ -> as_ prefix change for build functions as_pyinstaller() and as_frozen()
+- is_ prefix kept for path checking executibles like is_elf().
+
+---
+
 ## [1.0.16] - 2025-10-21
 
 ### BREAKING:
