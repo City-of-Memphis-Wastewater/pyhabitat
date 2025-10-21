@@ -29,7 +29,7 @@ def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
 
     # 1. Termux exclusion check (assume no X11/GUI)
     # Exclude Termux UNLESS the user explicitly provides termux_has_gui=True.
-    if is_termux() and not termux_has_gui: 
+    if on_termux() and not termux_has_gui: 
         _MATPLOTLIB_WINDOWED_AVAILABILITY = False
         return False
     
@@ -118,7 +118,7 @@ def tkinter_is_available() -> bool:
         return False
 
 # --- ENVIRONMENT AND OPERATING SYSTEM CHECKS ---
-def is_termux() -> bool:
+def on_termux() -> bool:
     """Detect if running in Termux environment on Android, based on Termux-specific environmental variables."""
     
     if platform.system() != 'Linux':
@@ -145,22 +145,22 @@ def is_termux() -> bool:
     
     return False
 
-def is_freebsd() -> bool:
+def on_freebsd() -> bool:
     """Detect if running on FreeBSD."""
     return platform.system() == 'FreeBSD'
 
-def is_linux():
+def on_linux():
     """Detect if running on Linux."""
     return platform.system() == 'Linux' 
 
-def is_android() -> bool:
+def on_android() -> bool:
     """
     Detect if running on Android.
     
-    Note: The is_termux() function is more robust and safe for Termux.
-    Checking for Termux with is_termux() does not require checking for Android with is_android().
+    Note: The on_termux() function is more robust and safe for Termux.
+    Checking for Termux with on_termux() does not require checking for Android with on_android().
 
-    is_android() will be True on:   
+    on_android() will be True on:   
         - Sandboxed IDE's:
             - Pydroid3
             - QPython
@@ -170,7 +170,7 @@ def is_android() -> bool:
             - UserLand
             - AnLinux
 
-    is_android() will be False on:
+    on_android() will be False on:
         - Full Virtual Machines:
             - VirtualBox
             - VMware
@@ -181,15 +181,15 @@ def is_android() -> bool:
         return False
     return "android" in platform.platform().lower()
 
-def is_windows() -> bool:
+def on_windows() -> bool:
     """Detect if running on Windows."""
     return platform.system() == 'Windows'
 
-def is_apple() -> bool:
+def on_apple() -> bool:
     """Detect if running on Apple."""
     return platform.system() == 'Darwin'
 
-def is_ish_alpine() -> bool:
+def on_ish_alpine() -> bool:
     """Detect if running in iSH Alpine environment on iOS."""
     # platform.system() usually returns 'Linux' in iSH
 
@@ -208,16 +208,29 @@ def is_ish_alpine() -> bool:
     
     return False
 
+def on_repl() -> bool:
+    """
+    Detects if the code is running in the Python interactive REPL (e.g., when 'python' is typed in a console).
+
+    This function specifically checks for the Python REPL by verifying the presence of the interactive
+    prompt (`sys.ps1`). It returns False for other interactive terminal scenarios, such as running a
+    PyInstaller binary in a console.
+
+    Returns:
+        bool: True if running in the Python REPL; False otherwise.
+    """
+    return hasattr(sys, 'ps1')
+
 
 # --- BUILD AND EXECUTABLE CHECKS ---
     
-def is_pyinstaller():
+def as_pyinstaller():
     """Detects if the Python script is running as a 'frozen' in the course of generating a PyInstaller binary executable."""
     # If the app is frozen AND has the PyInstaller-specific temporary folder path
-    return is_frozen() and hasattr(sys, '_MEIPASS')
+    return as_frozen() and hasattr(sys, '_MEIPASS')
 
 # The standard way to check for a frozen state:
-def is_frozen():
+def as_frozen():
     """
     Detects if the Python script is running as a 'frozen' (standalone) 
     executable created by a tool like PyInstaller, cx_Freeze, or Nuitka.
@@ -235,7 +248,8 @@ def is_frozen():
     """
     return getattr(sys, 'frozen', False)
 
-def is_elf(exec_path : Path = None, debug=False) -> bool:
+# --- Binary Characteristic Checks ---
+def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a standalone PyInstaller-built ELF binary."""
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
     
@@ -261,7 +275,7 @@ def is_elf(exec_path : Path = None, debug=False) -> bool:
         # Handle exceptions like PermissionError, IsADirectoryError, etc.
         return False
     
-def is_pyz(exec_path: Path=None, debug=False) -> bool:
+def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a PYZ zipapp ."""
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
     if exec_path is None:    
@@ -279,7 +293,7 @@ def is_pyz(exec_path: Path=None, debug=False) -> bool:
     if not _check_if_zip():
         return False
 
-def is_windows_portable_executable(exec_path: Path = None, debug=False) -> bool:
+def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """
     Checks if the currently running executable (sys.argv[0]) is a 
     Windows Portable Executable (PE) binary, and explicitly excludes 
@@ -323,7 +337,7 @@ def is_windows_portable_executable(exec_path: Path = None, debug=False) -> bool:
         # Handle exceptions like PermissionError, IsADirectoryError, etc.
         return False
     
-def is_macos_executable(exec_path: Path = None, debug=False) -> bool:
+def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
     and explicitly excludes pipx-managed environments.
@@ -362,15 +376,16 @@ def is_macos_executable(exec_path: Path = None, debug=False) -> bool:
     except Exception:
         return False
     
-def is_pipx(debug=False) -> bool:
+def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
+    if exec_path is None:
+        exec_path = Path(sys.argv[0]).resolve()
+        
     try:
         # Helper for case-insensitivity on Windows
         def normalize_path(p: Path) -> str:
             return str(p).lower()
 
-        exec_path = Path(sys.argv[0]).resolve()
-        
         # This is the path to the interpreter running the script (e.g., venv/bin/python)
         # In a pipx-managed execution, this is the venv python.
         interpreter_path = Path(sys.executable).resolve()
@@ -415,8 +430,29 @@ def is_pipx(debug=False) -> bool:
         return False
     
 
+# --- Interpreter Check ---
 
-# --- TTY CHECK ---
+def interp_path(print_path: bool = False) -> str:
+    """
+    Returns the path to the Python interpreter binary and optionally prints it.
+
+    This function wraps `sys.executable` to provide the path to the interpreter
+    (e.g., '/data/data/com.termux/files/usr/bin/python3' in Termux or the embedded
+    interpreter in a frozen executable). If the path is empty (e.g., in some embedded
+    or sandboxed environments), an empty string is returned.
+
+    Args:
+        print_path: If True, prints the interpreter path to stdout.
+
+    Returns:
+        str: The path to the Python interpreter binary, or an empty string if unavailable.
+    """
+    path = sys.executable
+    if print_path:
+        print(f"Python interpreter path: {path}")
+    return path
+
+# --- TTY Check ---
 def interactive_terminal_is_available():
     """
     Check if the script is running in an interactive terminal. 
@@ -440,7 +476,7 @@ def web_browser_is_available() -> bool:
     except webbrowser.Error:
         # Fallback needed. Check for external launchers.
         # 2. Termux specific check
-        if is_termux() and shutil.which("termux-open-url"):
+        if on_termux() and shutil.which("termux-open-url"):
             return True
         # 3. General Linux check
         if shutil.which("xdg-open"):
@@ -448,34 +484,36 @@ def web_browser_is_available() -> bool:
         return False
     
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
-def edit_textfile(filepath) -> None:
-#def open_text_file_for_editing(filepath):
+def edit_textfile(path: Path | str | None = None) -> None:
+#def open_text_file_for_editing(path): # defunct function name as of 1.0.16
     """
     Opens a file with the environment's default application (Windows, Linux, macOS)
     or a guaranteed console editor (nano) in constrained environments (Termux, iSH)
     after ensuring line-ending compatibility.
     """
+    if path is None:
+        return
     try:
-        if is_windows():
-            os.startfile(filepath)
-        elif is_termux():
+        if on_windows():
+            os.startfile(path)
+        elif on_termux():
     	    # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
     	    subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    	    _run_dos2unix(filepath)
-    	    subprocess.run(['nano', filepath])
-        elif is_ish_alpine():
+    	    _run_dos2unix(path)
+    	    subprocess.run(['nano', path])
+        elif on_ish_alpine():
             # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
     	    subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     	    subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    	    _run_dos2unix(filepath)
-    	    subprocess.run(['nano', filepath])
+    	    _run_dos2unix(path)
+    	    subprocess.run(['nano', path])
     	# --- Standard Unix-like Systems (Conversion + Default App) ---
-        elif is_linux():
-    	    _run_dos2unix(filepath) # Safety conversion for user-defined console apps
-    	    subprocess.run(['xdg-open', filepath])
-        elif is_apple():
-    	    _run_dos2unix(filepath) # Safety conversion for user-defined console apps
-    	    subprocess.run(['open', filepath])
+        elif on_linux():
+    	    _run_dos2unix(path) # Safety conversion for user-defined console apps
+    	    subprocess.run(['xdg-open', path])
+        elif on_apple():
+    	    _run_dos2unix(path) # Safety conversion for user-defined console apps
+    	    subprocess.run(['open', path])
         else:
     	    print("Unsupported operating system.")
     except Exception as e:
@@ -485,13 +523,13 @@ def edit_textfile(filepath) -> None:
     The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
     """
     
-def _run_dos2unix(filepath):
+def _run_dos2unix(path: Path | str | None = None):
     """Attempt to run dos2unix, failing silently if not installed."""
     try:
         # We rely on shutil.which not being needed, as this is a robust built-in utility on most targets
         # The command won't raise an exception unless the process itself fails, not just if the utility isn't found.
         # We also don't use check=True here to allow silent failure if the utility is missing (e.g., minimalist Linux).
-        subprocess.run(['dos2unix', filepath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(['dos2unix', pathh], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except FileNotFoundError:
         # This will be raised if 'dos2unix' is not on the system PATH
         pass 
