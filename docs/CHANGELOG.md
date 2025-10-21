@@ -5,20 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
+---
 
 ## [1.0.17] - 2025-10-21
 
-### Changes, additions:
-- Implement Path resolution for stability, for each function that can accept a string or a Path.
-- Functions added, interp_path() and in_repl(). 
+BREAKING - Most all function names changed.
 
-### BREAKING:
-Function naming. Implemented in README.md, ./pyhabitat/__init__.py, and ./pyhabitat/environment.py.
-- is_ -> on_ prefix change for system check functions like on_linux()
-- is_ -> as_ prefix change for build functions as_pyinstaller() and as_frozen()
-- is_ prefix kept for path checking executibles like is_elf().
+### Added:
+- `__all__` in `environment.py` to explicitly list exported functions, matching `__init__.py`.
+- `__main__.py` to enable `python -m pyhabitat` with an environment report.
+- `main()` function exposed in `__init__.py` for REPL access (`ph.main()`).
+- `in_repl()`: Detects Python interactive REPL using `sys.ps1`.
+- `interp_path()`: Returns and optionally prints the Python interpreter path (`sys.executable`).
+- `is_python_script(path=None)`: Checks if the script or specified path is a Python source file (.py), defaulting to `sys.argv[0]` with `Path.resolve()`. Useful for `python -m module` or `python script.py`.
+- `README.md` usage example for running `main()` via `python -m pyhabitat` or in the REPL.
+- `README.md` clarification that path-based functions (`is_pipx`, `is_macos_executable`, `is_elf`, `is_pyz`, `is_windows_portable_executable`) default to `sys.argv[0]` with `Path.resolve()` when `path=None`.
 
-- Renamed system check functions to use `on_` prefix for clarity:
+### Changed:
+- Renamed functions for consistency:
   - `is_windows()` → `on_windows()`
   - `is_termux()` → `on_termux()`
   - `is_freebsd()` → `on_freebsd()`
@@ -26,15 +30,42 @@ Function naming. Implemented in README.md, ./pyhabitat/__init__.py, and ./pyhabi
   - `is_android()` → `on_android()`
   - `is_apple()` → `on_apple()`
   - `is_ish_alpine()` → `on_ish_alpine()`
-- Renamed build state checks to use `as_` prefix:
   - `is_frozen()` → `as_frozen()`
   - `is_pyinstaller()` → `as_pyinstaller()`
-- Renamed REPL check:
   - `is_repl()` → `in_repl()`
-
-### Added:
+- Implemented `Path.resolve()` for stable path handling in all path-based functions: `is_elf()`, `is_pyz()`, `is_python_script()`, `is_windows_portable_executable()`, `is_macos_executable()`, `is_pipx()`, `edit_textfile()`, `_run_dos2unix()`, `_check_if_zip()`.
+- Updated `is_pyz()`: Fixed incomplete logic, renamed parameter to `path`, and ensured `bool` return.
+- Updated `edit_textfile()`: Added REPL restriction check and updated docstring.
+- Updated docstrings for path-based functions to clarify `Path.resolve()` and optional `path` parameter.
+- Updated `README.md`: Added `is_pyz()`, fixed `in_repl()` typo, corrected `edit_textfile()` parameter, added `interp_path()`, `main()`, and `is_python_script()` usage examples, clarified path-based function descriptions with `termux_has_gui=True`, and specified that path-based functions check `sys.argv[0]` (e.g., `pyhabitat/__main__.py` for `python -m pyhabitat`, empty in REPL). Updated section names to match output ("Interpreter Checks", "Current Environment Check", "Current Build Checks", "Operating System Checks").
+- Updated `__main__.py`: Aligned output format with user-provided output, added `is_windows_portable_executable`, `is_macos_executable`, `is_python_script`, and `is_python_script(interp_path())` to report, reorganized into "Interpreter Checks", "Current Environment Check", "Current Build Checks", and "Operating System Checks".### Added:
+- `__all__` in `environment.py` to explicitly list exported functions, matching `__init__.py`.
+- `__main__.py` to enable `python -m pyhabitat` with an environment report.
+- `main()` function exposed in `__init__.py` for REPL access (`ph.main()`).
 - `in_repl()`: Detects Python interactive REPL using `sys.ps1`.
 - `interp_path()`: Returns and optionally prints the Python interpreter path (`sys.executable`).
+- `is_python_script(path=None)`: Checks if the script or specified path is a Python source file (.py), defaulting to `sys.argv[0]` with `Path.resolve()`. Useful for `python -m module` or `python script.py`.
+- `README.md` usage example for running `main()` via `python -m pyhabitat` or in the REPL.
+- `README.md` clarification that path-based functions (`is_pipx`, `is_macos_executable`, `is_elf`, `is_pyz`, `is_windows_portable_executable`) default to `sys.argv[0]` with `Path.resolve()` when `path=None`.
+
+### Changed:
+- Renamed functions for consistency:
+  - `is_windows()` → `on_windows()`
+  - `is_termux()` → `on_termux()`
+  - `is_freebsd()` → `on_freebsd()`
+  - `is_linux()` → `on_linux()`
+  - `is_android()` → `on_android()`
+  - `is_apple()` → `on_apple()`
+  - `is_ish_alpine()` → `on_ish_alpine()`
+  - `is_frozen()` → `as_frozen()`
+  - `is_pyinstaller()` → `as_pyinstaller()`
+  - `is_repl()` → `in_repl()`
+- Implemented `Path.resolve()` for stable path handling in all path-based functions: `is_elf()`, `is_pyz()`, `is_python_script()`, `is_windows_portable_executable()`, `is_macos_executable()`, `is_pipx()`, `edit_textfile()`, `_run_dos2unix()`, `_check_if_zip()`.
+- Updated `is_pyz()`: Fixed incomplete logic, renamed parameter to `path`, and ensured `bool` return.
+- Updated `edit_textfile()`: Added REPL restriction check and updated docstring.
+- Updated docstrings for path-based functions to clarify `Path.resolve()` and optional `path` parameter.
+- Updated `README.md`: Added `is_pyz()`, fixed `in_repl()` typo, corrected `edit_textfile()` parameter, added `interp_path()`, `main()`, and `is_python_script()` usage examples, clarified path-based function descriptions with `termux_has_gui=True`, and specified that path-based functions check `sys.argv[0]` (e.g., `pyhabitat/__main__.py` for `python -m pyhabitat`, empty in REPL). Updated section names to match output ("Interpreter Checks", "Current Environment Check", "Current Build Checks", "Operating System Checks").
+- Updated `__main__.py`: Aligned output format with user-provided output, added `is_windows_portable_executable`, `is_macos_executable`, `is_python_script`, and `is_python_script(interp_path())` to report, reorganized into "Interpreter Checks", "Current Environment Check", "Current Build Checks", and "Operating System Checks".
 
 ---
 
