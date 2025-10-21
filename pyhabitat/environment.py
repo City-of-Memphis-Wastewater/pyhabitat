@@ -14,6 +14,31 @@ import subprocess
 import io
 import zipfile
 
+__all__ = [
+    'matplotlib_is_available_for_gui_plotting',
+    'matplotlib_is_available_for_headless_image_export',
+    'tkinter_is_available',
+    'on_termux',
+    'on_freebsd',
+    'on_linux',
+    'on_android',
+    'on_windows',
+    'on_apple',
+    'on_ish_alpine',
+    'as_pyinstaller',
+    'as_frozen',
+    'is_elf',
+    'is_pyz',
+    'is_windows_portable_executable',
+    'is_macos_executable',
+    'is_pipx',
+    'interactive_terminal_is_available',
+    'web_browser_is_available',
+    'edit_textfile',
+    'in_repl',
+    'interp_path',
+]
+
 # Global cache for tkinter and matplotlib (mpl) availability
 _TKINTER_AVAILABILITY: bool | None = None
 _MATPLOTLIB_EXPORT_AVAILABILITY: bool | None = None
