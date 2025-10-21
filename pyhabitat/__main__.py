@@ -12,6 +12,7 @@ from .environment import (
     is_macos_executable,
     is_pyz,
     is_pipx,
+    is_python_script,
     as_frozen,
     as_pyinstaller,
     interp_path,
@@ -25,7 +26,7 @@ from .environment import (
 def main():
     print("PyHabitat Environment Report")
     print("===========================")
-    print("\nInterpreter Checks")
+    print("\nInterpreter Checks // Based on sys.executable()")
     print("---------------------")
     print(f"interp_path(): {interp_path()}")
     print(f"is_elf(interp_path()): {is_elf(interp_path())}")
@@ -33,17 +34,21 @@ def main():
     print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path())}")
     print(f"is_pyz(interp_path()): {is_pyz(interp_path())}")
     print(f"is_pipx(interp_path()): {is_pipx(interp_path())}")
-    print("\nCurrent Environment Check")
+    print(f"is_python_script(interp_path()): {is_python_script(interp_path())}")
+    print("\nCurrent Environment Check // Based on sys.argv[0]")
     print("---------------------")
-    print(f"in_repl(): {in_repl()}")
     print(f"is_elf(): {is_elf()}")
     print(f"is_windows_portable_executable(): {is_windows_portable_executable()}")
     print(f"is_macos_executable(): {is_macos_executable()}")
     print(f"is_pyz(): {is_pyz()}")
     print(f"is_pipx(): {is_pipx()}")
+    print(f"is_python_script(): {is_python_script()}")
+    print(f"\nCurrent Build Checks // Based on hasattr(sys,..) and getattr(sys,..)")
+    print("----------------------")
+    print(f"in_repl(): {in_repl()}")
     print(f"as_frozen(): {as_frozen()}")
     print(f"as_pyinstaller(): {as_pyinstaller()}")
-    print("\nOperating System Checks")
+    print("\nOperating System Checks // Based on platform.system()")
     print("----------------------")
     print(f"on_termux(): {on_termux()}")
     print(f"on_windows(): {on_windows()}")

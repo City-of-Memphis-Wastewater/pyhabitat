@@ -282,8 +282,10 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
         exec_path = Path(sys.argv[0]).resolve()
     else:
         exec_path = Path(exec_path).resolve()
+
     if debug:
-        print(f"exec_path = {exec_path}")
+        print(f"DEBUG: Checking executable path: {exec_path}")
+        
     if is_pipx():
         return False
     
@@ -310,12 +312,12 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     else:
         exec_path = Path(exec_path).resolve()
 
+    if debug:
+        print(f"DEBUG: Checking executable path: {exec_path}")
+        
     if not exec_path.is_file():
         if debug: print("DEBUG:False (Not a file)")
         return False
-
-    if debug:
-        print(f"exec_path = {exec_path}")
     
     if is_pipx():
         return False
@@ -382,7 +384,9 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
         exec_path = Path(sys.argv[0]).resolve()
     else:
         exec_path = Path(exec_path).resolve()
-
+    if debug:
+        print(f"DEBUG: Checking executable path: {exec_path}")
+        
     if is_pipx():
         if debug: print("DEBUG: is_macos_executable: False (is_pipx is True)")
         return False
@@ -421,7 +425,9 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
         exec_path = Path(sys.argv[0]).resolve()
     else:
         exec_path = Path(exec_path).resolve()
-
+    if debug:
+        print(f"DEBUG: Checking executable path: {exec_path}")
+        
     if not exec_path.is_file():
         if debug: print("DEBUG:False (Not a file)")
         return False
@@ -472,7 +478,30 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     except Exception:
         # Fallback for unexpected path errors
         return False
-    
+
+def is_python_script(path: Path | str | None = None, debug: bool = False) -> bool:
+    """
+    Checks if the specified path or running script is a Python source file (.py).
+
+    By default, checks the running script (`sys.argv[0]`). If a specific `path` is
+    provided, checks that path instead. Uses `Path.resolve()` for stable path handling.
+
+    Args:
+        path: Optional; path to the file to check (str or Path). If None, defaults to `sys.argv[0]`.
+        debug: If True, prints the path being checked.
+
+    Returns:
+        bool: True if the specified or default path is a Python source file (.py); False otherwise.
+    """
+    if path is None:
+        exec_path = Path(sys.argv[0]).resolve()
+    else:
+        exec_path = Path(path).resolve()
+    if debug:
+        print(f"Checking Python script for path: {exec_path}")
+    if not exec_path.is_file():
+        return False
+    return exec_path.suffix.lower() == '.py'    
 
 # --- Interpreter Check ---
 
