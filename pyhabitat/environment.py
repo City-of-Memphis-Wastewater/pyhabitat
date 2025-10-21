@@ -208,7 +208,7 @@ def on_ish_alpine() -> bool:
     
     return False
 
-def on_repl() -> bool:
+def in_repl() -> bool:
     """
     Detects if the code is running in the Python interactive REPL (e.g., when 'python' is typed in a console).
 
