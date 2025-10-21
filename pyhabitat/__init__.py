@@ -25,6 +25,8 @@ from .environment import (
     interp_path,
 )
 
+from .__main__ import main
+
 # Optional: Set __all__ for explicit documentation and cleaner imports
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
@@ -49,4 +51,5 @@ __all__ = [
     'web_browser_is_available',
     'edit_textfile',
     'interp_path',
+    'main',
 ]

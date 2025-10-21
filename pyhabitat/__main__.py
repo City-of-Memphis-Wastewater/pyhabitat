@@ -23,7 +23,7 @@ from .environment import (
 )
 
 def main():
-    print("pyhabitat Environment Report")
+    print("PyHabitat Environment Report")
     print("===========================")
     print("\nInterpreter Checks")
     print("---------------------")
