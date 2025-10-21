@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.0.16] - 2025-10-21
+
+### BREAKING:
+- **Rename function**: pyinstaller() -> is_pyinstaller()
+- **Rename function**: open_text_file_for_editing() -> edit_textfile()
+
+## Fix:
+- Use try/except in edit_textfile() in case of failure (test: failed in Pydroid3)
+
+## Mid-Refactor:
+- I want a function like is_interp() or is_repl(). Possibly use Path(sys.executable).resolve(), rather than Path(sys.argv[0]).resolve()
+
+---
 
 ## [1.0.15] - 2025-10-20
 

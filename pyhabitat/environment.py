@@ -211,7 +211,7 @@ def is_ish_alpine() -> bool:
 
 # --- BUILD AND EXECUTABLE CHECKS ---
     
-def pyinstaller():
+def is_pyinstaller():
     """Detects if the Python script is running as a 'frozen' in the course of generating a PyInstaller binary executable."""
     # If the app is frozen AND has the PyInstaller-specific temporary folder path
     return is_frozen() and hasattr(sys, '_MEIPASS')
@@ -448,36 +448,39 @@ def web_browser_is_available() -> bool:
         return False
     
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
-def open_text_file_for_editing(filepath):
+def edit_textfile(filepath) -> None:
+#def open_text_file_for_editing(filepath):
     """
     Opens a file with the environment's default application (Windows, Linux, macOS)
     or a guaranteed console editor (nano) in constrained environments (Termux, iSH)
     after ensuring line-ending compatibility.
     """
-    if is_windows():
-        os.startfile(filepath)
-    elif is_termux():
-        # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
-        subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        _run_dos2unix(filepath)
-        subprocess.run(['nano', filepath])
-    elif is_ish_alpine():
-        # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
-        subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        _run_dos2unix(filepath)
-        subprocess.run(['nano', filepath])
-    # --- Standard Unix-like Systems (Conversion + Default App) ---
-    elif is_linux():
-        _run_dos2unix(filepath) # Safety conversion for user-defined console apps
-        subprocess.run(['xdg-open', filepath])
-        
-    elif is_apple():
-        _run_dos2unix(filepath) # Safety conversion for user-defined console apps
-        subprocess.run(['open', filepath])
-    else:
-        print("Unsupported operating system.")
-    
+    try:
+        if is_windows():
+            os.startfile(filepath)
+        elif is_termux():
+    	    # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
+    	    subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    	    _run_dos2unix(filepath)
+    	    subprocess.run(['nano', filepath])
+        elif is_ish_alpine():
+            # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
+    	    subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    	    subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    	    _run_dos2unix(filepath)
+    	    subprocess.run(['nano', filepath])
+    	# --- Standard Unix-like Systems (Conversion + Default App) ---
+        elif is_linux():
+    	    _run_dos2unix(filepath) # Safety conversion for user-defined console apps
+    	    subprocess.run(['xdg-open', filepath])
+        elif is_apple():
+    	    _run_dos2unix(filepath) # Safety conversion for user-defined console apps
+    	    subprocess.run(['open', filepath])
+        else:
+    	    print("Unsupported operating system.")
+    except Exception as e:
+	    print("The file could not be opened for editing in the current environment. Known failure points: Pydroid3")
+
     """Why Not Use check=True on Termux:
     The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
     """

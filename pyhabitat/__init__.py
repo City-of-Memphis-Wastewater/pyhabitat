@@ -11,7 +11,7 @@ from .environment import (
     is_windows,
     is_apple,
     is_ish_alpine,
-    pyinstaller,
+    is_pyinstaller,
     is_frozen,
     is_elf,
     is_pyz,
@@ -20,7 +20,7 @@ from .environment import (
     is_pipx,
     interactive_terminal_is_available,
     web_browser_is_available,
-    open_text_file_for_editing,
+    edit_textfile,
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -35,7 +35,7 @@ __all__ = [
     'is_windows',
     'is_apple',
     'is_ish_alpine',
-    'pyinstaller',
+    'is_pyinstaller',
     'is_frozen',
     'is_elf',
     'is_pyz',
@@ -44,5 +44,5 @@ __all__ = [
     'is_pipx',
     'interactive_terminal_is_available',
     'web_browser_is_available',
-    'open_text_file_for_editing',
+    'edit_textfile',
 ]
