@@ -318,36 +318,27 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
 
     return True
 
+
 def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """
-    Checks if the currently running executable (sys.argv[0]) is a 
-    Windows Portable Executable (PE) binary, and explicitly excludes 
-    pipx-managed environments.
+    Checks if the specified path or sys.argv[0] is a Windows Portable Executable (PE) binary.
     Windows Portable Executables include .exe, .dll, and other binaries.
     The standard way to check for a PE is to look for the MZ magic number at the very beginning of the file.
     """
     exec_path, is_valid = _check_executable_path(exec_path, debug)
     if not is_valid:
         return False
-
     try:
-        # Check the magic number: All Windows PE files (EXE, DLL, etc.) 
-        # start with the two-byte header b'MZ' (for Mark Zbikowski).
         with open(exec_path, 'rb') as f:
             magic_bytes = f.read(2)
         if debug:
             logging.debug(f"Magic bytes: {magic_bytes}")
-        is_pe = magic_bytes == b'MZ'
-        
-            
-        return is_pe
-        
+        return magic_bytes == b'MZ'
     except Exception as e:
-        if debug: 
+        if debug:
             logging.debug(f"False (Error during file check: {e})")
-        # Handle exceptions like PermissionError, IsADirectoryError, etc.
         return False
-    
+        
 def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
@@ -668,31 +659,8 @@ def main(path=None, debug=False):
     if debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
-    logging.debug(f"Inspecting path: {path or sys.argv[0]}")
-    
     print("PyHabitat Environment Report")
     print("===========================")
-    print("\nInterpreter Checks // Based on sys.executable()")
-    print("-----------------------------")
-    print(f"interp_path(): {interp_path()}")
-    print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug)}")
-    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path(), debug=debug)}")
-    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path(), debug=debug)}")
-    print(f"is_pyz(interp_path()): {is_pyz(interp_path(), debug=debug)}")
-    print(f"is_pipx(interp_path()): {is_pipx(interp_path(), debug=debug)}")
-    print(f"is_python_script(interp_path()): {is_python_script(interp_path(), debug=debug)}")
-    print("\nCurrent Environment Check // Based on sys.argv[0]")
-    print("-----------------------------")
-    script_path = None
-    if path or (sys.argv[0] and sys.argv[0] != '-c'):
-        script_path = Path(path or sys.argv[0]).resolve()
-    logging.debug(f"Script path resolved: {script_path}")
-    print(f"is_elf(): {is_elf(script_path, debug=debug)}")
-    print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path, debug=debug)}")
-    print(f"is_macos_executable(): {is_macos_executable(script_path, debug=debug)}")
-    print(f"is_pyz(): {is_pyz(script_path, debug=debug)}")
-    print(f"is_pipx(): {is_pipx(script_path, debug=debug)}")
-    print(f"is_python_script(): {is_python_script(script_path, debug=debug)}")
     print("\nCurrent Build Checks // Based on hasattr(sys,..) and getattr(sys,..)")
     print("------------------------------")
     print(f"in_repl(): {in_repl()}")
@@ -714,3 +682,37 @@ def main(path=None, debug=False):
     print(f"matplotlib_is_available_for_headless_image_export(): {matplotlib_is_available_for_headless_image_export()}")
     print(f"web_browser_is_available(): {web_browser_is_available()}")
     print(f"interactive_terminal_is_available(): {interactive_terminal_is_available()}")
+    print("\nInterpreter Checks // Based on sys.executable()")
+    print("-----------------------------")
+    print(f"interp_path(): {interp_path()}")
+    print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug)}")
+    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path(), debug=debug)}")
+    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path(), debug=debug)}")
+    print(f"is_pyz(interp_path()): {is_pyz(interp_path(), debug=debug)}")
+    print(f"is_pipx(interp_path()): {is_pipx(interp_path(), debug=debug)}")
+    print(f"is_python_script(interp_path()): {is_python_script(interp_path(), debug=debug)}")
+    print("\nCurrent Environment Check // Based on sys.argv[0]")
+    print("-----------------------------")
+    inspect_path = path if path is not None else (None if sys.argv[0] == '-c' else sys.argv[0])
+    logging.debug(f"Inspecting path: {inspect_path}")
+    # Early validation of path
+    if path is not None:
+        path_obj = Path(path)
+        if not path_obj.is_file():
+            print(f"Error: '{path}' is not a valid file or does not exist.")
+            if debug:
+                logging.error(f"Invalid path: '{path}' is not a file or does not exist.")
+            raise SystemExit(1)
+    script_path = None
+    if path or (sys.argv[0] and sys.argv[0] != '-c'):
+        script_path = Path(path or sys.argv[0]).resolve()
+    logging.debug(f"Script path resolved: {script_path}")
+    if script_path is not None:
+        print(f"is_elf(): {is_elf(script_path, debug=debug)}")
+        print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path, debug=debug)}")
+        print(f"is_macos_executable(): {is_macos_executable(script_path, debug=debug)}")
+        print(f"is_pyz(): {is_pyz(script_path, debug=debug)}")
+        print(f"is_pipx(): {is_pipx(script_path, debug=debug)}")
+        print(f"is_python_script(): {is_python_script(script_path, debug=debug)}")
+    else:
+        print("script_path is None")

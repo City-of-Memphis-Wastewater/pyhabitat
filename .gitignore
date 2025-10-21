@@ -38,6 +38,7 @@ version.rc
 *.pyz
 *.whl
 *.tar.gz
+*.cfg
 
 # Other
 !workspaces/

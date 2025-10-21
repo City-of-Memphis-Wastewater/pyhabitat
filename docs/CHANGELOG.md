@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
+
+## [1.0.18] - 2025-10-21
+- Fixed debug log in `main()` to consistently show `Inspecting path: None` for `python -c` when `path=None`.
+- Fixed `-c` handling in `main()` to set `script_path = None` when `sys.argv[0] == '-c'`.
+- Restored debug statements by passing `debug=True` to check functions in `main()`.
+- Added debug logging for `magic_bytes` in `is_elf`.
+- Consolidated path resolution and checks into `_check_executable_path` helper.
+- Fixed `pipx install` by ensuring local installation with `pipx install .`.
+- Added CLI support with cli.py, changing __main__.py entirely, migrating main() to environment.py, and adding the necessary elements in pyroject.toml.
+
 ---
 
 ## [1.0.17] - 2025-10-21
