@@ -13,6 +13,7 @@ from pathlib import Path
 import subprocess
 import io
 import zipfile
+import logging
 
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
@@ -37,6 +38,7 @@ __all__ = [
     'edit_textfile',
     'in_repl',
     'interp_path',
+    'main',
 ]
 
 # Global cache for tkinter and matplotlib (mpl) availability
@@ -658,3 +660,58 @@ def _check_if_zip(path: Path | str | None) -> bool:
         # Handle cases where the path might be invalid, or other unexpected errors
         return False
         
+
+# --- Main Function for report and CLI compatibility ---
+
+def main(path=None, debug=False):
+    """Print a comprehensive environment report.
+
+    Args:
+        path (Path | str | None): Path to inspect (defaults to sys.argv[0]).
+        debug (bool): Enable verbose debug output.
+    """
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+    logging.debug(f"Inspecting path: {path or sys.argv[0]}")
+    print("PyHabitat Environment Report")
+    print("===========================")
+    print("\nInterpreter Checks // Based on sys.executable()")
+    print("-----------------------------")
+    print(f"interp_path(): {interp_path()}")
+    print(f"is_elf(interp_path()): {is_elf(interp_path())}")
+    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path())}")
+    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path())}")
+    print(f"is_pyz(interp_path()): {is_pyz(interp_path())}")
+    print(f"is_pipx(interp_path()): {is_pipx(interp_path())}")
+    print(f"is_python_script(interp_path()): {is_python_script(interp_path())}")
+    print("\nCurrent Environment Check // Based on sys.argv[0]")
+    print("-----------------------------")
+    script_path = Path(path or sys.argv[0]).resolve() if (path or sys.argv[0]) else None
+    logging.debug(f"Script path resolved: {script_path}")
+    print(f"is_elf(): {is_elf(script_path)}")
+    print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path)}")
+    print(f"is_macos_executable(): {is_macos_executable(script_path)}")
+    print(f"is_pyz(): {is_pyz(script_path)}")
+    print(f"is_pipx(): {is_pipx(script_path)}")
+    print(f"is_python_script(): {is_python_script(script_path)}")
+    print("\nCurrent Build Checks // Based on hasattr(sys,..) and getattr(sys,..)")
+    print("------------------------------")
+    print(f"in_repl(): {in_repl()}")
+    print(f"as_frozen(): {as_frozen()}")
+    print(f"as_pyinstaller(): {as_pyinstaller()}")
+    print("\nOperating System Checks // Based on platform.system()")
+    print("------------------------------")
+    print(f"on_termux(): {on_termux()}")
+    print(f"on_windows(): {on_windows()}")
+    print(f"on_apple(): {on_apple()}")
+    print(f"on_linux(): {on_linux()}")
+    print(f"on_ish_alpine(): {on_ish_alpine()}")
+    print(f"on_android(): {on_android()}")
+    print(f"on_freebsd(): {on_freebsd()}")
+    print("\nCapability Checks")
+    print("-------------------------")
+    print(f"tkinter_is_available(): {tkinter_is_available()}")
+    print(f"matplotlib_is_available_for_gui_plotting(): {matplotlib_is_available_for_gui_plotting()}")
+    print(f"matplotlib_is_available_for_headless_image_export(): {matplotlib_is_available_for_headless_image_export()}")
+    print(f"web_browser_is_available(): {web_browser_is_available()}")
+    print(f"interactive_terminal_is_available(): {interactive_terminal_is_available()}")

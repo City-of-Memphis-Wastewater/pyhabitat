@@ -115,7 +115,7 @@ Key Question: "What could I do next?"
 
 The module exposes all detection functions directly for easy access.
 
-### 0\.Example of PyHabitat in Action
+### 0\. Example of PyHabitat in Action
 
 The `pipeline-eds` package uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
 

@@ -13,7 +13,7 @@ authors = [
 ]
 description = "A lightweight library for detecting system environment, GUI, and build properties."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 license = "MIT" 
 keywords = ["environment", "os-detection", "gui", "build-system"]
 classifiers = [
@@ -21,6 +21,10 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: System :: Systems Administration",
 ]
+dependencies = []
+
+[project.scripts]
+pyhabitat = "pyhabitat.cli:run_cli"
 
 [tool.setuptools.packages.find]
 where = ["."]  

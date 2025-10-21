@@ -24,9 +24,8 @@ from .environment import (
     web_browser_is_available,
     edit_textfile,
     interp_path,
+    main,
 )
-
-from .__main__ import main
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
 __all__ = [
