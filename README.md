@@ -44,11 +44,11 @@ Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wast
 
   * **Definitive Environment Checks:** Rigorous checks catered to Termux and iSH (iOS Alpine). Accurate, typical modern detection for Windows, macOS (Apple), Linux, FreeBSD, Android.
   * **GUI Availability:** Rigorous, cached checks to determine if the environment supports a graphical popup window (Tkinter/Matplotlib TkAgg) or just headless image export (Matplotlib Agg).
-  * **Build/Packaging Detection:** Reliable detection of standalone executables built by tools like PyInstaller, and, crucially, correct identification and exclusion of pipx-managed virtual environments, which also user binaries that could conflate the check.
-  * **Executable Type Inspection:** Uses file magic numbers (ELF and MZ) to confirm if the running script is a monolithic, frozen binary (non-pipx).
+  * **Build/Packaging Detection:** Reliable detection of standalone executables (PyInstaller), Python zipapps (.pyz), Python source scripts (.py), and correct identification/exclusion of pipx-managed virtual environments.
+  * **Executable Type Inspection:** Uses file magic numbers (ELF, MZ, Mach-O) to confirm if the running script is a monolithic, frozen binary (non-pipx) or zipapp (.pyz).
 
 </details>
-  
+
 ---
 
 <details>
@@ -64,6 +64,7 @@ Key question: "What is this running on?"
 | `on_apple()` | Returns `True` on macOS (Darwin). |
 | `on_linux()` | Returns `True` on Linux in general. |
 | `on_termux()` | Returns `True` if running in the Termux Android environment. |
+| `on_freebsd()` | Returns `True` on FreeBSD. |
 | `on_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `on_android()` | Returns `True` on any Android-based Linux environment. |
 | `in_repl()` | Returns `True` is the user is currently in a Python REPL; hasattr(sys,'ps1'). |
@@ -92,7 +93,7 @@ Key Question: "What could I do next?"
 | Function | Description |
 | :--- | :--- |
 | `tkinter_is_available()` | Checks if Tkinter is imported and can successfully create a window. |
-| `matplotlib_is_available_for_gui_plotting(termux_has_gui=False)` | Checks for Matplotlib and its TkAgg backend, required for interactive plotting. |
+| `matplotlib_is_available_for_gui_plotting(termux_has_gui=False)` | Checks for Matplotlib and its TkAgg backend, required for interactive plotting. Set `termux_has_gui=True` for Termux with GUI support; defaults to `False`. |
 | `matplotlib_is_available_for_headless_image_export()` | Checks for Matplotlib and its Agg backend, required for saving images without a GUI. |
 | `interactive_terminal_is_available()` | Checks if standard input and output streams are connected to a TTY (allows safe use of interactive prompts). |
 | `web_browser_is_available()` | Check if a web browser can be launched in the current environment (allows safe use of web-based prompts and localhost plotting). 	|
@@ -103,7 +104,7 @@ Key Question: "What could I do next?"
 | :--- | :--- |
 | `edit_textfile(path)` | Opens a text file for editing using the default editor (Windows, Linux, macOS) or nano in Termux/iSH. In REPL mode, prints an error. Path argument (str or Path) uses Path.resolve() for stability. |
 | `interp_path(print_path=False)` | Returns the path to the Python interpreter binary (sys.executable). Optionally prints the path. Returns empty string if unavailable. |
-| `main()` | Prints a comprehensive environment report, including interpreter, environment, build, operating system, and capability checks. Run via `python -m pyhabitat` or `import pyhabitat; pyhabitat.main()` in the REPL. |
+| `main()` | Prints a comprehensive environment report with sections: Interpreter Checks (sys.executable), Current Environment Check (sys.argv[0]), Current Build Checks (sys attributes), Operating System Checks (platform.system()), and Capability Checks. Run via `python -m pyhabitat` or `import pyhabitat; pyhabitat.main()` in the REPL. |
 
 </details>
 
@@ -114,7 +115,7 @@ Key Question: "What could I do next?"
 
 The module exposes all detection functions directly for easy access.
 
-### 0\.Example of PyHabitat in Action Use
+### 0\.Example of PyHabitat in Action
 
 The `pipeline-eds` package uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
 
@@ -150,7 +151,7 @@ if is_python_script():
 if on_termux(): 
 	# Expected cases: 
 	#- pkg install python-numpy python-cryptography
-	#- Avoiding matplotlib unless the user explicitly confirms that termux_has_gui=False in matplotlib_is_available_for_gui_plotting(termux_has_gui=False).
+	#- Avoiding matplotlib unless the user explicitly sets termux_has_gui=True in matplotlib_is_available_for_gui_plotting().
 	#- Auto-selection of 'termux-open-url' and 'xdg-open' in logic.
 	#- Installation on the system, like orchestrating the construction of Termux Widget entries in ~/.shortcuts.
     print("Running in the Termux environment on Android.")
