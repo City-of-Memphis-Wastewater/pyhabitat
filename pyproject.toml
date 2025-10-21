@@ -1,12 +1,12 @@
 # pyproject.toml
 
 [build-system]
-requires = ["setuptools>=61.0.0"]
+requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyhabitat"
-version = "1.0.17"
+version = "1.0.18"
 #dynamic = ["version"] # 
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },

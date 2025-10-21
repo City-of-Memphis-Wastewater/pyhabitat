@@ -289,10 +289,12 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
         # This is the most reliable way to determine if the executable is a native binary wrapper (like PyInstaller's).
         with open(exec_path, 'rb') as f:
             magic_bytes = f.read(4)
-        
+        if debug:
+            logging.debug(f"Magic bytes: {magic_bytes}")
         return magic_bytes == b'\x7fELF'
     except Exception:
-        # Handle exceptions like PermissionError, IsADirectoryError, etc.
+        if debug:
+            logging.debug("False (Exception during file check)")
         return False
     
 def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
@@ -305,10 +307,16 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     
     # Check if the extension is PYZ
     if not str(exec_path).endswith(".pyz"):
+        if debug:
+            logging.debug("False (Not a .pyz file)")
         return False
-    
+
     if not _check_if_zip(exec_path):
+        if debug:
+            logging.debug("False (Not a valid ZIP file)")
         return False
+
+    return True
 
 def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """
@@ -327,17 +335,16 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
         # start with the two-byte header b'MZ' (for Mark Zbikowski).
         with open(exec_path, 'rb') as f:
             magic_bytes = f.read(2)
-
+        if debug:
+            logging.debug(f"Magic bytes: {magic_bytes}")
         is_pe = magic_bytes == b'MZ'
         
-        if debug: 
-            print(f"DEBUG: Magic bytes: {magic_bytes}")
-            print(f"DEBUG: {is_pe} (Non-pipx check)")
             
         return is_pe
         
     except Exception as e:
-        if debug: print(f"DEBUG: Error during file check: {e}")
+        if debug: 
+            logging.debug(f"False (Error during file check: {e})")
         # Handle exceptions like PermissionError, IsADirectoryError, etc.
         return False
     
@@ -367,11 +374,13 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
         is_macho = magic_bytes in MACHO_MAGIC
         
         if debug: 
-            print(f"DEBUG: is_macos_executable: {is_macho} (Non-pipx check)")
+            logging.debug(f"Magic bytes: {magic_bytes}")
             
         return is_macho
         
     except Exception:
+        if debug:
+            logging.debug("False (Exception during file check)")
         return False
     
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
@@ -381,53 +390,70 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
         return False
         
     try:
-        # Helper for case-insensitivity on Windows
-        def normalize_path(p: Path) -> str:
-            return str(p).lower()
-
-        # This is the path to the interpreter running the script (e.g., venv/bin/python)
-        # In a pipx-managed execution, this is the venv python.
         interpreter_path = Path(sys.executable).resolve()
         pipx_bin_path, pipx_venv_base_path = _get_pipx_paths()
         # Normalize paths for comparison
-        norm_exec_path = normalize_path(exec_path)
-        norm_interp_path = normalize_path(interpreter_path)
+        norm_exec_path = str(exec_path).lower()
+        norm_interp_path = str(interpreter_path).lower()
 
         if debug:
-            # --- DEBUGGING OUTPUT ---
-            print(f"DEBUG: EXEC_PATH:      {exec_path}")
-            print(f"DEBUG: INTERP_PATH:    {interpreter_path}")
-            print(f"DEBUG: PIPX_BIN_PATH:  {pipx_bin_path}")
-            print(f"DEBUG: PIPX_VENV_BASE: {pipx_venv_base_path}")
-            print(f"DEBUG: Check B result: {normalize_path(interpreter_path).startswith(normalize_path(pipx_venv_base_path))}")
-        # ------------------------
-        
-        # 1. Signature Check (Most Robust): Look for the unique 'pipx/venvs' string.
-        # This is a strong check for both the executable path (your discovery) 
-        # and the interpreter path (canonical venv location).
+            logging.debug(f"EXEC_PATH: {exec_path}")
+            logging.debug(f"INTERP_PATH: {interpreter_path}")
+            logging.debug(f"PIPX_BIN_PATH: {pipx_bin_path}")
+            logging.debug(f"PIPX_VENV_BASE: {pipx_venv_base_path}")
+            logging.debug(f"Check B result: {norm_interp_path.startswith(str(pipx_venv_base_path).lower())}")
+
         if "pipx/venvs" in norm_exec_path or "pipx/venvs" in norm_interp_path:
-            if debug: print("is_pipx: True (Signature Check)")
+            if debug:
+                logging.debug("True (Signature Check)")
             return True
 
-        # 2. Targeted Venv Check: The interpreter's path starts with the PIPX venv base.
-        # This is a canonical check if the signature check is somehow missed.
-        if norm_interp_path.startswith(normalize_path(pipx_venv_base_path)):
-            if debug: print("is_pipx: True (Interpreter Base Check)")
+        if norm_interp_path.startswith(str(pipx_venv_base_path).lower()):
+            if debug:
+                logging.debug("True (Interpreter Base Check)")
             return True
-        
-        # 3. Targeted Executable Check: The executable's resolved path starts with the PIPX venv base.
-        # This is your key Termux discovery, confirming the shim resolves into the venv.
-        if norm_exec_path.startswith(normalize_path(pipx_venv_base_path)):
-             if debug: print("is_pipx: True (Executable Base Check)")
-             return True
 
-        if debug: print("is_pipx: False")
+        if norm_exec_path.startswith(str(pipx_venv_base_path).lower()):
+            if debug:
+                logging.debug("True (Executable Base Check)")
+            return True
+
+        if debug:
+            logging.debug("False")
         return False
-
     except Exception:
-        # Fallback for unexpected path errors
+        if debug:
+            logging.debug("False (Exception during pipx check)")
         return False
+        if debug:
+            logging.debug(f"EXEC_PATH: {exec_path}")
+            logging.debug(f"INTERP_PATH: {interpreter_path}")
+            logging.debug(f"PIPX_BIN_PATH: {pipx_bin_path}")
+            logging.debug(f"PIPX_VENV_BASE: {pipx_venv_base_path}")
+            logging.debug(f"Check B result: {norm_interp_path.startswith(str(pipx_venv_base_path).lower())}")
 
+        if "pipx/venvs" in norm_exec_path or "pipx/venvs" in norm_interp_path:
+            if debug:
+                logging.debug("True (Signature Check)")
+            return True
+
+        if norm_interp_path.startswith(str(pipx_venv_base_path).lower()):
+            if debug:
+                logging.debug("True (Interpreter Base Check)")
+            return True
+
+        if norm_exec_path.startswith(str(pipx_venv_base_path).lower()):
+            if debug:
+                logging.debug("True (Executable Base Check)")
+            return True
+
+        if debug:
+            logging.debug("False")
+        return False
+    except Exception:
+        if debug:
+            logging.debug("False (Exception during pipx check)")
+        return False
 def is_python_script(path: Path | str | None = None, debug: bool = False) -> bool:
     """
     Checks if the specified path or running script is a Python source file (.py).
@@ -442,7 +468,7 @@ def is_python_script(path: Path | str | None = None, debug: bool = False) -> boo
     Returns:
         bool: True if the specified or default path is a Python source file (.py); False otherwise.
     """
-    exec_path, is_valid = _check_executable_path(exec_path, debug, check_pipx=False)
+    exec_path, is_valid = _check_executable_path(path, debug, check_pipx=False)
     if not is_valid:
         return False
     return exec_path.suffix.lower() == '.py'    
@@ -643,27 +669,30 @@ def main(path=None, debug=False):
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
     logging.debug(f"Inspecting path: {path or sys.argv[0]}")
+    
     print("PyHabitat Environment Report")
     print("===========================")
     print("\nInterpreter Checks // Based on sys.executable()")
     print("-----------------------------")
     print(f"interp_path(): {interp_path()}")
-    print(f"is_elf(interp_path()): {is_elf(interp_path())}")
-    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path())}")
-    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path())}")
-    print(f"is_pyz(interp_path()): {is_pyz(interp_path())}")
-    print(f"is_pipx(interp_path()): {is_pipx(interp_path())}")
-    print(f"is_python_script(interp_path()): {is_python_script(interp_path())}")
+    print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug)}")
+    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path(), debug=debug)}")
+    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path(), debug=debug)}")
+    print(f"is_pyz(interp_path()): {is_pyz(interp_path(), debug=debug)}")
+    print(f"is_pipx(interp_path()): {is_pipx(interp_path(), debug=debug)}")
+    print(f"is_python_script(interp_path()): {is_python_script(interp_path(), debug=debug)}")
     print("\nCurrent Environment Check // Based on sys.argv[0]")
     print("-----------------------------")
-    script_path = Path(path or sys.argv[0]).resolve() if (path or sys.argv[0]) else None
+    script_path = None
+    if path or (sys.argv[0] and sys.argv[0] != '-c'):
+        script_path = Path(path or sys.argv[0]).resolve()
     logging.debug(f"Script path resolved: {script_path}")
-    print(f"is_elf(): {is_elf(script_path)}")
-    print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path)}")
-    print(f"is_macos_executable(): {is_macos_executable(script_path)}")
-    print(f"is_pyz(): {is_pyz(script_path)}")
-    print(f"is_pipx(): {is_pipx(script_path)}")
-    print(f"is_python_script(): {is_python_script(script_path)}")
+    print(f"is_elf(): {is_elf(script_path, debug=debug)}")
+    print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path, debug=debug)}")
+    print(f"is_macos_executable(): {is_macos_executable(script_path, debug=debug)}")
+    print(f"is_pyz(): {is_pyz(script_path, debug=debug)}")
+    print(f"is_pipx(): {is_pipx(script_path, debug=debug)}")
+    print(f"is_python_script(): {is_python_script(script_path, debug=debug)}")
     print("\nCurrent Build Checks // Based on hasattr(sys,..) and getattr(sys,..)")
     print("------------------------------")
     print(f"in_repl(): {in_repl()}")
