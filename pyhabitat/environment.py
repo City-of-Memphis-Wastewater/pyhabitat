@@ -255,6 +255,8 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     
     if exec_path is None:    
         exec_path = Path(sys.argv[0]).resolve()
+    else:
+        exec_path = Path(path).resolve()
     if debug:
         print(f"exec_path = {exec_path}")
     if is_pipx():
@@ -262,8 +264,8 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     
     # Check if the file exists and is readable
     if not exec_path.is_file():
-        return False
-        
+        if debug: print("DEBUG:False (Not a file)")
+        return False    
     try:
         # Check the magic number: The first four bytes of an ELF file are 0x7f, 'E', 'L', 'F' (b'\x7fELF').
         # This is the most reliable way to determine if the executable is a native binary wrapper (like PyInstaller's).
@@ -280,6 +282,13 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
     if exec_path is None:    
         exec_path = Path(sys.argv[0]).resolve()
+    else:
+        exec_path = Path(path).resolve()
+
+    if not exec_path.is_file():
+        if debug: print("DEBUG:False (Not a file)")
+        return False
+
     if debug:
         print(f"exec_path = {exec_path}")
     
@@ -304,18 +313,20 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     # 1. Determine execution path
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
+    else:
+        exec_path = Path(path).resolve()
 
     if debug:
         print(f"DEBUG: Checking executable path: {exec_path}")
 
     # 2. Exclude pipx environments immediately
     if is_pipx():
-        if debug: print("DEBUG: is_exe_non_pipx: False (is_pipx is True)")
+        if debug: print("DEBUG: False (is_pipx is True)")
         return False
 
     # 3. Perform file checks
     if not exec_path.is_file():
-        if debug: print("DEBUG: is_exe_non_pipx: False (Not a file)")
+        if debug: print("DEBUG:False (Not a file)")
         return False
 
     try:
@@ -328,12 +339,12 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
         
         if debug: 
             print(f"DEBUG: Magic bytes: {magic_bytes}")
-            print(f"DEBUG: is_exe_non_pipx: {is_pe} (Non-pipx check)")
+            print(f"DEBUG: {is_pe} (Non-pipx check)")
             
         return is_pe
         
     except Exception as e:
-        if debug: print(f"DEBUG: is_exe_non_pipx: Error during file check: {e}")
+        if debug: print(f"DEBUG: Error during file check: {e}")
         # Handle exceptions like PermissionError, IsADirectoryError, etc.
         return False
     
@@ -344,14 +355,17 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
     """
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
+    else:
+        exec_path = Path(path).resolve()
 
     if is_pipx():
         if debug: print("DEBUG: is_macos_executable: False (is_pipx is True)")
         return False
         
     if not exec_path.is_file():
+        if debug: print("DEBUG:False (Not a file)")
         return False
-
+        
     try:
         # Check the magic number: Mach-O binaries start with specific 4-byte headers.
         # Common ones are: b'\xfe\xed\xfa\xce' (32-bit) or b'\xfe\xed\xfa\xcf' (64-bit)
@@ -380,7 +394,12 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve()
-        
+    else:
+        exec_path = Path(path).resolve()
+
+    if not exec_path.is_file():
+        if debug: print("DEBUG:False (Not a file)")
+        return False
     try:
         # Helper for case-insensitivity on Windows
         def normalize_path(p: Path) -> str:
@@ -493,6 +512,9 @@ def edit_textfile(path: Path | str | None = None) -> None:
     """
     if path is None:
         return
+    
+    path = Path(path).resolve()
+
     try:
         if on_windows():
             os.startfile(path)
@@ -525,6 +547,9 @@ def edit_textfile(path: Path | str | None = None) -> None:
     
 def _run_dos2unix(path: Path | str | None = None):
     """Attempt to run dos2unix, failing silently if not installed."""
+    
+    path = Path(path).resolve()
+
     try:
         # We rely on shutil.which not being needed, as this is a robust built-in utility on most targets
         # The command won't raise an exception unless the process itself fails, not just if the utility isn't found.
@@ -564,10 +589,14 @@ def _get_pipx_paths():
     return pipx_bin_path, pipx_venv_base.resolve()
 
 
-def _check_if_zip(file_path: str | Path) -> bool:
+def _check_if_zip(path: Path | str) -> bool:
     """Checks if the file at the given path is a valid ZIP archive."""
+    if path is None:
+        return
+    path = Path(path).resolve()
+
     try:
-        return zipfile.is_zipfile(file_path)
+        return zipfile.is_zipfile(path)
     except Exception:
         # Handle cases where the path might be invalid, or other unexpected errors
         return False
