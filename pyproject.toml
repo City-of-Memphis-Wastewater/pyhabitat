@@ -28,7 +28,7 @@ pyhabitat = "pyhabitat.cli:run_cli"
 
 [tool.setuptools.packages.find]
 where = ["."]  
-include = ["pyhabitat"] # Only include the main package
+include = ["pyhabitat*"] 
 
 [tool.setuptools_scm] 
 # This tells setuptools_scm to look at your git history/tags for the version

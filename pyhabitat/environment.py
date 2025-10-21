@@ -46,6 +46,7 @@ _TKINTER_AVAILABILITY: bool | None = None
 _MATPLOTLIB_EXPORT_AVAILABILITY: bool | None = None
 _MATPLOTLIB_WINDOWED_AVAILABILITY: bool | None = None
 
+
 # --- GUI CHECKS ---
 def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
     """Check if Matplotlib is available AND can use a GUI backend for a popup window."""
@@ -279,22 +280,10 @@ def as_frozen():
 def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a standalone PyInstaller-built ELF binary."""
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    
-    if exec_path is None:    
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(exec_path).resolve()
-
-    if debug:
-        print(f"DEBUG: Checking executable path: {exec_path}")
-        
-    if is_pipx():
+    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    if not is_valid:
         return False
     
-    # Check if the file exists and is readable
-    if not exec_path.is_file():
-        if debug: print("DEBUG:False (Not a file)")
-        return False    
     try:
         # Check the magic number: The first four bytes of an ELF file are 0x7f, 'E', 'L', 'F' (b'\x7fELF').
         # This is the most reliable way to determine if the executable is a native binary wrapper (like PyInstaller's).
@@ -308,20 +297,10 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     
 def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a PYZ zipapp ."""
-    # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    if exec_path is None:    
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(exec_path).resolve()
 
-    if debug:
-        print(f"DEBUG: Checking executable path: {exec_path}")
-        
-    if not exec_path.is_file():
-        if debug: print("DEBUG:False (Not a file)")
-        return False
-    
-    if is_pipx():
+    # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
+    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    if not is_valid:
         return False
     
     # Check if the extension is PYZ
@@ -339,23 +318,8 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     Windows Portable Executables include .exe, .dll, and other binaries.
     The standard way to check for a PE is to look for the MZ magic number at the very beginning of the file.
     """
-    # 1. Determine execution path
-    if exec_path is None:
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(exec_path).resolve()
-
-    if debug:
-        print(f"DEBUG: Checking executable path: {exec_path}")
-
-    # 2. Exclude pipx environments immediately
-    if is_pipx():
-        if debug: print("DEBUG: False (is_pipx is True)")
-        return False
-
-    # 3. Perform file checks
-    if not exec_path.is_file():
-        if debug: print("DEBUG:False (Not a file)")
+    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    if not is_valid:
         return False
 
     try:
@@ -382,19 +346,8 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
     and explicitly excludes pipx-managed environments.
     """
-    if exec_path is None:
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(exec_path).resolve()
-    if debug:
-        print(f"DEBUG: Checking executable path: {exec_path}")
-        
-    if is_pipx():
-        if debug: print("DEBUG: is_macos_executable: False (is_pipx is True)")
-        return False
-        
-    if not exec_path.is_file():
-        if debug: print("DEBUG:False (Not a file)")
+    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    if not is_valid:
         return False
         
     try:
@@ -423,16 +376,10 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
     
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
-    if exec_path is None:
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(exec_path).resolve()
-    if debug:
-        print(f"DEBUG: Checking executable path: {exec_path}")
-        
-    if not exec_path.is_file():
-        if debug: print("DEBUG:False (Not a file)")
+    exec_path, is_valid = _check_executable_path(exec_path, debug, check_pipx=False)
+    if not is_valid:
         return False
+        
     try:
         # Helper for case-insensitivity on Windows
         def normalize_path(p: Path) -> str:
@@ -495,13 +442,8 @@ def is_python_script(path: Path | str | None = None, debug: bool = False) -> boo
     Returns:
         bool: True if the specified or default path is a Python source file (.py); False otherwise.
     """
-    if path is None:
-        exec_path = Path(sys.argv[0]).resolve()
-    else:
-        exec_path = Path(path).resolve()
-    if debug:
-        print(f"Checking Python script for path: {exec_path}")
-    if not exec_path.is_file():
+    exec_path, is_valid = _check_executable_path(exec_path, debug, check_pipx=False)
+    if not is_valid:
         return False
     return exec_path.suffix.lower() == '.py'    
 
@@ -603,7 +545,8 @@ def edit_textfile(path: Path | str | None = None) -> None:
     """Why Not Use check=True on Termux:
     The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
     """
-    
+
+# --- Helper Functions ---    
 def _run_dos2unix(path: Path | str | None = None):
     """Attempt to run dos2unix, failing silently if not installed."""
     
@@ -659,7 +602,33 @@ def _check_if_zip(path: Path | str | None) -> bool:
     except Exception:
         # Handle cases where the path might be invalid, or other unexpected errors
         return False
-        
+
+def _check_executable_path(exec_path: Path | str | None, debug: bool = False, check_pipx: bool = True) -> tuple[Path | None, bool]:
+    """Helper function to resolve executable path and perform common checks."""
+    if exec_path is None:
+        exec_path = Path(sys.argv[0]).resolve() if sys.argv[0] and sys.argv[0] != '-c' else None
+    else:
+        exec_path = Path(exec_path).resolve()
+
+    if debug:
+        logging.debug(f"Checking executable path: {exec_path}")
+
+    if exec_path is None:
+        if debug:
+            logging.debug("False (No valid path)")
+        return None, False
+
+    if check_pipx and is_pipx(exec_path, debug):
+        if debug:
+            logging.debug("False (is_pipx is True)")
+        return exec_path, False
+
+    if not exec_path.is_file():
+        if debug:
+            logging.debug("False (Not a file)")
+        return exec_path, False
+
+    return exec_path, True        
 
 # --- Main Function for report and CLI compatibility ---
 
@@ -672,6 +641,7 @@ def main(path=None, debug=False):
     """
     if debug:
         logging.basicConfig(level=logging.DEBUG)
+        logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
     logging.debug(f"Inspecting path: {path or sys.argv[0]}")
     print("PyHabitat Environment Report")
     print("===========================")
