@@ -256,7 +256,6 @@ def on_wsl():
                     return True
         except Exception:
             pass
-
     return False
 
 def on_pydroid():
