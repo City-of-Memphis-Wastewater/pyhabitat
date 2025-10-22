@@ -724,8 +724,9 @@ def main(path=None, debug=False):
     if debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
-    print("PyHabitat Environment Report")
-    print("===========================")
+    print("================================")
+    print("======= PyHabitat Report =======")
+    print("================================")
     print("\nCurrent Build Checks ")
     print("# // Based on hasattr(sys,..) and getattr(sys,..)")
     print("------------------------------")
@@ -813,3 +814,8 @@ def main(path=None, debug=False):
         print("    is_pipx(), ") 
         print("    is_python_script(), ")
         print("All False, script_path is None.")
+    print("")
+    print("=================================")
+    print("=== PyHabitat Report Complete ===")
+    print("=================================")
+    print("")
