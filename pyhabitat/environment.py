@@ -798,7 +798,7 @@ def main(path=None, debug=False):
             # Supress redundant prints explicity using suppress_debug=True, 
             # so that only unique information gets printed for each check, 
             # even when more than one use the same functions which include debugging logs.
-            p#rint(f"_check_executable_path(script_path, debug=True)")
+            #print(f"_check_executable_path(script_path, debug=True)")
             _check_executable_path(script_path, debug=debug)
             #print(f"read_magic_bites(script_path, debug=True)")
             read_magic_bytes(script_path, debug=debug)
