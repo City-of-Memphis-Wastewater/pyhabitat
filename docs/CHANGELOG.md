@@ -6,6 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.21] – 2025-10-22
+
+### Fixed:
+- Fix erroneous comment character in environment.py. 
+
+### Added:
+- Add build phase to publish.yaml for assurance.
+
+---
+
 ## [1.0.20] – 2025-10-22
 
 ### Fixed
