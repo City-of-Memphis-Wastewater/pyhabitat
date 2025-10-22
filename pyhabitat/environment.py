@@ -75,7 +75,8 @@ def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
         # Force the common GUI backend. At this point, we know tkinter is *available*.
         # # 'TkAgg' is often the most reliable cross-platform test.
         # 'TkAgg' != 'Agg'. The Agg backend is for non-gui image export. 
-        matplotlib.use('TkAgg', force=True)
+        if matplotlib.get_backend().lower() != 'tkagg':
+            matplotlib.use('TkAgg', force=True)
         import matplotlib.pyplot as plt
         # A simple test call to ensure the backend initializes
         # This final test catches any edge cases where tkinter is present but 
@@ -430,75 +431,52 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool = True) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
     exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug, check_pipx=False)
+    # check_pipx arg should be false when calling from inside of is_pipx() to avoid recursion error
+    # For safety, _check_executable_path() guards against this.
     if not is_valid:
         return False
         
     try:
         interpreter_path = Path(sys.executable).resolve()
         pipx_bin_path, pipx_venv_base_path = _get_pipx_paths()
+
         # Normalize paths for comparison
         norm_exec_path = str(exec_path).lower()
         norm_interp_path = str(interpreter_path).lower()
+        pipx_venv_base_str = str(pipx_venv_base_path).lower()
 
         if debug:
             logging.debug(f"EXEC_PATH: {exec_path}")
             logging.debug(f"INTERP_PATH: {interpreter_path}")
             logging.debug(f"PIPX_BIN_PATH: {pipx_bin_path}")
             logging.debug(f"PIPX_VENV_BASE: {pipx_venv_base_path}")
-            is_in_pipx_venv_base = norm_interp_path.startswith(str(pipx_venv_base_path).lower())
+            is_in_pipx_venv_base = norm_interp_path.startswith(pipx_venv_base_str)
             logging.debug(f"Interpreter path resides somewhere within the pipx venv base hierarchy: {is_in_pipx_venv_base}")
             logging.debug(
                 f"This determines whether the current interpreter is managed by pipx: {is_in_pipx_venv_base}"
             )
         if "pipx/venvs" in norm_exec_path or "pipx/venvs" in norm_interp_path:
             if debug:
-                logging.debug("True (Signature Check)")
+                logging.debug("is_pipx() is True // Signature Check")
             return True
 
-        if norm_interp_path.startswith(str(pipx_venv_base_path).lower()):
+        if norm_interp_path.startswith(pipx_venv_base_str):
             if debug:
-                logging.debug("True (Interpreter Base Check)")
+                logging.debug("is_pipx() is True // Interpreter Base Check")
             return True
 
-        if norm_exec_path.startswith(str(pipx_venv_base_path).lower()):
+        if norm_exec_path.startswith(pipx_venv_base_str):
             if debug:
-                logging.debug("True (Executable Base Check)")
+                logging.debug("is_pipx() is True // Executable Base Check")
             return True
 
+        if debug:
+            logging.debug("is_pipx() is False")
         return False
+
     except Exception:
         if debug:
             logging.debug("False (Exception during pipx check)")
-        return False
-        if debug:
-            logging.debug(f"EXEC_PATH: {exec_path}")
-            logging.debug(f"INTERP_PATH: {interpreter_path}")
-            logging.debug(f"PIPX_BIN_PATH: {pipx_bin_path}")
-            logging.debug(f"PIPX_VENV_BASE: {pipx_venv_base_path}")
-            logging.debug(f"Check B result: {norm_interp_path.startswith(str(pipx_venv_base_path).lower())}")
-
-        if "pipx/venvs" in norm_exec_path or "pipx/venvs" in norm_interp_path:
-            if debug:
-                logging.debug("True (Signature Check)")
-            return True
-
-        if norm_interp_path.startswith(str(pipx_venv_base_path).lower()):
-            if debug:
-                logging.debug("True (Interpreter Base Check)")
-            return True
-
-        if norm_exec_path.startswith(str(pipx_venv_base_path).lower()):
-            if debug:
-                logging.debug("True (Executable Base Check)")
-            return True
-
-        if debug:
-            logging.debug("False")
-        return False
-    except Exception:
-        if debug:
-            logging.debug("False (Exception during pipx check)")
-        return False
     
 def is_python_script(path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
@@ -577,8 +555,8 @@ def edit_textfile(path: Path | str | None = None) -> None:
 #def open_text_file_for_editing(path): # defunct function name as of 1.0.16
     """
     Opens a file with the environment's default application (Windows, Linux, macOS)
-    or a guaranteed console editor (nano) in constrained environments (Termux, iSH)
-    after ensuring line-ending compatibility.
+    or a guaranteed console editor (nano) in constrained environments (Termux, iSH).
+    Ensures line-ending compatibility where possible.
 
     This function is known to fail on PyDroid3, where on_linus() is True but xdg-open 
     is not available.
@@ -593,28 +571,28 @@ def edit_textfile(path: Path | str | None = None) -> None:
             os.startfile(path)
         elif on_termux():
     	    # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
-    	    subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    	    _run_dos2unix(path)
-    	    subprocess.run(['nano', path])
+            subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            _run_dos2unix(path)
+            subprocess.run(['nano', str(path)])
         elif on_ish_alpine():
             # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
-    	    subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    	    subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    	    _run_dos2unix(path)
-    	    subprocess.run(['nano', path])
+            subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            _run_dos2unix(path)
+            subprocess.run(['nano', str(path)])
     	# --- Standard Unix-like Systems (Conversion + Default App) ---
         elif on_linux():
-    	    _run_dos2unix(path) # Safety conversion for user-defined console apps
-    	    subprocess.run(['xdg-open', path])
+            _run_dos2unix(path) # Safety conversion for user-defined console apps
+            subprocess.run(['xdg-open', str(path)])
         elif on_apple():
-    	    _run_dos2unix(path) # Safety conversion for user-defined console apps
-    	    subprocess.run(['open', path])
+            _run_dos2unix(path) # Safety conversion for user-defined console apps
+            subprocess.run(['open', str(path)])
         else:
-    	    print("Unsupported operating system.")
+            print("Unsupported operating system.")
     except Exception as e:
-	    print("The file could not be opened for editing in the current environment. Known failure points: Pydroid3")
-
-    """Why Not Use check=True on Termux:
+        print("The file could not be opened for editing in the current environment: {e}")
+    """
+    Why Not Use check=True on Termux:
     The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
     """
 
@@ -636,8 +614,10 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
     
-def read_magic_bytes(path: str, length: int = 4, debug: bool = False) -> bytes:
-    """Return the first few bytes of a file for type detection."""
+def read_magic_bytes(path: str, length: int = 4, debug: bool = False) -> bytes | None:
+    """Return the first few bytes of a file for type detection.
+    Returns None if the file cannot be read or does not exist.
+    """
     try:
         with open(path, "rb") as f:
             magic = f.read(length)
@@ -647,7 +627,9 @@ def read_magic_bytes(path: str, length: int = 4, debug: bool = False) -> bytes:
     except Exception as e:
         if debug:
             logging.debug(f"False (Error during file check: {e})")
-        return False
+        #return False # not typesafe
+        #return b'' # could be misunderstood as what was found
+        return None # no way to conflate that this was a legitimate error
     
 def _get_pipx_paths():
     """
@@ -688,8 +670,19 @@ def _check_if_zip(path: Path | str | None) -> bool:
         # Handle cases where the path might be invalid, or other unexpected errors
         return False
 
-def _check_executable_path(exec_path: Path | str | None, debug: bool = False, check_pipx: bool = True) -> tuple[Path | None, bool]:
-    """Helper function to resolve executable path and perform common checks."""
+def _check_executable_path(exec_path: Path | str | None, 
+                           debug: bool = False, 
+                           check_pipx: bool = True
+) -> tuple[Path | None, bool]: #compensate with __future__, may cause type checker issues
+    """
+    Helper function to resolve an executable path and perform common checks.
+
+    Returns:
+        tuple[Path | None, bool]: (Resolved path, is_valid)
+        - Path: The resolved Path object, or None if invalid
+        - bool: Whether the path should be considered valid for subsequent checks
+    """
+    # 1. Determine path
     if exec_path is None:
         exec_path = Path(sys.argv[0]).resolve() if sys.argv[0] and sys.argv[0] != '-c' else None
     else:
@@ -698,22 +691,31 @@ def _check_executable_path(exec_path: Path | str | None, debug: bool = False, ch
     if debug:
         logging.debug(f"Checking executable path: {exec_path}")
 
+    # 2. Handle missing path
     if exec_path is None:
         if debug:
-            logging.debug("False (No valid path)")
+            logging.debug("_check_executable_path() returns (None, False) // exec_path is None")
         return None, False
-
-    if check_pipx and is_pipx(exec_path, debug):
+    
+    # 3. Ensure path actually exists and is a file
+    if not exec_path.is_file(): 
         if debug:
-            logging.debug("False (is_pipx is True)")
+            logging.debug("_check_executable_path() returns (exec_path, False) // exec_path is not a file")
         return exec_path, False
 
-    if not exec_path.is_file():
-        if debug:
-            logging.debug("False (Not a file)")
-        return exec_path, False
+    # 4. Avoid recursive pipx check loops
+    # This guard ensures we don’t recursively call _check_executable_path()
+    # via is_pipx() -> _check_executable_path() -> is_pipx() -> ...
+    if check_pipx:
+        caller = sys._getframe(1).f_code.co_name
+        if caller != "is_pipx":
+            if is_pipx(exec_path, debug):
+                if debug:
+                    logging.debug("_check_executable_path() returns (exec_path, False) // is_pipx(exec_path) is True")
+                return exec_path, False
 
-    return exec_path, True        
+    return exec_path, True       
+ 
 
 # --- Main Function for report and CLI compatibility ---
 
@@ -822,3 +824,6 @@ def main(path=None, debug=False):
     print("=== PyHabitat Report Complete ===")
     print("=================================")
     print("")
+
+if __name__ == "__main__": 
+    main(debug=True)

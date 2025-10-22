@@ -10,9 +10,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ### Fixed:
 - Fix erroneous comment character in environment.py. 
-
+- Redundant logic hanging on after return in is_pipx().
+- Improved is_pipx() print statements to be more aesthetic and useful.
+- Improve string handling in is_pipx() by added variable pipx_venv_base_str.
+- Return None rther than False for no match from read_magic_bytes. This is now reflected in the output type hinting. 
 ### Added:
 - Add build phase to publish.yaml for assurance.
+- Add caller checking as a guard in _check_executable_path() to avoid recusrive loops with is_pipx().
 
 ---
 
