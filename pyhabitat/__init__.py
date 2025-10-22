@@ -1,5 +1,5 @@
 # pyhabitat/__init__.py
-
+from .utils import get_version
 from .environment import (
     matplotlib_is_available_for_gui_plotting,
     matplotlib_is_available_for_headless_image_export,
@@ -58,3 +58,5 @@ __all__ = [
     'interp_path',
     'main',
 ]
+
+__version__ = get_version()

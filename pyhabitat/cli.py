@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 from pyhabitat.environment import main
-from importlib.metadata import version, PackageNotFoundError
+from pyhabitat.utils import get_version
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
@@ -31,13 +31,3 @@ def run_cli():
     args = parser.parse_args()
     main(path=Path(args.path) if args.path else None, debug=args.debug)
 
-
-def get_version() -> str:
-    """Retrieves the installed package version."""
-    try:
-        # The package name 'pyhabitat' must exactly match the name in your pyproject.toml
-        return version('pyhabitat')
-    except PackageNotFoundError:
-        # This occurs if the script is run directly from the source directory
-        # without being installed in editable mode, or if the package name is wrong.
-        return "Not Installed (Local Development or Incorrect Name)"
