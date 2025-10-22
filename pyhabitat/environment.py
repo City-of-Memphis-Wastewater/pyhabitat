@@ -226,18 +226,21 @@ def on_wsl():
     if "WSL_DISTRO_NAME" in os.environ or "WSL_INTEROP" in os.environ:
         return True
 
-    # --- Check kernel info for 'microsoft' string ---
+    # --- Check kernel info for 'microsoft' or 'wsl' string (Fallback) ---
     # False negative risk: 
     # Custom kernels, future Windows versions, or minimal WSL distros may omit 'microsoft' in strings.
     # False negative likelihood: Very low to moderate.
-
     try:
         with open("/proc/version") as f:
+            version_info = f.read().lower() 
             if "microsoft" in version_info or "wsl" in version_info:
                 return True
-    except FileNotFoundError:
+    except (IOError, OSError):
+        # This block would catch the PermissionError!
+        # It would simply 'pass' and move on.
         pass
-        
+
+
     # Check for WSL-specific mounts (fallback)
     """
     /proc/sys/kernel/osrelease
@@ -245,17 +248,17 @@ def on_wsl():
     Very reliable for detecting WSL1 and WSL2 unless someone compiled a custom kernel and removed the microsoft string.
     
     False negative risk: 
-    If /proc/version or /proc/sys/kernel/osrelease cannot be read due to permissions, a containerized WSL distro, or some sandboxed environment.
+    If /proc/sys/kernel/osrelease cannot be read due to permissions, a containerized WSL distro, or some sandboxed environment.
     # False negative likelihood: Very low.
     """
-    if Path("/proc/sys/kernel/osrelease").exists():
-        try:
-            with open("/proc/sys/kernel/osrelease") as f:
-                osrelease = f.read().lower()
-                if "microsoft" in osrelease:
-                    return True
-        except Exception:
-            pass
+    try:
+        with open("/proc/sys/kernel/osrelease") as f:
+            osrelease = f.read().lower()
+            if "microsoft" in osrelease:
+                return True
+    except (IOError, OSError):
+    # This block would catch the PermissionError, an FileNotFound
+        pass
     return False
 
 def on_pydroid():

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.0.20] – 2025-10-22
+
+### Fixed
+- Improve stability of on_wsl() - testing revealed permission denied issues for /prove/version/ which did not handle gracefully.
 
 ---
 
