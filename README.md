@@ -63,10 +63,12 @@ Key question: "What is this running on?"
 | `on_windows()` | Returns `True` on Windows. |
 | `on_apple()` | Returns `True` on macOS (Darwin). |
 | `on_linux()` | Returns `True` on Linux in general. |
+| `on_wsl()` | Returns `True` if running inside Windows Subsystem for Linux (WSL or WSL2). |
 | `on_termux()` | Returns `True` if running in the Termux Android environment. |
 | `on_freebsd()` | Returns `True` on FreeBSD. |
 | `on_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `on_android()` | Returns `True` on any Android-based Linux environment. |
+| `on_pydroid()` | Returns `True` Return True if running under the Pydroid 3 Android app (other versions untested). |
 | `in_repl()` | Returns `True` is the user is currently in a Python REPL; hasattr(sys,'ps1'). |
 
 ### Packaging and Build Checking

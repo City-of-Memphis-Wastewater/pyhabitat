@@ -213,22 +213,49 @@ def on_android() -> bool:
 
 
 def on_wsl():
-    """Return True if running inside Windows Subsystem for Linux (WSL/2)."""
+    """Return True if running inside Windows Subsystem for Linux (WSL or WSL2)."""
     # Must look like Linux, not Windows
     if platform.system() != "Linux":
         return False
 
-    # Check environment vars first (WSL2 adds these)
+     
+    # --- Check environment variables for WSL2 ---
+    # False negative risk: 
+    # Environment variables may be absent in older WSL1 installs.
+    # False negative likelihood: low.
     if "WSL_DISTRO_NAME" in os.environ or "WSL_INTEROP" in os.environ:
         return True
 
-    # Check kernel info for 'microsoft' string
+    # --- Check kernel info for 'microsoft' string ---
+    # False negative risk: 
+    # Custom kernels, future Windows versions, or minimal WSL distros may omit 'microsoft' in strings.
+    # False negative likelihood: Very low to moderate.
+
     try:
         with open("/proc/version") as f:
-            if "microsoft" in f.read().lower():
+            if "microsoft" in version_info or "wsl" in version_info:
                 return True
     except FileNotFoundError:
         pass
+        
+    # Check for WSL-specific mounts (fallback)
+    """
+    /proc/sys/kernel/osrelease
+    Purpose: Contains the kernel release string. In WSL, it usually contains "microsoft" (WSL2) or "microsoft-standard" (WSL1).
+    Very reliable for detecting WSL1 and WSL2 unless someone compiled a custom kernel and removed the microsoft string.
+    
+    False negative risk: 
+    If /proc/version or /proc/sys/kernel/osrelease cannot be read due to permissions, a containerized WSL distro, or some sandboxed environment.
+    # False negative likelihood: Very low.
+    """
+    if Path("/proc/sys/kernel/osrelease").exists():
+        try:
+            with open("/proc/sys/kernel/osrelease") as f:
+                osrelease = f.read().lower()
+                if "microsoft" in osrelease:
+                    return True
+        except Exception:
+            pass
 
     return False
 
