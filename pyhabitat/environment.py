@@ -22,8 +22,10 @@ __all__ = [
     'on_termux',
     'on_freebsd',
     'on_linux',
+    'on_pydroid',
     'on_android',
     'on_windows',
+    'on_wsl',
     'on_apple',
     'on_ish_alpine',
     'as_pyinstaller',
@@ -209,6 +211,38 @@ def on_android() -> bool:
         return False
     return "android" in platform.platform().lower()
 
+
+def on_wsl():
+    """Return True if running inside Windows Subsystem for Linux (WSL/2)."""
+    # Must look like Linux, not Windows
+    if platform.system() != "Linux":
+        return False
+
+    # Check environment vars first (WSL2 adds these)
+    if "WSL_DISTRO_NAME" in os.environ or "WSL_INTEROP" in os.environ:
+        return True
+
+    # Check kernel info for 'microsoft' string
+    try:
+        with open("/proc/version") as f:
+            if "microsoft" in f.read().lower():
+                return True
+    except FileNotFoundError:
+        pass
+
+    return False
+
+def on_pydroid():
+    """Return True if running under Pydroid 3 (Android app)."""
+    if not on_android():
+        return False
+
+    exe = (sys.executable or "").lower()
+    if "pydroid" in exe or "ru.iiec.pydroid3" in exe:
+        return True
+
+    return any("pydroid" in p.lower() for p in sys.path)
+
 def on_windows() -> bool:
     """Detect if running on Windows."""
     return platform.system() == 'Windows'
@@ -277,31 +311,29 @@ def as_frozen():
     return getattr(sys, 'frozen', False)
 
 # --- Binary Characteristic Checks ---
-def is_elf(exec_path: Path | str | None = None, debug: bool = False) -> bool:
+def is_elf(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a standalone PyInstaller-built ELF binary."""
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
     
     try:
         # Check the magic number: The first four bytes of an ELF file are 0x7f, 'E', 'L', 'F' (b'\x7fELF').
         # This is the most reliable way to determine if the executable is a native binary wrapper (like PyInstaller's).
-        with open(exec_path, 'rb') as f:
-            magic_bytes = f.read(4)
-        if debug:
-            logging.debug(f"Magic bytes: {magic_bytes}")
+        magic_bytes = read_magic_bytes(exec_path, 4, debug and not suppress_debug)
+
         return magic_bytes == b'\x7fELF'
     except Exception:
         if debug:
             logging.debug("False (Exception during file check)")
         return False
     
-def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
+def is_pyz(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a PYZ zipapp ."""
 
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
     
@@ -319,40 +351,34 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False) -> bool:
     return True
 
 
-def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
+def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
     Checks if the specified path or sys.argv[0] is a Windows Portable Executable (PE) binary.
     Windows Portable Executables include .exe, .dll, and other binaries.
     The standard way to check for a PE is to look for the MZ magic number at the very beginning of the file.
     """
-    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
-    try:
-        with open(exec_path, 'rb') as f:
-            magic_bytes = f.read(2)
-        if debug:
-            logging.debug(f"Magic bytes: {magic_bytes}")
-        return magic_bytes == b'MZ'
-    except Exception as e:
-        if debug:
-            logging.debug(f"False (Error during file check: {e})")
-        return False
-        
-def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False) -> bool:
+    magic_bytes = read_magic_bytes(exec_path, 2, debug and not suppress_debug)
+    result = magic_bytes.startswith(b"MZ")
+
+    return result
+    
+def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
     and explicitly excludes pipx-managed environments.
     """
-    exec_path, is_valid = _check_executable_path(exec_path, debug)
+    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
         
     try:
         # Check the magic number: Mach-O binaries start with specific 4-byte headers.
         # Common ones are: b'\xfe\xed\xfa\xce' (32-bit) or b'\xfe\xed\xfa\xcf' (64-bit)
-        with open(exec_path, 'rb') as f:
-            magic_bytes = f.read(4)
+        
+        magic_bytes = read_magic_bytes(exec_path, 4, debug and not suppress_debug)
 
         # Common Mach-O magic numbers (including their reversed-byte counterparts)
         MACHO_MAGIC = {
@@ -364,8 +390,6 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
         
         is_macho = magic_bytes in MACHO_MAGIC
         
-        if debug: 
-            logging.debug(f"Magic bytes: {magic_bytes}")
             
         return is_macho
         
@@ -374,9 +398,9 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
             logging.debug("False (Exception during file check)")
         return False
     
-def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
+def is_pipx(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool = True) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
-    exec_path, is_valid = _check_executable_path(exec_path, debug, check_pipx=False)
+    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug, check_pipx=False)
     if not is_valid:
         return False
         
@@ -392,8 +416,11 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
             logging.debug(f"INTERP_PATH: {interpreter_path}")
             logging.debug(f"PIPX_BIN_PATH: {pipx_bin_path}")
             logging.debug(f"PIPX_VENV_BASE: {pipx_venv_base_path}")
-            logging.debug(f"Check B result: {norm_interp_path.startswith(str(pipx_venv_base_path).lower())}")
-
+            is_in_pipx_venv_base = norm_interp_path.startswith(str(pipx_venv_base_path).lower())
+            logging.debug(f"Interpreter path resides somewhere within the pipx venv base hierarchy: {is_in_pipx_venv_base}")
+            logging.debug(
+                f"This determines whether the current interpreter is managed by pipx: {is_in_pipx_venv_base}"
+            )
         if "pipx/venvs" in norm_exec_path or "pipx/venvs" in norm_interp_path:
             if debug:
                 logging.debug("True (Signature Check)")
@@ -409,8 +436,6 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
                 logging.debug("True (Executable Base Check)")
             return True
 
-        if debug:
-            logging.debug("False")
         return False
     except Exception:
         if debug:
@@ -445,7 +470,8 @@ def is_pipx(exec_path: Path | str | None = None, debug: bool = False) -> bool:
         if debug:
             logging.debug("False (Exception during pipx check)")
         return False
-def is_python_script(path: Path | str | None = None, debug: bool = False) -> bool:
+    
+def is_python_script(path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
     Checks if the specified path or running script is a Python source file (.py).
 
@@ -459,14 +485,14 @@ def is_python_script(path: Path | str | None = None, debug: bool = False) -> boo
     Returns:
         bool: True if the specified or default path is a Python source file (.py); False otherwise.
     """
-    exec_path, is_valid = _check_executable_path(path, debug, check_pipx=False)
+    exec_path, is_valid = _check_executable_path(path, debug and not suppress_debug, check_pipx=False)
     if not is_valid:
         return False
     return exec_path.suffix.lower() == '.py'    
 
 # --- Interpreter Check ---
 
-def interp_path(print_path: bool = False) -> str:
+def interp_path(debug: bool = False) -> str:
     """
     Returns the path to the Python interpreter binary and optionally prints it.
 
@@ -482,8 +508,8 @@ def interp_path(print_path: bool = False) -> str:
         str: The path to the Python interpreter binary, or an empty string if unavailable.
     """
     path = sys.executable
-    if print_path:
-        print(f"Python interpreter path: {path}")
+    if debug:
+        logging.debug(f"Python interpreter path: {path}")
     return path
 
 # --- TTY Check ---
@@ -580,7 +606,20 @@ def _run_dos2unix(path: Path | str | None = None):
     except Exception:
         # Catch other subprocess errors (e.g. permission issues)
         pass
-        
+    
+def read_magic_bytes(path: str, length: int = 4, debug: bool = False) -> bytes:
+    """Return the first few bytes of a file for type detection."""
+    try:
+        with open(path, "rb") as f:
+            magic = f.read(length)
+        if debug:
+            logging.debug(f"Magic bytes: {magic!r}")
+        return magic
+    except Exception as e:
+        if debug:
+            logging.debug(f"False (Error during file check: {e})")
+        return False
+    
 def _get_pipx_paths():
     """
     Returns the configured/default pipx binary and home directories.
@@ -661,19 +700,23 @@ def main(path=None, debug=False):
         logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
     print("PyHabitat Environment Report")
     print("===========================")
-    print("\nCurrent Build Checks // Based on hasattr(sys,..) and getattr(sys,..)")
+    print("\nCurrent Build Checks ")
+    print("# // Based on hasattr(sys,..) and getattr(sys,..)")
     print("------------------------------")
     print(f"in_repl(): {in_repl()}")
     print(f"as_frozen(): {as_frozen()}")
     print(f"as_pyinstaller(): {as_pyinstaller()}")
-    print("\nOperating System Checks // Based on platform.system()")
+    print("\nOperating System Checks")
+    print("# // Based on platform.system()")
     print("------------------------------")
-    print(f"on_termux(): {on_termux()}")
     print(f"on_windows(): {on_windows()}")
     print(f"on_apple(): {on_apple()}")
     print(f"on_linux(): {on_linux()}")
-    print(f"on_ish_alpine(): {on_ish_alpine()}")
+    print(f"on_wsl(): {on_wsl()}")
     print(f"on_android(): {on_android()}")
+    print(f"on_termux(): {on_termux()}")
+    print(f"on_pydroid(): {on_pydroid()}")
+    print(f"on_ish_alpine(): {on_ish_alpine()}")
     print(f"on_freebsd(): {on_freebsd()}")
     print("\nCapability Checks")
     print("-------------------------")
@@ -682,16 +725,27 @@ def main(path=None, debug=False):
     print(f"matplotlib_is_available_for_headless_image_export(): {matplotlib_is_available_for_headless_image_export()}")
     print(f"web_browser_is_available(): {web_browser_is_available()}")
     print(f"interactive_terminal_is_available(): {interactive_terminal_is_available()}")
-    print("\nInterpreter Checks // Based on sys.executable()")
+    print("\nInterpreter Checks")
+    print("# // Based on sys.executable()")
     print("-----------------------------")
     print(f"interp_path(): {interp_path()}")
-    print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug)}")
-    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path(), debug=debug)}")
-    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path(), debug=debug)}")
-    print(f"is_pyz(interp_path()): {is_pyz(interp_path(), debug=debug)}")
-    print(f"is_pipx(interp_path()): {is_pipx(interp_path(), debug=debug)}")
-    print(f"is_python_script(interp_path()): {is_python_script(interp_path(), debug=debug)}")
-    print("\nCurrent Environment Check // Based on sys.argv[0]")
+    if debug:
+        # Do these debug prints once to avoid redundant prints
+        # Supress redundant prints explicity using suppress_debug=True, 
+        # so that only unique information gets printed for each check, 
+        # even when more than one use the same functions which include debugging logs.
+        #print(f"_check_executable_path(interp_path(), debug=True)")
+        _check_executable_path(interp_path(), debug=debug)    
+        #print(f"read_magic_bites(interp_path(), debug=True)")
+        read_magic_bytes(interp_path(), debug=debug)
+    print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_windows_portable_executable(interp_path()): {is_windows_portable_executable(interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_macos_executable(interp_path()): {is_macos_executable(interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_pyz(interp_path()): {is_pyz(interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_pipx(interp_path()): {is_pipx(interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_python_script(interp_path()): {is_python_script(interp_path(), debug=debug, suppress_debug=True)}")
+    print("\nCurrent Environment Check")
+    print("# // Based on sys.argv[0]")
     print("-----------------------------")
     inspect_path = path if path is not None else (None if sys.argv[0] == '-c' else sys.argv[0])
     logging.debug(f"Inspecting path: {inspect_path}")
@@ -706,13 +760,30 @@ def main(path=None, debug=False):
     script_path = None
     if path or (sys.argv[0] and sys.argv[0] != '-c'):
         script_path = Path(path or sys.argv[0]).resolve()
-    logging.debug(f"Script path resolved: {script_path}")
+    print(f"sys.argv[0] = {str(sys.argv[0])}")
     if script_path is not None:
-        print(f"is_elf(): {is_elf(script_path, debug=debug)}")
-        print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path, debug=debug)}")
-        print(f"is_macos_executable(): {is_macos_executable(script_path, debug=debug)}")
-        print(f"is_pyz(): {is_pyz(script_path, debug=debug)}")
-        print(f"is_pipx(): {is_pipx(script_path, debug=debug)}")
-        print(f"is_python_script(): {is_python_script(script_path, debug=debug)}")
+        print(f"script_path = {script_path}")
+        if debug:
+            # Do these debug prints once to avoid redundant prints
+            # Supress redundant prints explicity using suppress_debug=True, 
+            # so that only unique information gets printed for each check, 
+            # even when more than one use the same functions which include debugging logs.
+            p#rint(f"_check_executable_path(script_path, debug=True)")
+            _check_executable_path(script_path, debug=debug)
+            #print(f"read_magic_bites(script_path, debug=True)")
+            read_magic_bytes(script_path, debug=debug)
+        print(f"is_elf(): {is_elf(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_windows_portable_executable(): {is_windows_portable_executable(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_macos_executable(): {is_macos_executable(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_pyz(): {is_pyz(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_pipx(): {is_pipx(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_python_script(): {is_python_script(script_path, debug=debug, suppress_debug=True)}")
     else:
-        print("script_path is None")
+        print("Skipping: ") 
+        print("    is_elf(), ")
+        print("    is_windows_portable_executable(), ")
+        print("    is_macos_executable(), ")
+        print("    is_pyz(), ")
+        print("    is_pipx(), ") 
+        print("    is_python_script(), ")
+        print("All False, script_path is None.")

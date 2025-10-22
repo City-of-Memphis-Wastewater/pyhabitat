@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from . import main
+from pyhabitat.environment import main
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""

@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.0.19] – 2025-10-22
+
+### Added
+- `read_magic_bytes()`: Consolidates existing logic for inspecting executable magic bytes.
+- `suppress_debugging` argument in path/executable check functions (e.g., `is_elf()`, `is_pyz()`) to optionally suppress debug logging.
+- New debug messages for interpreter path checks, including its relation to the pipx virtual environment base.
+- **New Functions**: `on_wsl()` and `on_pydroid()`.
+- `main()` now reports `on_wsl()` and `on_pydroid()` status for improved environment visibility.
+
+### Changed
+- Consolidated repeated interpreter and path-based checks in `main()`.
+- Refined `is_pipx()` logging to clearly indicate whether the current interpreter resides somewhere within the pipx venv hierarchy (previously checked, now more transparent in debug output).
+- Clarified debug messages for interpreter hierarchy:
+  `Interpreter path resides somewhere within the pipx venv base hierarchy` — accurately reflects nested paths.
+
+### Fixed
+- Removed redundant debug outputs for magic bytes and path checks in `main()` when already logged.
+
 ---
 
 ## [1.0.18] - 2025-10-21
