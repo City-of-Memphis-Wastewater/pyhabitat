@@ -3,7 +3,6 @@ from pathlib import Path
 from environment import main
 from environment import * # to enable CLI --list
 from utils import get_version
-import __init__ as pyhabitat
 #import pyhabitat
 
 def run_cli():
@@ -36,11 +35,6 @@ def run_cli():
         action="store_true",
         help="List available callable functions in pyhabitat"
     )
-    #parser.add_argument(
-    #    "--verbose",
-    #    action="store_true",
-    #    help="List available callable functions in pyhabitat"
-    #)
                 
     parser.add_argument(
         "command",
@@ -51,15 +45,12 @@ def run_cli():
                 
     args = parser.parse_args()
 
+    #if callable(getattr(pyhabitat, name)) and not name.startswith("_"):
     if args.list:
-        for name in pyhabitat.__all__:
-            func = getattr(pyhabitat, name, None)
-            if callable(func):
+        for name, obj in globals().items():
+            if callable(obj) and not name.startswith("_"):
                 print(name)
-                if args.debug:
-                    doc = func.__doc__ or "(no description)"
-                    print(f"{name}: {doc}")
-        return
+                return
                   
     if args.command:
         func = getattr(pyhabitat, args.command, None)
