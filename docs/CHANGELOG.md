@@ -8,6 +8,19 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.0.26] - 2025-10-25
 
+### BREAKING:
+- All files from ./pyhabitat migrated to root.
+
+### Fixed:
+- PYZ file should now not fail because it tries to.import explicitly from the pyhabitat dir
+
+### Added:
+- build.sh isolates the zipapp build from the .git and .github dirs.
+
+---
+
+## [1.0.26] - 2025-10-25
+
 ### Fixed:
 - Exit with return after each CLI subcommand, to precent entire report from also printing and burying the single intent.
 ---
