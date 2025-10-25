@@ -352,9 +352,10 @@ def is_elf(exec_path: Path | str | None = None, debug: bool = False, suppress_de
         # Check the magic number: The first four bytes of an ELF file are 0x7f, 'E', 'L', 'F' (b'\x7fELF').
         # This is the most reliable way to determine if the executable is a native binary wrapper (like PyInstaller's).
         magic_bytes = read_magic_bytes(exec_path, 4, debug and not suppress_debug)
-
+        if magic_bytes is None:
+            return False
         return magic_bytes == b'\x7fELF'
-    except Exception:
+    except (OSError, IOError) as e:
         if debug:
             logging.debug("False (Exception during file check)")
         return False
@@ -370,7 +371,7 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False, suppress_de
     # Check if the extension is PYZ
     if not str(exec_path).endswith(".pyz"):
         if debug:
-            logging.debug("False (Not a .pyz file)")
+            logging.debug("is_pyz()=False (Not a .pyz file)")
         return False
 
     if not _check_if_zip(exec_path):
@@ -389,19 +390,18 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     """
     exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
-        return Fase
+        return False
     try:
-        magic_ bytes = read_magic_bytes(exec_path, 2, debug and not suppress_debug)
-        if magic_bytes is not None:
-            result = magic_bytes.startswith(b"MZ")
-            return result
-        else:
+        magic_bytes = read_magic_bytes(exec_path, 2, debug and not suppress_debug)
+        if magic_bytes is  None:
             return False
-    except Exception:
+        result = magic_bytes.startswith(b"MZ")
+        return result
+    except (OSError, IOError) as e:
         if debug:
-            logging.debug("is_windows_portable_executable() = False (Exception during file check.")
-        return False        
-    
+            logging.debug(f"is_windows_portable_executable() = False (Exception: {e})")
+        return False
+
 def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
@@ -416,7 +416,8 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
         # Common ones are: b'\xfe\xed\xfa\xce' (32-bit) or b'\xfe\xed\xfa\xcf' (64-bit)
         
         magic_bytes = read_magic_bytes(exec_path, 4, debug and not suppress_debug)
-
+        if magic_bytes is None:
+            return False
         # Common Mach-O magic numbers (including their reversed-byte counterparts)
         MACHO_MAGIC = {
             b'\xfe\xed\xfa\xce',  # MH_MAGIC
@@ -430,11 +431,12 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
             
         return is_macho
         
-    except Exception:
+    except (OSError, IOError) as e:
         if debug:
             logging.debug("is_macos_executable() = False (Exception during file check)")
         return False
-    
+
+
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool = True) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
     exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug, check_pipx=False)
