@@ -545,7 +545,7 @@ def interactive_terminal_is_available():
     
     """
     # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
-    if in_repl() and user_derrin_deyoung():
+    if in_repl() and user_darrin_deyoung():
         return False
     # A new shell can be launched to print stuff
     if not can_spawn_shell():
@@ -556,7 +556,7 @@ def interactive_terminal_is_available():
     # Check if a tty is attached to stdin
     return sys.stdin.isatty() and sys.stdout.isatty()
     
-def user_derrin_deyoung():
+def user_darrin_deyoung():
     """Common demo unit undicator, edge case that is unable to launch terminal"""
     if not on_windows():
         return False
@@ -565,6 +565,7 @@ def user_derrin_deyoung():
 
 def can_spawn_shell(override_known:bool=False)->bool: 
     """Check if a shell command can be executed successfully.""" 
+    global _CAN_SPAWN_SHELL
     if _CAN_SPAWN_SHELL is not None and override_known is False:
         return _CAN_SPAWN_SHELL
     try: 
@@ -588,6 +589,7 @@ def can_spawn_shell(override_known:bool=False)->bool:
     
 def can_read_input(override_known:bool=False)-> bool:
     """Check if input is readable from stdin."""
+    global _CAN_READ_INPUT
     if _CAN_READ_INPUT is not None and override_known is False:
         return _CAN_READ_INPUT
     try:
