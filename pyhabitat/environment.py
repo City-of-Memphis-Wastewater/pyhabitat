@@ -52,7 +52,8 @@ __all__ = [
 _TKINTER_AVAILABILITY: bool | None = None
 _MATPLOTLIB_EXPORT_AVAILABILITY: bool | None = None
 _MATPLOTLIB_WINDOWED_AVAILABILITY: bool | None = None
-
+_CAN_SPAWN_SHELL: bool | None = None
+_CAN_READ_INPUT: bool | None = None
 
 # --- GUI CHECKS ---
 def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
@@ -562,32 +563,43 @@ def user_derrin_deyoung():
     username = getpass.getuser()
     return username.lower() != "darrin deyoung"
 
-def can_spawn_shell(): 
+def can_spawn_shell(override_known:bool=False)->bool: 
     """Check if a shell command can be executed successfully.""" 
-    try: result = 
-        subprocess.run( ['echo', 'hello'], 
+    if _CAN_SPAWN_SHELL is not None and override_known is False:
+        return _CAN_SPAWN_SHELL
+    try: 
+        result = subprocess.run( ['echo', 'hello'], 
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
         timeout=2 )
+        _CAN_SPAWN_SHELL = True
         return result.returncode == 0 
     except subprocess.TimeoutExpired: 
         logging.debug("Shell spawn failed: TimeoutExpired")
+        _CAN_SPAWN_SHELL = False
         return False
     except subprocess.SubprocessError: 
         logging.debug("Shell spawn failed: SubprocessError") 
+        _CAN_SPAWN_SHELL = False
         return False 
     except OSError: 
+        _CAN_SPAWN_SHELL = False
         logging.debug("Shell spawn failed: OSError (likely permission or missing binary)") 
     return  False
     
-def can_read_input():
+def can_read_input(override_known:bool=False)-> bool:
     """Check if input is readable from stdin."""
+    if _CAN_READ_INPUT is not None and override_known is False:
+        return _CAN_READ_INPUT
     try:
-        return select.select([sys.stdin], [], [], 0.1)[0]
+        _CAN_READ_INPUT = select.select([sys.stdin], [], [], 0.1)[0]
+        return _CAN_READ_INPUT
     except ValueError:
         logging.debug("Input check failed: ValueError (invalid file descriptor)")
+        _CAN_READ_INPUT = False
         return False
     except OSError:
         logging.debug("Input check failed: OSError (likely I/O issue)")
+        _CAN_READ_INPUT = False
         return False
                 
 # --- Browser Check ---
