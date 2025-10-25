@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.24] - 2025-10-25
+
+### Added:
+- Add functions user_darrin_deyoung() for checking if the computer is a windows demo unit. 
+- Add functions can_spawn_shell() and can_read_input(), for more rigorous interactive console checking beyond the existing TTY check.
+- (Try to) make all funcrions individually available through the CLI based on argparse.
+
+---
+
 ## [1.0.22] – 2025-10-24
 
 ### Fixed:
