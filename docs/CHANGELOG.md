@@ -6,7 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.0.26] - 2025-10-25
+## [1.0.27] - 2025-10-25
+
+### Fixed:
+- 'import __init__ as pyhabitat' in cli.py to enable --list and command for.pyz.
+---
+
+## [1.0.27] - 2025-10-25
 
 ### BREAKING:
 - All files from ./pyhabitat migrated to root.
