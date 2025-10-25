@@ -389,11 +389,18 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     """
     exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
-        return False
-    magic_bytes = read_magic_bytes(exec_path, 2, debug and not suppress_debug)
-    result = magic_bytes.startswith(b"MZ")
-
-    return result
+        return Fase
+    try:
+        magic_ bytes = read_magic_bytes(exec_path, 2, debug and not suppress_debug)
+        if magic_bytes is not None:
+            result = magic_bytes.startswith(b"MZ")
+            return result
+        else:
+            return False
+    except Exception:
+        if debug:
+            logging.debug("is_windows_portable_executable() = False (Exception during file check.")
+        return False        
     
 def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
@@ -425,7 +432,7 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
         
     except Exception:
         if debug:
-            logging.debug("False (Exception during file check)")
+            logging.debug("is_macos_executable() = False (Exception during file check)")
         return False
     
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool = True) -> bool:

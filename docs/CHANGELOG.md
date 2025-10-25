@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.22] – 2025-10-24
+
+### Fixed:
+- Ensure magic_bytes is not None before checking string. This was a consciis choice to be explicit on both ends about None rather than b'' indicating that an empty string eas found. also wrap the whole thing in try except just for safety. is_windows_portable_executable().
+
+---
+
 ## [1.0.21] – 2025-10-22
 
 ### Fixed:
