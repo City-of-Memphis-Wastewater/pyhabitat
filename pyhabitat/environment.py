@@ -884,7 +884,10 @@ def main(path=None, debug=False):
     if is_pyz(): # and is_repl(): 
         # Keep window open. This iteration is non rigorous.
         # To address use pf Python launcher from Windows Store to launch downoaded .pyz, which closed quickly
-         input("Press Return to Exit...")
-    
+        try:
+            input("Press Return to Exit...")
+        except Exception as e:
+            logging.debug("input() failed")
+               
 if __name__ == "__main__": 
     main(debug=True)
