@@ -6,11 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.26] - 2025-10-25
+
+### Fixed:
+- Exit with return after each CLI subcommand, to precent entire report from also printing and burying the single intent.
+---
+
 ## [1.0.25] - 2025-10-25
 
 ### Fixed:
 - Bool check for text match in user_darrin_deyoung() should be "==" instead of "!="
-
 
 ---
 

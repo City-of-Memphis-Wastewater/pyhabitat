@@ -54,7 +54,9 @@ def run_cli():
         func = getattr(pyhabitat, args.command, None)
         if callable(func):
             print(func())
+            return # Exit after running the subcommand
         else:
             print(f"Unknown function: {args.command}")
+            return # Exit after reporting the unknown command
 
     main(path=Path(args.path) if args.path else None, debug=args.debug)
