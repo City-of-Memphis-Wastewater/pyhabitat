@@ -43,6 +43,9 @@ __all__ = [
     'in_repl',
     'interp_path',
     'main',
+    'user_darrin_deyoung',
+    'can_read_input',
+    'can_spawn_shell',
 ]
 
 # Global cache for tkinter and matplotlib (mpl) availability

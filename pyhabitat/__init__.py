@@ -27,6 +27,9 @@ from .environment import (
     edit_textfile,
     interp_path,
     main,
+    user_darrin_deyoung,
+    can_read_input,
+    can_spawn_shell,
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -57,6 +60,9 @@ __all__ = [
     'edit_textfile',
     'interp_path',
     'main',
+    'user_darrin_deyoung',
+    'can_read_input',
+    'can_spawn_shell',
 ]
 
 __version__ = get_version()
