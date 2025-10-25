@@ -13,7 +13,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - Add functions can_spawn_shell() and can_read_input(), for more rigorous interactive console checking beyond the existing TTY check.
 - (Try to) make all funcrions individually available through the CLI based on argparse.
 - Implement globals _CAN_READ_INPUT and _CAN_SPAWN_SHELL to capture boolean on the first run of these functions to avoid repetitive checking and overhead - use override_known arg to allow user to recheck within the same session.
-- Add .pyz check at the bottom of main(), to stay open after report.
+- Add .pyz check at the bottom of main(), to stay open after report; this is non rigprous but fine for testing
+
 
 ---
 
