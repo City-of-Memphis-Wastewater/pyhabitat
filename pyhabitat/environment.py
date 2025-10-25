@@ -14,6 +14,8 @@ import subprocess
 import io
 import zipfile
 import logging
+import getpass
+import select 
 
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
@@ -538,10 +540,53 @@ def interactive_terminal_is_available():
         without getting lost in a log or lost entirely.
     
     """
+    # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
+    if in_repl() and user_derrin_deyoung():
+        return False
+    # A new shell can be launched to print stuff
+    if not can_spawn_shell():
+        return False
+    # A user can interact with a console, providing input
+    if not can_read_input():
+        return False
     # Check if a tty is attached to stdin
     return sys.stdin.isatty() and sys.stdout.isatty()
-
     
+def user_derrin_deyoung():
+    """Common demo unit undicator, edge case that is unable to launch terminal"""
+    if not on_windows():
+        return False
+    username = getpass.getuser()
+    return username.lower() != "darrin deyoung"
+
+def can_spawn_shell(): 
+    """Check if a shell command can be executed successfully.""" 
+    try: result = 
+        subprocess.run( ['echo', 'hello'], 
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+        timeout=2 )
+        return result.returncode == 0 
+    except subprocess.TimeoutExpired: 
+        logging.debug("Shell spawn failed: TimeoutExpired")
+        return False
+    except subprocess.SubprocessError: 
+        logging.debug("Shell spawn failed: SubprocessError") 
+        return False 
+    except OSError: 
+        logging.debug("Shell spawn failed: OSError (likely permission or missing binary)") 
+    return  False
+    
+def can_read_input():
+    """Check if input is readable from stdin."""
+    try:
+        return select.select([sys.stdin], [], [], 0.1)[0]
+    except ValueError:
+        logging.debug("Input check failed: ValueError (invalid file descriptor)")
+        return False
+    except OSError:
+        logging.debug("Input check failed: OSError (likely I/O issue)")
+        return False
+                
 # --- Browser Check ---
 def web_browser_is_available() -> bool:
     """ Check if a web browser can be launched in the current environment."""

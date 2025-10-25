@@ -2,6 +2,7 @@ import argparse
 from pathlib import Path
 from pyhabitat.environment import main
 from pyhabitat.utils import get_version
+import pyhabitat
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
@@ -28,6 +29,32 @@ def run_cli():
         action="store_true",
         help="Enable verbose debug output",
     )
-    args = parser.parse_args()
-    main(path=Path(args.path) if args.path else None, debug=args.debug)
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List available callable functions in pyhabitat"
+    )
+                
+    parser.add_argument(
+        "command",
+        nargs="?",
+        help="Function name to run (or use --list)",
+    )
 
+                
+    args = parser.parse_args()
+
+    if args.list:
+        for name in dir(pyhabitat):
+            if callable(getattr(pyhabitat, name)) and not name.startswith("_"):
+                print(name)
+        return
+
+    if args.command:
+        func = getattr(pyhabitat, args.command, None)
+        if callable(func):
+            print(func())
+        else:
+            print(f"Unknown function: {args.command}")
+
+    main(path=Path(args.path) if args.path else None, debug=args.debug)
