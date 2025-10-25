@@ -6,6 +6,14 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.25] - 2025-10-25
+
+### Fixed:
+- Bool check for text match in user_darrin_deyoung() should be "==" instead of "!="
+
+
+---
+
 ## [1.0.24] - 2025-10-25
 
 ### Added:

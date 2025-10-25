@@ -561,7 +561,7 @@ def user_darrin_deyoung():
     if not on_windows():
         return False
     username = getpass.getuser()
-    return username.lower() != "darrin deyoung"
+    return username.lower() == "darrin deyoung"
 
 def can_spawn_shell(override_known:bool=False)->bool: 
     """Check if a shell command can be executed successfully.""" 
