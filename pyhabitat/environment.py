@@ -881,6 +881,10 @@ def main(path=None, debug=False):
     print("=== PyHabitat Report Complete ===")
     print("=================================")
     print("")
-
+    if is_pyz(): # and is_repl(): 
+        # Keep window open. This iteration is non rigorous.
+        # To address use pf Python launcher from Windows Store to launch downoaded .pyz, which closed quickly
+         input("Press Return to Exit...")
+    
 if __name__ == "__main__": 
     main(debug=True)
