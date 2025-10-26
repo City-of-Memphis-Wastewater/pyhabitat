@@ -899,7 +899,7 @@ def main(path=None, debug=False):
         # Keep window open. This iteration is non rigorous.
         # To address use pf Python launcher from Windows Store to launch downoaded .pyz, which closed quickly
         try:
-            input("Press Return to Exit...")
+            input("Press Return to Continue...")
         except Exception as e:
             logging.debug("input() failed")
                
