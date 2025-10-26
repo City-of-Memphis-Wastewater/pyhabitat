@@ -571,6 +571,12 @@ def interactive_terminal_is_available():
     
 def user_darrin_deyoung():
     """Common demo unit undicator, edge case that is unable to launch terminal"""
+    # Enable teating on non-Windows, non-demo systems
+    #  where this function would otherwise return False.
+    # Linux: `export USER_DARRIN_DEYOUNG=True`
+    if os.getenv('USER_DARRIN_DEYOUNG',False).lower() ==  "true":
+        return True
+    # Darrin Deyoung is the typical username on demo-mode Windows systems
     if not on_windows():
         return False
     username = getpass.getuser()

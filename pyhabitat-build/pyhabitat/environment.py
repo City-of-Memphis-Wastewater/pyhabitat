@@ -512,6 +512,19 @@ def is_python_script(path: Path | str | None = None, debug: bool = False, suppre
         return False
     return exec_path.suffix.lower() == '.py'    
 
+# --- File encoding check ---
+def is_binary(path:str|Path|None=None)->bool:
+    """
+    Target file is encoded as binary.
+    """
+    pass
+
+def is_ascii(path:str|Path|None=None)->bool:
+    """
+    Target file is encoded as ascii, plaintext.
+    """
+    pass
+    
 # --- Interpreter Check ---
 
 def interp_path(debug: bool = False) -> str:
@@ -545,9 +558,9 @@ def interactive_terminal_is_available():
     
     """
     # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
-    if in_repl() and user_darrin_deyoung():
+    if user_darrin_deyoung():
         return False
-    # A new shell can be launched to print stuff
+    # Check of a new shell can be launched to print stuff
     if not can_spawn_shell():
         return False
     # A user can interact with a console, providing input
@@ -623,6 +636,7 @@ def web_browser_is_available() -> bool:
         if shutil.which("xdg-open"):
             return True
         return False
+
     
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
 def edit_textfile(path: Path | str | None = None) -> None:

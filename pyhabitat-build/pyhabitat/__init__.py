@@ -30,6 +30,8 @@ from .environment import (
     user_darrin_deyoung,
     can_read_input,
     can_spawn_shell,
+    is_ascii,
+    is_binary,
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -63,6 +65,8 @@ __all__ = [
     'user_darrin_deyoung',
     'can_read_input',
     'can_spawn_shell',
+    'is_ascii',
+    'is_binary',
 ]
 
 __version__ = get_version()

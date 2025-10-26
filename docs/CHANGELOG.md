@@ -4,8 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
 ---
 
+## [1.0.31] - 2025-10-26
+
+### Added:
+- In user_darrin_deyoung(), add logic to enable manual setting
+of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
+
+---
 
 ## [1.0.30] - 2025-10-25
 
@@ -14,7 +22,10 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - is_binary() and is_ascii()
 
 ### Fixed:
--  False negative corrected in interactive_terminal_is_availsble(): Suppress use of can_read_input() in check for interactivr_terminal_is_available(), because a non-boolean is involved, and I don't understand the select library. The function should  already be sufficient for our purposes at this time, though checking for reading accurately is desired. 
+-  False negative corrected in interactive_terminal_is_availsble(): 
+Suppress use of can_read_input() in check for interactivr_terminal_is_available(), 
+because a non-boolean is involved, and I don't understand the select library.
+ The function should  already be sufficient for our purposes at this time, though checking for reading accurately is desired. 
 
 ---
 
