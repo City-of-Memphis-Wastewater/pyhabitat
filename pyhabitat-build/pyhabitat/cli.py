@@ -16,7 +16,7 @@ def run_cli():
     parser.add_argument(
         '-v', '--version', 
         action='version', 
-        version=f'%(prog)s {current_version}'
+        version=f'PyHabitat {current_version}'
     )
     # Add the path argument
     parser.add_argument(

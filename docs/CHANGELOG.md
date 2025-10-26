@@ -12,6 +12,10 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Active
 - Better soltion in main() or run_cli() or __main__() to handle new window quick closure.
 - is_binary() and is_ascii()
+
+### Fixed:
+- 
+
 ---
 
 ## [1.0.29] - 2025-10-25
