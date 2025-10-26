@@ -575,6 +575,7 @@ def user_darrin_deyoung():
     #  where this function would otherwise return False.
     # Linux: `export USER_DARRIN_DEYOUNG=True`
     if os.getenv('USER_DARRIN_DEYOUNG',False).lower() ==  "true":
+        print("env var USER_DARRIN_DEYOUNG is set to True.")
         return True
     # Darrin Deyoung is the typical username on demo-mode Windows systems
     if not on_windows():
