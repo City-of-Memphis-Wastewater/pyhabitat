@@ -6,7 +6,23 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.0.27] - 2025-10-25
+## [1.0.29] - 2025-10-25
+
+###  BREAKING:
+- Move files back into pyhabitat directory, but keep __main__.py in root. 
+- For building, .build.sh copies files to pyhabitat-build dir and keep this relative organization - there is a pyhabitat-build/pyhabitat/ directory.
+
+### Running:
+- In development, run code with:
+    - python .
+    - python . --help
+    - python . on_termux
+- PYZ:
+    - python ./pyhabitat-1.0.29.pyz --list
+    
+---
+
+## [1.0.28] - 2025-10-25
 
 ### Fixed:
 - 'import __init__ as pyhabitat' in cli.py to enable --list and command for.pyz.
