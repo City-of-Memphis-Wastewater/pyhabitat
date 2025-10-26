@@ -551,8 +551,8 @@ def interactive_terminal_is_available():
     if not can_spawn_shell():
         return False
     # A user can interact with a console, providing input
-    if not can_read_input():
-        return False
+    #if not can_read_input():
+    #    return False
     # Check if a tty is attached to stdin
     return sys.stdin.isatty() and sys.stdout.isatty()
     
@@ -572,12 +572,14 @@ def can_spawn_shell(override_known:bool=False)->bool:
         result = subprocess.run( ['echo', 'hello'], 
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
         timeout=2 )
+        
         _CAN_SPAWN_SHELL = True
+        
         return result.returncode == 0 
     except subprocess.TimeoutExpired: 
         logging.debug("Shell spawn failed: TimeoutExpired")
-        _CAN_SPAWN_SHELL = False
-        return False
+        _CAN_SPAWN_SHELL = result.returncode == 0
+        return _CAN_SPAWN_SHELL
     except subprocess.SubprocessError: 
         logging.debug("Shell spawn failed: SubprocessError") 
         _CAN_SPAWN_SHELL = False
@@ -593,6 +595,7 @@ def can_read_input(override_known:bool=False)-> bool:
     if _CAN_READ_INPUT is not None and override_known is False:
         return _CAN_READ_INPUT
     try:
+        # ERROR THIS IS NOT A BOOLEAN, IS RETURNS []
         _CAN_READ_INPUT = select.select([sys.stdin], [], [], 0.1)[0]
         return _CAN_READ_INPUT
     except ValueError:
