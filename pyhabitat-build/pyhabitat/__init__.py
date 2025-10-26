@@ -1,6 +1,6 @@
 # ./__init__.py
-from utils import get_version
-from environment import (
+from .utils import get_version
+from .environment import (
     matplotlib_is_available_for_gui_plotting,
     matplotlib_is_available_for_headless_image_export,
     tkinter_is_available,

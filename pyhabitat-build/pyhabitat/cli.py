@@ -1,10 +1,10 @@
 import argparse
 from pathlib import Path
-from environment import main
-from environment import * # to enable CLI --list
-from utils import get_version
-import __init__ as pyhabitat
-#import pyhabitat
+from .environment import main
+from .environment import * # to enable CLI --list
+from .utils import get_version
+#import __init__ as pyhabitat # works if everything is in root, v1.0.28
+import pyhabitat # refers to the folder
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
