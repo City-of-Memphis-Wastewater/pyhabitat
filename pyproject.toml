@@ -30,6 +30,11 @@ pyhabitat = "pyhabitat.cli:run_cli"
 where = ["."]  
 include = ["pyhabitat*"] 
 
+#[project.optional-dependencies]
+#typer = ["click", "typer", "rich"]
+
+
+
 #[tool.setuptools_scm] 
 # This tells setuptools_scm to look at the git history/tags for the version
 #write_to = "pyhabitat/_version.py"
