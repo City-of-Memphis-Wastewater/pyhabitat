@@ -14,7 +14,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - is_binary() and is_ascii()
 
 ### Fixed:
-- 
+-  False negative corrected in interactive_terminal_is_availsble(): Suppress use of can_read_input() in check for interactivr_terminal_is_available(), because a non-boolean is involved, and I don't understand the select library. The function should alrrady ve alrrady br sufficient for our purposes at this time, though checking for rrading acfurately is desired. 
 
 ---
 
