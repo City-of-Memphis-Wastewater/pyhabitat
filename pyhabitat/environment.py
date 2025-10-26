@@ -525,8 +525,7 @@ def is_ascii(path:str|Path|None=None)->bool:
     """
     pass
     
-# --def is_binary();
-- Interpreter Check ---
+# --- Interpreter Check ---
 
 def interp_path(debug: bool = False) -> str:
     """
