@@ -558,9 +558,9 @@ def interactive_terminal_is_available():
     
     """
     # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
-    if in_repl() and user_darrin_deyoung():
+    if user_darrin_deyoung():
         return False
-    # A new shell can be launched to print stuff
+    # Check of a new shell can be launched to print stuff
     if not can_spawn_shell():
         return False
     # A user can interact with a console, providing input
