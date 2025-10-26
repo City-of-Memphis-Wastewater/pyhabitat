@@ -10,7 +10,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.0.30] - 2025-10-25
 
 ### Active
-- Better soltion in main() or run_cli() or __main__() to handle new window quick closure.
+- Better solution in main() or run_cli() or __main__() to handle new window quick closure.
 - is_binary() and is_ascii()
 
 ### Fixed:

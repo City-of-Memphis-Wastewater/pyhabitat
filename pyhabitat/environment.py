@@ -512,7 +512,21 @@ def is_python_script(path: Path | str | None = None, debug: bool = False, suppre
         return False
     return exec_path.suffix.lower() == '.py'    
 
-# --- Interpreter Check ---
+# --- File encoding check ---
+def is_binary(path:str|Path|None=None)->bool:
+    """
+    Target file is encoded as binary.
+    """
+    pass
+
+def is_ascii(path:str|Path|None=None)->bool:
+    """
+    Target file is encoded as ascii, plaintext.
+    """
+    pass
+    
+# --def is_binary();
+- Interpreter Check ---
 
 def interp_path(debug: bool = False) -> str:
     """
@@ -623,6 +637,7 @@ def web_browser_is_available() -> bool:
         if shutil.which("xdg-open"):
             return True
         return False
+
     
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
 def edit_textfile(path: Path | str | None = None) -> None:
