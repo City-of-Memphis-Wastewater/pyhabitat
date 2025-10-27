@@ -12,6 +12,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Added:
 - In user_darrin_deyoung(), add logic to enable manual setting
 of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
+- Default to empty string if env var USER_DARRIN_DEYOUNG is not found.
 
 ---
 
