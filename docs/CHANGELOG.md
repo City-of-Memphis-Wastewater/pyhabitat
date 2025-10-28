@@ -9,12 +9,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.0.31] - 2025-10-26
 
-Refactor: interactive_terminal_is_available() is coming through False. Fix please.
-
 ### Added:
 - In user_darrin_deyoung(), add logic to enable manual setting
 of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
 - Default to empty string if env var USER_DARRIN_DEYOUNG is not found.
+
+### Fixed:
+- interactive_terminal_is_available() false negative resolved by using "exit 0" for can_spawn_shell() test rather than "echo hello".
+- Implement section in can_read_input() to do microsoft specific check with msvcrt.kbhit().
+- Change order of interactive_terminal_is_available() so that not (sys.stdin.isatty() and sys.stdout.isatty()) returns False quickly.
 
 ---
 
