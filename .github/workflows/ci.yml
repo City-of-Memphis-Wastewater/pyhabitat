@@ -26,7 +26,7 @@ jobs:
         pip install flake8 pytest
 
     # Optional: comment this if flake8 isn't ready
-    # - name: Lint (flake8 optional)
+    - name: Lint (flake8 optional)
     run: flake8 || true
 
     # Optional: comment this if no tests
