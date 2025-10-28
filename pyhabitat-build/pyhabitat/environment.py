@@ -17,6 +17,12 @@ import logging
 import getpass
 import select 
 
+# On Windows, we need the msvcrt module for non-blocking I/O
+try:
+    import msvcrt
+except ImportError:
+    msvcrt = None
+
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
     'matplotlib_is_available_for_headless_image_export',
@@ -556,21 +562,46 @@ def interactive_terminal_is_available():
         then typer.prompt() or input() will work reliably,
         without getting lost in a log or lost entirely.
     
+    Solution correctly identifies that true interactivity requires:
+        (1) a TTY (potential) connection
+        (2) the ability to execute
+        (3) the ability to read I/O
+        (4) ignores known limitatons in restrictive environments
+
+    Jargon:
+        A TTY, short for Teletypewriter or TeleTYpe, 
+        is a conceptual or physical device that serves 
+        as the interface for a user to interact with 
+        a computer system.
     """
     # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
     if user_darrin_deyoung():
         return False
+    
+    # Check if a tty is attached to stdin, 
+    # quick failure here if not before testing spwaning and reading
+    if not (sys.stdin.isatty() and sys.stdout.isatty()):
+        return False
+    
     # Check of a new shell can be launched to print stuff
     if not can_spawn_shell():
         return False
+    
     # A user can interact with a console, providing input
     #if not can_read_input():
     #    return False
-    # Check if a tty is attached to stdin
+    
     return sys.stdin.isatty() and sys.stdout.isatty()
     
 def user_darrin_deyoung():
     """Common demo unit undicator, edge case that is unable to launch terminal"""
+    # Enable teating on non-Windows, non-demo systems
+    #  where this function would otherwise return False.
+    # Linux: `export USER_DARRIN_DEYOUNG=True`
+    if os.getenv('USER_DARRIN_DEYOUNG','').lower() ==  "true":
+        print("env var USER_DARRIN_DEYOUNG is set to True.")
+        return True
+    # Darrin Deyoung is the typical username on demo-mode Windows systems
     if not on_windows():
         return False
     username = getpass.getuser()
@@ -581,25 +612,33 @@ def can_spawn_shell(override_known:bool=False)->bool:
     global _CAN_SPAWN_SHELL
     if _CAN_SPAWN_SHELL is not None and override_known is False:
         return _CAN_SPAWN_SHELL
-    try: 
-        result = subprocess.run( ['echo', 'hello'], 
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-        timeout=2 )
+
+    try:
+        # Use a simple, universally applicable command with shell=True
+        # 'true' on Linux/macOS, or a basic command on Windows via cmd.exe
+        # A simple 'echo' or 'exit 0' would also work
+        result = subprocess.run( 
+            'exit 0',  # A shell-internal command that succeeds on most shells
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            timeout=2, 
+            shell=True # <--- ESSENTIAL for cross-platform reliability
+        )
         
-        _CAN_SPAWN_SHELL = True
-        
-        return result.returncode == 0 
+        _CAN_SPAWN_SHELL = result.returncode == 0
+        return _CAN_SPAWN_SHELL 
+    
     except subprocess.TimeoutExpired: 
-        logging.debug("Shell spawn failed: TimeoutExpired")
+        print("Shell spawn failed: TimeoutExpired")
         _CAN_SPAWN_SHELL = result.returncode == 0
         return _CAN_SPAWN_SHELL
     except subprocess.SubprocessError: 
-        logging.debug("Shell spawn failed: SubprocessError") 
+        print("Shell spawn failed: SubprocessError") 
         _CAN_SPAWN_SHELL = False
         return False 
     except OSError: 
         _CAN_SPAWN_SHELL = False
-        logging.debug("Shell spawn failed: OSError (likely permission or missing binary)") 
+        print("Shell spawn failed: OSError (likely permission or missing binary)") 
     return  False
     
 def can_read_input(override_known:bool=False)-> bool:
@@ -607,10 +646,43 @@ def can_read_input(override_known:bool=False)-> bool:
     global _CAN_READ_INPUT
     if _CAN_READ_INPUT is not None and override_known is False:
         return _CAN_READ_INPUT
+    
+    # --- 1. Windows Specific Check (msvcrt) ---
+    if msvcrt is not None and sys.stdin.isatty():
+        try:
+            # msvcrt.kbhit() checks if a keyboard hit is present
+            # We don't read the input yet, just check if it's there
+            _CAN_READ_INPUT = msvcrt.kbhit()
+            # If kbhit returns True, it means a key press is waiting.
+            # We assume if the terminal *is* a TTY, it *can* read input.
+            # We can't actually call input() without blocking, so we check TTY instead.
+            if _CAN_READ_INPUT:
+                return True
+            
+            # Since we are checking if a *user can* interact, if we are in a TTY, 
+            # we assume the capability exists, even if nothing is currently buffered.
+            # This prevents the false negative when no key is pressed.
+            _CAN_READ_INPUT = True
+            return True
+
+        except Exception as e:
+            # Catch errors in the kbhit check itself
+            logging.debug(f"msvcrt check failed: {e}")
+            pass # Fall through to the select check
+
+    # --- 2. POSIX/General Check (select) ---
+    # This block is reliable on Linux/macOS and other POSIX systems.
     try:
-        # ERROR THIS IS NOT A BOOLEAN, IS RETURNS []
+        # _CAN_READ_INPUT is assigned the read-ready list ([] or [sys.stdin])
+        # The return value is then the boolean conversion of that list's truthiness.
+        # 1. select.select(...) returns a 3-element tuple.
+        # 2. [0] gets the read-ready list (rlist).
+        # 3. Wrapping the result in bool() converts the list's truth value:
+        #    - [] becomes False
+        #    - [sys.stdin] becomes True
         _CAN_READ_INPUT = select.select([sys.stdin], [], [], 0.1)[0]
-        return _CAN_READ_INPUT
+        # Return the boolean value of the list: True if [sys.stdin], False if []
+        return bool(_CAN_READ_INPUT) # <--- Requied to convert list to boolean
     except ValueError:
         logging.debug("Input check failed: ValueError (invalid file descriptor)")
         _CAN_READ_INPUT = False
@@ -619,6 +691,9 @@ def can_read_input(override_known:bool=False)-> bool:
         logging.debug("Input check failed: OSError (likely I/O issue)")
         _CAN_READ_INPUT = False
         return False
+    
+    # Final fallback: if nothing worked, assume False
+    return False
                 
 # --- Browser Check ---
 def web_browser_is_available() -> bool:
