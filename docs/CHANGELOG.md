@@ -7,7 +7,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.0.31] - 2025-10-26
+## [1.0.31] - 2025-10-28
 
 ### Added:
 - In user_darrin_deyoung(), add logic to enable manual setting
