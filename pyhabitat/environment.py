@@ -588,25 +588,33 @@ def can_spawn_shell(override_known:bool=False)->bool:
     global _CAN_SPAWN_SHELL
     if _CAN_SPAWN_SHELL is not None and override_known is False:
         return _CAN_SPAWN_SHELL
-    try: 
-        result = subprocess.run( ['echo', 'hello'], 
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-        timeout=2 )
+
+    try:
+        # Use a simple, universally applicable command with shell=True
+        # 'true' on Linux/macOS, or a basic command on Windows via cmd.exe
+        # A simple 'echo' or 'exit 0' would also work
+        result = subprocess.run( 
+            'exit 0',  # A shell-internal command that succeeds on most shells
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE, 
+            timeout=2, 
+            shell=True # <--- ESSENTIAL for cross-platform reliability
+        )
         
-        _CAN_SPAWN_SHELL = True
-        
-        return result.returncode == 0 
+        _CAN_SPAWN_SHELL = result.returncode == 0
+        return _CAN_SPAWN_SHELL 
+    
     except subprocess.TimeoutExpired: 
-        logging.debug("Shell spawn failed: TimeoutExpired")
+        print("Shell spawn failed: TimeoutExpired")
         _CAN_SPAWN_SHELL = result.returncode == 0
         return _CAN_SPAWN_SHELL
     except subprocess.SubprocessError: 
-        logging.debug("Shell spawn failed: SubprocessError") 
+        print("Shell spawn failed: SubprocessError") 
         _CAN_SPAWN_SHELL = False
         return False 
     except OSError: 
         _CAN_SPAWN_SHELL = False
-        logging.debug("Shell spawn failed: OSError (likely permission or missing binary)") 
+        print("Shell spawn failed: OSError (likely permission or missing binary)") 
     return  False
     
 def can_read_input(override_known:bool=False)-> bool:
