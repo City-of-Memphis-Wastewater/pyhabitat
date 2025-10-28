@@ -9,6 +9,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.0.31] - 2025-10-26
 
+Refactor: interactive_terminal_is_available() is coming through False. Fix please.
+
 ### Added:
 - In user_darrin_deyoung(), add logic to enable manual setting
 of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
