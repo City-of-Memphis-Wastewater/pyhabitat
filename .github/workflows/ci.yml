@@ -27,7 +27,7 @@ jobs:
 
     # Optional: comment this if flake8 isn't ready
     - name: Lint (flake8 optional)
-    run: flake8 || true
+      run: flake8 || true
 
     # Optional: comment this if no tests
     # - name: Run tests (pytest optional)
