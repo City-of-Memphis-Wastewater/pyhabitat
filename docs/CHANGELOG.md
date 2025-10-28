@@ -18,6 +18,7 @@ of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
 - interactive_terminal_is_available() false negative resolved by using "exit 0" for can_spawn_shell() test rather than "echo hello".
 - Implement section in can_read_input() to do microsoft specific check with msvcrt.kbhit().
 - Change order of interactive_terminal_is_available() so that not (sys.stdin.isatty() and sys.stdout.isatty()) returns False quickly.
+- Remove license classifer from from pyproject.toml, as per PEP 621/639. Keep dedicated license line.
 
 ---
 
