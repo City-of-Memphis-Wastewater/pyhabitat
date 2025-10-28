@@ -23,11 +23,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install
+        pip install flake8 pytest
 
     # Optional: comment this if flake8 isn't ready
     # - name: Lint (flake8 optional)
-    #  run: poetry run flake8 || true
+    run: run flake8 || true
 
     # Optional: comment this if no tests
     # - name: Run tests (pytest optional)
