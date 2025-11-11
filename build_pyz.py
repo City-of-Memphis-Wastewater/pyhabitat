@@ -43,9 +43,14 @@ def run_build():
         # Remove old build directories
         if os.path.exists(BUILD_ROOT):
             shutil.rmtree(BUILD_ROOT)
-        if os.path.exists(DIST_DIR):
-            shutil.rmtree(DIST_DIR)
-            
+        #if os.path.exists(DIST_DIR):
+        #    shutil.rmtree(DIST_DIR)
+        # Remove only the specific PYZ output
+        output_file = Path(DIST_DIR) / f"pyhabitat-{VERSION}.pyz"
+        if output_file.exists():
+            print(f"Removing old PYZ: {output_file}")
+            output_file.unlink()
+   
         # Create necessary directories
         os.makedirs(f"{BUILD_ROOT}/pyhabitat", exist_ok=True)
         os.makedirs(DIST_DIR, exist_ok=True)

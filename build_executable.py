@@ -16,11 +16,16 @@ dist_dir = Path("dist")
 build_dir = Path("build")
 
 def clean():
-    """Remove previous build/dist folders."""
-    for d in [dist_dir, build_dir]:
-        if d.exists():
-            print(f"Removing {d}...")
-            shutil.rmtree(d)
+    """Remove only the specific output EXE if it exists."""
+    output_file = dist_dir / f"{exe_name}.exe"
+    if output_file.exists():
+        print(f"Removing old EXE: {output_file}")
+        output_file.unlink()
+    # Optionally remove the PyInstaller build folder, since it's temp
+    if build_dir.exists():
+        print(f"Removing build folder: {build_dir}")
+        shutil.rmtree(build_dir)
+
 
 def build_executable():
     """Run PyInstaller to build the EXE."""
