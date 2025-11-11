@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.0.37] - 2025-11-10
+
+### Added:
+- Build guidance section in README.md for running `python -m build`, `python build_executable.py`, and `python build_pyz.py`.
+
+### Fixed:
+- Use get_version() in build_executible.py. 
+- Ensure that ./dist/ is not destroyed for each run of build_executible.py and build_pyz.py
+- Ensure proper library availability for report.py and for build_pyz.py, which were missing Path.
+
+---
 
 ## [1.0.36] - 2025-11-10
 
