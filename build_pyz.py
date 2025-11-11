@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import subprocess
+from pathlib import Path
 
 # Define the source files to copy, matching the logic in build.ps1
 # The key structure is (source_path, destination_dir_relative_to_build_root)

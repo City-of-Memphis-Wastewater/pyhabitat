@@ -9,8 +9,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+from pyhabitat.utils import get_version
+
 # Config
-exe_name = "pyhabitat-1.0.36-windows-amd64"
+
+VERSION = get_version()
+exe_name = f"pyhabitat-{VERSION}-windows-amd64"
 main_script = "__main__.py"
 dist_dir = Path("dist")
 build_dir = Path("build")
