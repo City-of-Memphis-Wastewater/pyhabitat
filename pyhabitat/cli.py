@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from .environment import main
+from .report import report
 from .environment import * # to enable CLI --list
 from .utils import get_version
 #import __init__ as pyhabitat # works if everything is in root, v1.0.28
@@ -70,4 +70,4 @@ def run_cli():
             print(f"Unknown function: {args.command}")
             return # Exit after reporting the unknown command
 
-    main(path=Path(args.path) if args.path else None, debug=args.debug)
+    report(path=Path(args.path) if args.path else None, debug=args.debug)
