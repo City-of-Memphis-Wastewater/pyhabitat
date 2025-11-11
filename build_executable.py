@@ -10,27 +10,19 @@ import sys
 from pathlib import Path
 
 from pyhabitat.utils import get_version
+from pyhabitat.version_info import get_package_name, get_package_version, get_python_version, form_dynamic_binary_name
+from pyhabitat.system_info import SystemInfo
 
 # Config
 
 VERSION = get_version()
 
-if sys.platform.startswith("win"):
-    suffix = "-windows-amd64.exe"
-elif sys.platform.startswith("linux"):
-    suffix = "-linux-amd64"
-elif sys.platform.startswith("darwin"):
-    suffix = "-macos"
-else:
-    suffix = ""
-
-exe_name = f"pyhabitat-{VERSION}{suffix}"
 
 main_script = "__main__.py"
 dist_dir = Path("dist")
 build_dir = Path("build")
 
-def clean():
+def clean(exe_name):
     """Remove only the specific output executable if it exists."""
     output_file = dist_dir / exe_name
 
@@ -43,10 +35,10 @@ def clean():
         shutil.rmtree(build_dir)
 
 
-def build_executable():
+def run_pyinstaller(exe_name):
     """Run PyInstaller to build the executable."""
     print(f"--- PyHabitat executable Builder --")
-    clean()
+    clean(exe_name = exe_name)
     print(f"Building executable: {exe_name}")
 
     pyinstaller_exe = Path(sys.executable).parent / ("pyinstaller.exe" if sys.platform.startswith("win") else "pyinstaller")
@@ -71,4 +63,12 @@ def build_executable():
         raise
 
 if __name__ == "__main__":
-    build_executable()
+    package_name = get_package_name()
+    package_version = get_package_version()
+    py_version = get_python_version()
+
+    sysinfo = SystemInfo()
+    os_tag = sysinfo.get_os_tag()
+    architecture = sysinfo.get_arch()
+    executable_descriptor = form_dynamic_binary_name(package_name, package_version, py_version, os_tag, architecture)
+    run_pyinstaller(exe_name = executable_descriptor)
