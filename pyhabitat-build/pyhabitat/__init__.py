@@ -1,5 +1,6 @@
 # ./__init__.py
 from .utils import get_version
+from .report import report
 from .environment import (
     matplotlib_is_available_for_gui_plotting,
     matplotlib_is_available_for_headless_image_export,
@@ -61,12 +62,13 @@ __all__ = [
     'web_browser_is_available',
     'edit_textfile',
     'interp_path',
-    'main',
     'user_darrin_deyoung',
     'can_read_input',
     'can_spawn_shell',
     'is_ascii',
     'is_binary',
+    'main',
+    'report'
 ]
 
 __version__ = get_version()
