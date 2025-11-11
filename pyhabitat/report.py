@@ -50,8 +50,8 @@ def report(path=None, debug=False):
         # Supress redundant prints explicity using suppress_debug=True, 
         # so that only unique information gets printed for each check, 
         # even when more than one use the same functions which include debugging logs.
-        #print(f"_check_executable_path(interp_path(), debug=True)")
-        _check_executable_path(interp_path(), debug=debug)    
+        #print(f"check_executable_path(interp_path(), debug=True)")
+        check_executable_path(interp_path(), debug=debug)    
         #print(f"read_magic_bites(interp_path(), debug=True)")
         read_magic_bytes(interp_path(), debug=debug)
     print(f"is_elf(interp_path()): {is_elf(interp_path(), debug=debug, suppress_debug=True)}")
@@ -84,8 +84,8 @@ def report(path=None, debug=False):
             # Supress redundant prints explicity using suppress_debug=True, 
             # so that only unique information gets printed for each check, 
             # even when more than one use the same functions which include debugging logs.
-            #print(f"_check_executable_path(script_path, debug=True)")
-            _check_executable_path(script_path, debug=debug)
+            #print(f"check_executable_path(script_path, debug=True)")
+            check_executable_path(script_path, debug=debug)
             #print(f"read_magic_bites(script_path, debug=True)")
             read_magic_bytes(script_path, debug=debug)
         print(f"is_elf(): {is_elf(script_path, debug=debug, suppress_debug=True)}")

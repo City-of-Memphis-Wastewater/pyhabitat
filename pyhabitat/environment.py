@@ -53,6 +53,8 @@ __all__ = [
     'user_darrin_deyoung',
     'can_read_input',
     'can_spawn_shell',
+    'read_magic_bytes',
+    'check_executable_path'
 ]
 
 # Global cache for tkinter and matplotlib (mpl) availability
@@ -357,7 +359,7 @@ def as_frozen():
 def is_elf(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """Checks if the currently running executable (sys.argv[0]) is a standalone PyInstaller-built ELF binary."""
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
+    exec_path, is_valid = check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
     
@@ -377,7 +379,7 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False, suppress_de
     """Checks if the currently running executable (sys.argv[0]) is a PYZ zipapp ."""
 
     # If it's a pipx installation, it is not the monolithic binary we are concerned with here.
-    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
+    exec_path, is_valid = check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
     
@@ -401,7 +403,7 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
     Windows Portable Executables include .exe, .dll, and other binaries.
     The standard way to check for a PE is to look for the MZ magic number at the very beginning of the file.
     """
-    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
+    exec_path, is_valid = check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
     try:
@@ -420,7 +422,7 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
     Checks if the currently running executable is a macOS/Darwin Mach-O binary, 
     and explicitly excludes pipx-managed environments.
     """
-    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug)
+    exec_path, is_valid = check_executable_path(exec_path, debug and not suppress_debug)
     if not is_valid:
         return False
         
@@ -452,9 +454,9 @@ def is_macos_executable(exec_path: Path | str | None = None, debug: bool = False
 
 def is_pipx(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool = True) -> bool:
     """Checks if the executable is running from a pipx managed environment."""
-    exec_path, is_valid = _check_executable_path(exec_path, debug and not suppress_debug, check_pipx=False)
+    exec_path, is_valid = check_executable_path(exec_path, debug and not suppress_debug, check_pipx=False)
     # check_pipx arg should be false when calling from inside of is_pipx() to avoid recursion error
-    # For safety, _check_executable_path() guards against this.
+    # For safety, check_executable_path() guards against this.
     if not is_valid:
         return False
         
@@ -514,7 +516,7 @@ def is_python_script(path: Path | str | None = None, debug: bool = False, suppre
     Returns:
         bool: True if the specified or default path is a Python source file (.py); False otherwise.
     """
-    exec_path, is_valid = _check_executable_path(path, debug and not suppress_debug, check_pipx=False)
+    exec_path, is_valid = check_executable_path(path, debug and not suppress_debug, check_pipx=False)
     if not is_valid:
         return False
     return exec_path.suffix.lower() == '.py'    
@@ -834,7 +836,7 @@ def _check_if_zip(path: Path | str | None) -> bool:
         # Handle cases where the path might be invalid, or other unexpected errors
         return False
 
-def _check_executable_path(exec_path: Path | str | None, 
+def check_executable_path(exec_path: Path | str | None, 
                            debug: bool = False, 
                            check_pipx: bool = True
 ) -> tuple[Path | None, bool]: #compensate with __future__, may cause type checker issues
@@ -858,24 +860,24 @@ def _check_executable_path(exec_path: Path | str | None,
     # 2. Handle missing path
     if exec_path is None:
         if debug:
-            logging.debug("_check_executable_path() returns (None, False) // exec_path is None")
+            logging.debug("check_executable_path() returns (None, False) // exec_path is None")
         return None, False
     
     # 3. Ensure path actually exists and is a file
     if not exec_path.is_file(): 
         if debug:
-            logging.debug("_check_executable_path() returns (exec_path, False) // exec_path is not a file")
+            logging.debug("check_executable_path() returns (exec_path, False) // exec_path is not a file")
         return exec_path, False
 
     # 4. Avoid recursive pipx check loops
-    # This guard ensures we don’t recursively call _check_executable_path()
-    # via is_pipx() -> _check_executable_path() -> is_pipx() -> ...
+    # This guard ensures we don’t recursively call check_executable_path()
+    # via is_pipx() -> check_executable_path() -> is_pipx() -> ...
     if check_pipx:
         caller = sys._getframe(1).f_code.co_name
         if caller != "is_pipx":
             if is_pipx(exec_path, debug):
                 if debug:
-                    logging.debug("_check_executable_path() returns (exec_path, False) // is_pipx(exec_path) is True")
+                    logging.debug("check_executable_path() returns (exec_path, False) // is_pipx(exec_path) is True")
                 return exec_path, False
 
     return exec_path, True       
