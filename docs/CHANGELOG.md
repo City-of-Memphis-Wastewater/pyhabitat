@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 
+## [1.0.36] - 2025-11-10
+
+### Added:
+- Dedicated report.py file.
+- build_executible.py
+
+### Fixed:
+- Report will stay open unless in_repl() or sys.flags.interactive.
+
 ---
 
 ## [1.0.35] - 2025-10-28
