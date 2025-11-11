@@ -108,9 +108,9 @@ def report(path=None, debug=False):
     print("=== PyHabitat Report Complete ===")
     print("=================================")
     print("")
-    if is_pyz(): # and is_repl(): 
-        # Keep window open. This iteration is non rigorous.
-        # To address use pf Python launcher from Windows Store to launch downoaded .pyz, which closed quickly
+    interactive = in_repl() or sys.flags.interactive
+    if not interactive:
+        # Keep window open.
         try:
             input("Press Return to Continue...")
         except Exception as e:
