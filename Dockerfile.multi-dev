@@ -1,0 +1,49 @@
+# syntax=docker/dockerfile:1.4
+# This ARG allows you to specify the Python version at build time (e.g., --build-arg PYTHON_VERSION=3.12-alpine)
+ARG PYTHON_VERSION=3.11-alpine
+
+# Use a lightweight Python base image that supports multi-arch builds
+FROM python:${PYTHON_VERSION}
+
+# Set the working directory for the application
+WORKDIR /app
+
+# Install essential system packages for development (bash, git, curl)
+# Assuming a Debian-based image
+#RUN apt-get update \
+#    # Force a full upgrade to ensure any patched dependencies are pulled
+#    && apt-get dist-upgrade -y \
+#    && apt-get install -y --no-install-recommends bash curl git \
+#    && rm -rf /var/lib/apt/lists/*
+
+# Assuming an Alpine-based image (recommended for smaller size and stable architecture)
+RUN apk update \
+    # Upgrade existing packages
+    && apk upgrade \
+    # Install required packages (bash, curl, and git)
+    && apk add --no-cache bash curl git \
+    && rm -rf /var/cache/apk/*
+
+# Copy the entire project source tree into the container
+# .dockerignore will be used to exclude unnecessary files like .venv
+COPY . .
+
+# Install build dependencies (setuptools/wheel) and the project itself in editable mode (-e)
+# Editable mode is useful for development as it mirrors the dev environment structure.
+# Since pyhabitat is a library, this ensures it's available on the PATH.
+# The pyproject.toml implies a standard setuptools build.
+RUN pip install --no-cache-dir setuptools wheel \
+    && pip install --no-cache-dir -e . 
+
+# Expose ports if an internal API/service were to be run for development (placeholder)
+EXPOSE 8000
+
+# Default entrypoint is bash for convenient command-line access in the development container
+#	ENTRYPOINT ["bash"]
+# FIX: Set the entry point to /bin/bash to keep the container running
+ENTRYPOINT ["/bin/bash"]
+
+
+# Make the container available as a GitHub Package
+LABEL org.opencontainers.image.source=https://github.com/city-of-memphis-wastewater/pyhabitat
+LABEL org.opencontainers.image.description="Developer environment for Pyhabitat, a lightweight, multi-architecture command-line tool for runtime and environment introspection."

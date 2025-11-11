@@ -7,12 +7,14 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.0.34] - 2025-10-28
+## [1.0.35] - 2025-10-28
 
 ### Added:
 - In user_darrin_deyoung(), add logic to enable manual setting
 of env var  `export USER_DARRIN_DEYOUNG=True` to enable testing.
 - Default to empty string if env var USER_DARRIN_DEYOUNG is not found.
+- build_pyz.py file for building .pyz (use python -m build for .tar.gz and .whl)
+- build.ps1 -> build_pyz.ps1, build.sh -> build_pyz.sh  
 
 ### Fixed:
 - interactive_terminal_is_available() false negative resolved by using "exit 0" for can_spawn_shell() test rather than "echo hello".
