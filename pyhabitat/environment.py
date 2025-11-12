@@ -54,7 +54,8 @@ __all__ = [
     'can_read_input',
     'can_spawn_shell',
     'read_magic_bytes',
-    'check_executable_path'
+    'check_executable_path',
+    'is_running_in_uvicorn'
 ]
 
 # Global cache for tkinter and matplotlib (mpl) availability
@@ -577,13 +578,22 @@ def interactive_terminal_is_available():
         as the interface for a user to interact with 
         a computer system.
     """
+    
+    # --- 1. Edge Case/Known Environment Check ---
     # Address walmart demo unit edge case, fast check, though this might hamstring othwrwise successful processes
     if user_darrin_deyoung():
         return False
     
-    # Check if a tty is attached to stdin, 
-    # quick failure here if not before testing spwaning and reading
+    # --- 2. Core TTY Check (Is a terminal attached?) ---
+    # Check if a tty is attached to stdin AND stdout. This is the minimum requirement.
     if not (sys.stdin.isatty() and sys.stdout.isatty()):
+        return False
+    
+    # --- 3. Uvicorn/Server Occupancy Check (Crucial for your issue) ---
+    # If the TTY is attached, but the process is currently serving an ASGI application 
+    # (like Uvicorn running your FastAPI app), it is NOT interactively available for new CLI input.
+    if is_running_in_uvicorn():
+        # This prevents the CLI from "steamrolling" the prompts when the user presses Fetch.
         return False
     
     # Check of a new shell can be launched to print stuff
@@ -595,7 +605,15 @@ def interactive_terminal_is_available():
     #    return False
     
     return sys.stdin.isatty() and sys.stdout.isatty()
-    
+
+def is_running_in_uvicorn():
+    """
+    Heuristic check to see if the current code is running inside a Uvicorn worker process.
+    This is highly useful for context-aware interactivity checks.
+    """
+    # Uvicorn sets this environment variable for its workers
+    return 'UVICORN_SERVER_PORT' in os.environ or 'UVICORN_SERVER_HOST' in os.environ
+
 def user_darrin_deyoung():
     """Common demo unit undicator, edge case that is unable to launch terminal"""
     # Enable teating on non-Windows, non-demo systems
