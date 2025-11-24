@@ -15,6 +15,9 @@ SOURCE_FILES = {
     "pyhabitat/cli.py": "pyhabitat",
     "pyhabitat/environment.py": "pyhabitat",
     "pyhabitat/utils.py": "pyhabitat",
+    "pyhabitat/report.py": "pyhabitat",
+    "pyhabitat/system_info.py": "pyhabitat",
+    "pyhabitat/version_info.py": "pyhabitat",
 }
 
 BUILD_ROOT = "pyhabitat-build"

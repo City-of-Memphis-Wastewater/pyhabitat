@@ -11,7 +11,7 @@ mkdir -p pyhabitat-build/pyhabitat
 
 # Copy only necessary files
 cp __main__.py pyproject.toml pyhabitat-build/
-cp pyhabitat/__init__.py pyhabitat/cli.py pyhabitat/environment.py pyhabitat/utils.py  pyhabitat-build/pyhabitat
+cp pyhabitat/__init__.py pyhabitat/cli.py pyhabitat/environment.py pyhabitat/utils.py pyhabitat/report.py pyhabitat/system_info.py pyhabitat/version_info.py  pyhabitat-build/pyhabitat
 
 # Build the .pyz
 OUTPUT="dist/pyhabitat-${VERSION}.pyz"

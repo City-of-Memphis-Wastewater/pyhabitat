@@ -33,6 +33,7 @@ from .environment import (
     can_spawn_shell,
     is_ascii,
     is_binary,
+    is_running_in_uvicorn
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -59,6 +60,7 @@ __all__ = [
     'is_pipx',
     'is_python_script',
     'interactive_terminal_is_available',
+    'is_running_in_uvicorn',
     'web_browser_is_available',
     'edit_textfile',
     'interp_path',
@@ -68,7 +70,9 @@ __all__ = [
     'is_ascii',
     'is_binary',
     'main',
-    'report'
+    'report',
+    'is_running_in_uvicorn',
+    
 ]
 
 __version__ = get_version()
