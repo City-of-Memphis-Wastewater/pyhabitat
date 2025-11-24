@@ -55,7 +55,7 @@ __all__ = [
     'can_spawn_shell',
     'read_magic_bytes',
     'check_executable_path',
-    'is_running_in_uvicorn'
+    'is_running_in_uvicorn',
 ]
 
 # Global cache for tkinter and matplotlib (mpl) availability
@@ -767,7 +767,13 @@ def edit_textfile(path: Path | str | None = None) -> None:
     	# --- Standard Unix-like Systems (Conversion + Default App) ---
         elif on_linux():
             _run_dos2unix(path) # Safety conversion for user-defined console apps
-            subprocess.run(['xdg-open', str(path)])
+            try:
+                # Attempt GUI / desktop default opener first
+                subprocess.run(['xdg-open', str(path)])
+            except Exception:
+                # Explicit fallback to nano
+                print("xdg-open unavailable; falling back to nano.")
+                subprocess.run(['nano', str(path)])
         elif on_apple():
             _run_dos2unix(path) # Safety conversion for user-defined console apps
             subprocess.run(['open', str(path)])

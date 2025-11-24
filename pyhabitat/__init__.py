@@ -33,6 +33,7 @@ from .environment import (
     can_spawn_shell,
     is_ascii,
     is_binary,
+    is_running_in_uvicorn
 )
 
 # Optional: Set __all__ for explicit documentation and cleaner imports
@@ -70,6 +71,7 @@ __all__ = [
     'is_binary',
     'main',
     'report',
+    'is_running_in_uvicorn',
     
 ]
 
