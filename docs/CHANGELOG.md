@@ -4,9 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
 ---
 
-## [1.0.37] - 2025-11-24
+## [1.0.40] - 2025-11-24
+
+### Fixed: 
+- Added import of ./pyhabitat/system_info.py, ./pyhabitat/version_info.py, and ./pyhabitat/report.py to the files that are copied during the PYZ creation, for build_pyz.py and build_pyz.sh.
+- This resolves the reference issues when running the PYZ.
+
+---
+
+## [1.0.38] - 2025-11-24
 
 ### Fixed:
 - Nano fallback for on_linx() if xdg-open fails (like for WSL), in edit_textfile()
