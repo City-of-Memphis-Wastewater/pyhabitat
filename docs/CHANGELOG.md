@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.37] - 2025-11-24
+
+### Fixed:
+- Nano fallback for on_linx() if xdg-open fails (like for WSL), in edit_textfile()
+
+---
+
 ## [1.0.37] - 2025-11-10
 
 ### Added:

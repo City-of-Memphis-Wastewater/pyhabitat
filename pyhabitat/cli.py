@@ -60,7 +60,7 @@ def run_cli():
                     doc = func.__doc__ or "(no description)"
                     print(f"{name}: {doc}")
         return
-                  
+    '''
     if args.command:
         func = getattr(pyhabitat, args.command, None)
         if callable(func):
@@ -69,5 +69,17 @@ def run_cli():
         else:
             print(f"Unknown function: {args.command}")
             return # Exit after reporting the unknown command
+    '''    
+    if args.command:
+        func = getattr(pyhabitat, args.command, None)
+        if callable(func):
+            kwargs = {}
+            if args.path:
+                kwargs['path'] = Path(args.path)
+            if args.debug:
+                kwargs['debug'] = args.debug
+            print(func(**kwargs))
+            return
+
 
     report(path=Path(args.path) if args.path else None, debug=args.debug)
