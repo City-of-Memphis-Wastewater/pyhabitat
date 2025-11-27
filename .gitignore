@@ -41,6 +41,7 @@ version.rc
 *.whl
 *.tar.gz
 *.cfg
+*.exe
 
 # Other
 !workspaces/
