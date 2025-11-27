@@ -295,7 +295,7 @@ def on_windows() -> bool:
 
 def on_apple() -> bool:
     """Detect if running on Apple."""
-    return platform.system() == 'Darwin'
+    return (platform.system() == 'Darwin') or on_ish_alpine()
 
 def on_ish_alpine() -> bool:
     """Detect if running in iSH Alpine environment on iOS."""
