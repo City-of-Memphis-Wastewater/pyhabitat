@@ -16,6 +16,7 @@ import zipfile
 import logging
 import getpass
 import select 
+from functools import cache
 
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:
@@ -51,102 +52,98 @@ __all__ = [
     'interp_path',
     'main',
     'user_darrin_deyoung',
-    'can_read_input',
     'can_spawn_shell',
     'read_magic_bytes',
     'check_executable_path',
     'is_running_in_uvicorn',
 ]
 
-# Global cache for tkinter and matplotlib (mpl) availability
-_TKINTER_AVAILABILITY: bool | None = None
-_MATPLOTLIB_EXPORT_AVAILABILITY: bool | None = None
-_MATPLOTLIB_WINDOWED_AVAILABILITY: bool | None = None
-_CAN_SPAWN_SHELL: bool | None = None
-_CAN_READ_INPUT: bool | None = None
+def clear_all_caches()->None:
+    """Clear every @cache used in pyhabitat, and call from CLI using --clear-cache"""
+    tkinter_is_available.cache_clear()
+    matplotlib_is_available_for_gui_plotting.cache_clear()
+    matplotlib_is_available_for_headless_image_export.cache_clear()
+    can_spawn_shell.cache_clear()
+    can_spawn_shell_lite.cache_clear()
+
 
 # --- GUI CHECKS ---
+@cache # alt to globals
 def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
     """Check if Matplotlib is available AND can use a GUI backend for a popup window."""
-    global _MATPLOTLIB_WINDOWED_AVAILABILITY
-
-    if _MATPLOTLIB_WINDOWED_AVAILABILITY is not None:
-        return _MATPLOTLIB_WINDOWED_AVAILABILITY
-
     # 1. Termux exclusion check (assume no X11/GUI)
     # Exclude Termux UNLESS the user explicitly provides termux_has_gui=True.
     if on_termux() and not termux_has_gui: 
-        _MATPLOTLIB_WINDOWED_AVAILABILITY = False
         return False
     
     # 2. Tkinter check (The most definitive check for a working display environment)
     # If tkinter can't open a window, Matplotlib's TkAgg backend will fail.
     if not tkinter_is_available():
-        _MATPLOTLIB_WINDOWED_AVAILABILITY = False
         return False
 
     # 3. Matplotlib + TkAgg check
     try:
         import matplotlib
-        # Force the common GUI backend. At this point, we know tkinter is *available*.
-        # # 'TkAgg' is often the most reliable cross-platform test.
+        import matplotlib.pyplot as plt
+        # Only switch to TkAgg is no interactive backend is already active.
+        # At this point, we know tkinter is *available*.
+        current_backend = matplotlib.get_backend().lower()
+        if current_backend in () or 'inline' in current_backend:
+            # Non-interactive, safe to switch
+            # 'TkAgg' is often the most reliable cross-platform test.
+            matplotlib.use('TkAgg', force=True)
+        else:
+            # already using QtAgg, Gtk3Agg, etc.
+            matplotlib.use(current_backend, force=True)
+        
         # 'TkAgg' != 'Agg'. The Agg backend is for non-gui image export. 
         if matplotlib.get_backend().lower() != 'tkagg':
             matplotlib.use('TkAgg', force=True)
-        import matplotlib.pyplot as plt
+        
         # A simple test call to ensure the backend initializes
         # This final test catches any edge cases where tkinter is present but 
         # Matplotlib's *integration* with it is broken
+        
         plt.figure()
-        plt.close()
+        plt.close('all')
 
-        _MATPLOTLIB_WINDOWED_AVAILABILITY = True
         return True
 
     except Exception:
         # Catches Matplotlib ImportError or any runtime error from the plt.figure() call
-        _MATPLOTLIB_WINDOWED_AVAILABILITY = False
         return False
     
-
+@cache
 def matplotlib_is_available_for_headless_image_export():
     """Check if Matplotlib is available AND can use the Agg backend for image export."""
-    global _MATPLOTLIB_EXPORT_AVAILABILITY
-    
-    if _MATPLOTLIB_EXPORT_AVAILABILITY is not None:
-        return _MATPLOTLIB_EXPORT_AVAILABILITY
-    
     try:
         import matplotlib
+        import matplotlib.pyplot as plt
         # The Agg backend (for PNG/JPEG export) is very basic and usually available 
         # if the core library is installed. We explicitly set it just in case.
         # 'Agg' != 'TkAgg'. The TkAgg backend is for interactive gui image display. 
         matplotlib.use('Agg', force=True) 
-        import matplotlib.pyplot as plt
         
         # A simple test to ensure a figure can be generated
-        plt.figure()
+        fig = plt.figure()
         # Ensure it can save to an in-memory buffer (to avoid disk access issues)
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        plt.close()
-        
-        _MATPLOTLIB_EXPORT_AVAILABILITY = True
+        fig.savefig(io.BytesIO(), format='png')
+        plt.close(fig)
         return True
         
-    except Exception:
-        _MATPLOTLIB_EXPORT_AVAILABILITY = False
+    except Exception as e:
         return False
-        
+    finally:
+        # guarantee no figures leak
+        try:
+            import matplotlib.pyplot as plt
+            plt.close('all')
+        except:
+            pass
+
+@cache
 def tkinter_is_available() -> bool:
     """Check if tkinter is available and can successfully connect to a display."""
-    global _TKINTER_AVAILABILITY
-    
-    # 1. Return cached result if already calculated
-    if _TKINTER_AVAILABILITY is not None:
-        return _TKINTER_AVAILABILITY
-
-    # 2. Perform the full, definitive check
     try:
         import tkinter as tk
         
@@ -157,11 +154,9 @@ def tkinter_is_available() -> bool:
         root.update()
         root.destroy()
         
-        _TKINTER_AVAILABILITY = True
         return True
     except Exception:
         # Fails if: tkinter module is missing OR the display backend is unavailable
-        _TKINTER_AVAILABILITY = False
         return False
 
 # --- ENVIRONMENT AND OPERATING SYSTEM CHECKS ---
@@ -276,6 +271,12 @@ def on_wsl():
     except (IOError, OSError):
     # This block would catch the PermissionError, an FileNotFound
         pass
+
+    try:
+        if 'microsoft' in platform.uname().release.lower():
+            return True
+    except:
+        pass    
     return False
 
 def on_pydroid():
@@ -600,19 +601,15 @@ def interactive_terminal_is_available():
     if not can_spawn_shell():
         return False
     
-    # A user can interact with a console, providing input
-    #if not can_read_input():
-    #    return False
-    
     return sys.stdin.isatty() and sys.stdout.isatty()
 
 def is_running_in_uvicorn():
+    # Uvicorn, Hypercorn, Daphne, etc.
     """
     Heuristic check to see if the current code is running inside a Uvicorn worker process.
     This is highly useful for context-aware interactivity checks.
     """
-    # Uvicorn sets this environment variable for its workers
-    return 'UVICORN_SERVER_PORT' in os.environ or 'UVICORN_SERVER_HOST' in os.environ
+    return getattr(sys, '_uvicorn_workers', None) is not None
 
 def user_darrin_deyoung():
     """Common demo unit undicator, edge case that is unable to launch terminal"""
@@ -628,93 +625,40 @@ def user_darrin_deyoung():
     username = getpass.getuser()
     return username.lower() == "darrin deyoung"
 
+@cache
+def can_spawn_shell_lite()->bool: 
+    """Check if a shell command can be executed successfully.""" 
+    return shutil.which('cmd.exe' if on_windows() else "sh") is not None
+
+@cache
 def can_spawn_shell(override_known:bool=False)->bool: 
     """Check if a shell command can be executed successfully.""" 
-    global _CAN_SPAWN_SHELL
-    if _CAN_SPAWN_SHELL is not None and override_known is False:
-        return _CAN_SPAWN_SHELL
-
+    
+    cmd = "cmd.exe /c exit 0" if on_windows() else "true"
     try:
         # Use a simple, universally applicable command with shell=True
         # 'true' on Linux/macOS, or a basic command on Windows via cmd.exe
         # A simple 'echo' or 'exit 0' would also work
         result = subprocess.run( 
-            'exit 0',  # A shell-internal command that succeeds on most shells
+            cmd,
+            shell=True, # <--- ESSENTIAL for cross-platform reliability
             stdout=subprocess.PIPE, 
             stderr=subprocess.PIPE, 
-            timeout=2, 
-            shell=True # <--- ESSENTIAL for cross-platform reliability
+            timeout=3,
         )
+        success  = (result.returncode == 0)
         
-        _CAN_SPAWN_SHELL = result.returncode == 0
-        return _CAN_SPAWN_SHELL 
-    
     except subprocess.TimeoutExpired: 
         print("Shell spawn failed: TimeoutExpired")
-        _CAN_SPAWN_SHELL = result.returncode == 0
-        return _CAN_SPAWN_SHELL
+        success = False
     except subprocess.SubprocessError: 
         print("Shell spawn failed: SubprocessError") 
-        _CAN_SPAWN_SHELL = False
-        return False 
+        success = False
     except OSError: 
-        _CAN_SPAWN_SHELL = False
         print("Shell spawn failed: OSError (likely permission or missing binary)") 
-    return  False
-    
-def can_read_input(override_known:bool=False)-> bool:
-    """Check if input is readable from stdin."""
-    global _CAN_READ_INPUT
-    if _CAN_READ_INPUT is not None and override_known is False:
-        return _CAN_READ_INPUT
-    
-    # --- 1. Windows Specific Check (msvcrt) ---
-    if msvcrt is not None and sys.stdin.isatty():
-        try:
-            # msvcrt.kbhit() checks if a keyboard hit is present
-            # We don't read the input yet, just check if it's there
-            _CAN_READ_INPUT = msvcrt.kbhit()
-            # If kbhit returns True, it means a key press is waiting.
-            # We assume if the terminal *is* a TTY, it *can* read input.
-            # We can't actually call input() without blocking, so we check TTY instead.
-            if _CAN_READ_INPUT:
-                return True
-            
-            # Since we are checking if a *user can* interact, if we are in a TTY, 
-            # we assume the capability exists, even if nothing is currently buffered.
-            # This prevents the false negative when no key is pressed.
-            _CAN_READ_INPUT = True
-            return True
+        success = False
+    return success
 
-        except Exception as e:
-            # Catch errors in the kbhit check itself
-            logging.debug(f"msvcrt check failed: {e}")
-            pass # Fall through to the select check
-
-    # --- 2. POSIX/General Check (select) ---
-    # This block is reliable on Linux/macOS and other POSIX systems.
-    try:
-        # _CAN_READ_INPUT is assigned the read-ready list ([] or [sys.stdin])
-        # The return value is then the boolean conversion of that list's truthiness.
-        # 1. select.select(...) returns a 3-element tuple.
-        # 2. [0] gets the read-ready list (rlist).
-        # 3. Wrapping the result in bool() converts the list's truth value:
-        #    - [] becomes False
-        #    - [sys.stdin] becomes True
-        _CAN_READ_INPUT = select.select([sys.stdin], [], [], 0.1)[0]
-        # Return the boolean value of the list: True if [sys.stdin], False if []
-        return bool(_CAN_READ_INPUT) # <--- Requied to convert list to boolean
-    except ValueError:
-        logging.debug("Input check failed: ValueError (invalid file descriptor)")
-        _CAN_READ_INPUT = False
-        return False
-    except OSError:
-        logging.debug("Input check failed: OSError (likely I/O issue)")
-        _CAN_READ_INPUT = False
-        return False
-    
-    # Final fallback: if nothing worked, assume False
-    return False
                 
 # --- Browser Check ---
 def web_browser_is_available() -> bool:
@@ -724,16 +668,20 @@ def web_browser_is_available() -> bool:
         webbrowser.get()
         return True
     except webbrowser.Error:
-        # Fallback needed. Check for external launchers.
-        # 2. Termux specific check
-        if on_termux() and shutil.which("termux-open-url"):
-            return True
-        # 3. General Linux check
-        if shutil.which("xdg-open"):
-            return True
-        return False
+        pass
+    except Exception as e:
+        pass
 
-    
+    # Fallback needed. Check for external launchers.
+    # 2. Termux specific check
+    if on_termux() and shutil.which("termux-open-url"):
+        return True
+    # 3. General Linux check
+    if shutil.which("xdg-open") or shutil.which("open") or shutil.which("start"):
+        return True
+    return False
+
+
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
 def edit_textfile(path: Path | str | None = None) -> None:
 #def open_text_file_for_editing(path): # defunct function name as of 1.0.16

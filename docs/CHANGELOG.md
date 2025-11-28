@@ -7,6 +7,22 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.42] - 2025-11-27
+
+### Changed:
+- Converted globals in environment.py nto functools.cache decorator, as the mechanism to prevent rechecking.
+- Allow matplotlbit checks to be compatible with QtAgg or Gtk3Agg rather than forcing TkAgg.
+
+### Added:
+- can_spwan_shell_lite(). Supposedly it is a complete breakfast but we will see.
+- `--clear-cache` arg added to CLI to forcibly clear the functools.cache elements.
+- pyhabitat.environment.clear_all_caches(), which is called by the `--clear-cache` CLI flag. 
+
+### Removed:
+- can_read_input(). Why? It was malformed and not useful for contributing to the can_spawn_shell() check.
+
+---
+
 ## [1.0.40] - 2025-11-24
 
 ### Fixed: 

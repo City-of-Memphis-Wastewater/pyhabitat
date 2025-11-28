@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 from .report import report
+from . import environment 
 from .environment import * # to enable CLI --list
 from .utils import get_version
 #import __init__ as pyhabitat # works if everything is in root, v1.0.28
@@ -36,6 +37,12 @@ def run_cli():
         action="store_true",
         help="List available callable functions in pyhabitat"
     )
+    # Add the path argument
+    parser.add_argument(
+        "--clear-cache",
+        action = 'store_true',
+        help="Force fresh environment checks with cached results.",
+    )
     #parser.add_argument(
     #    "--verbose",
     #    action="store_true",
@@ -47,9 +54,12 @@ def run_cli():
         nargs="?",
         help="Function name to run (or use --list)",
     )
-
                 
     args = parser.parse_args()
+
+    if args.clear_cache:
+        environment.clear_all_caches() # 
+        print("All cached results cleared to allow for fresh checks.")
 
     if args.list:
         for name in pyhabitat.__all__:
