@@ -54,13 +54,15 @@ def run_cli():
         nargs="?",
         help="Function name to run (or use --list)",
     )
+
                 
     args = parser.parse_args()
 
     if args.clear_cache:
         environment.clear_all_caches() # 
         print("All cached results cleared to allow for fresh checks.")
-
+        return # avoid running the report
+    
     if args.list:
         for name in pyhabitat.__all__:
             func = getattr(pyhabitat, name, None)
