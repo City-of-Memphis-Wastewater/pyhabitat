@@ -10,6 +10,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.0.42] - 2025-11-27
 
 ### Changed:
+- Alter build_executible.py to build .spec files in /build/ and to not inclue tkinter or matplotlib in the pyinstaller build.
+
+---
+
+## [1.0.42] - 2025-11-27
+
+### Changed:
 - Converted globals in environment.py nto functools.cache decorator, as the mechanism to prevent rechecking.
 - Allow matplotlbit checks to be compatible with QtAgg or Gtk3Agg rather than forcing TkAgg.
 
