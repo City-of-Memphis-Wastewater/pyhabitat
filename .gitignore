@@ -33,7 +33,7 @@ logs/
 
 # PyInstaller / Build Artifacts
 dist/
-#pyhabitat-build/
+pyhabitat-build/
 build/
 *.spec
 version.rc
