@@ -92,6 +92,10 @@ def run_cli():
                 kwargs['debug'] = args.debug
             print(func(**kwargs))
             return
+        else:
+            # necessary to avoid printing report if specific function matching the command is not found
+            print(f"Function not callable. Check spelling: {args.command}")
+            return
 
 
     report(path=Path(args.path) if args.path else None, debug=args.debug)
