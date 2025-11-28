@@ -46,17 +46,35 @@ def run_pyinstaller(exe_name):
     if not pyinstaller_exe.exists():
         raise SystemExit(f"PyInstaller not found at {pyinstaller_exe}. Install it in your venv.")
 
+    # Define modules to exclude for smaller binary size.
+    exclusions = [
+        "tkinter",
+        "matplotlib",
+        # Add other standard library modules PyHabitat checks but doesn't need to run itself
+    ]
+    
+    exclusion_flags = [f"--exclude-module={mod}" for mod in exclusions] # CHANGED <-------------------------
+
+    # Use the --specpath argument to move the .spec file output to the build folder.
+    specpath_flag = ["--specpath", str(build_dir)] # CHANGED <-------------------------
+
+    # Ensure the build directory exists before PyInstaller is run and spec file is written.
+    build_dir.mkdir(parents=True, exist_ok=True) # CHANGED <-------------------------
+
     cmd = [
         str(pyinstaller_exe),
         "--onefile",
         "--name",
         exe_name,
+        *specpath_flag,
+        *exclusion_flags,
         main_script
     ]
 
     try:
         subprocess.run(cmd, check=True)
         print(f"Build complete! EXE is in {dist_dir}")
+        print(f"Spec file is in: {build_dir}")
     except subprocess.CalledProcessError as e:
         print("Build failed!")
         print(e)
