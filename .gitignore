@@ -54,3 +54,5 @@ src/exploratory/
 Postman*
 .dockerignore
 .python-version
+
+uv.lock
