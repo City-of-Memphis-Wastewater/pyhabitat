@@ -1,0 +1,46 @@
+name: Build and push multi-arch pyhabitat image
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'      # triggers on v1.0.37, v2.1.0, etc.
+      - 'v*.*.*-*'    # also allows pre-releases like v1.0.37-rc1
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: tag
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build and push multi-arch image
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t ghcr.io/city-of-memphis-wastewater/pyhabitat:${{ steps.tag.outputs.version }} \
+            -t ghcr.io/city-of-memphis-wastewater/pyhabitat:latest \
+            -f Dockerfile.multi-dev . \
+            --push
+
