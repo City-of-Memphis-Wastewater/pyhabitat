@@ -4,10 +4,9 @@ from pathlib import Path
 import os
 
 try:
-    import distro  # external package, best for Linux detection
+    import distro  # external package, best for Linux detection, but pyhabitat doesnt use external packages
 except ImportError:
     distro = None
-
 
 class SystemInfo:
     """Detects the current OS, distro, and version information."""

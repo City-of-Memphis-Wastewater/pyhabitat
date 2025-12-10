@@ -1,5 +1,5 @@
 # ./__init__.py
-from .utils import get_version
+from .version_info import get_package_version as version
 from .report import report
 from .environment import (
     matplotlib_is_available_for_gui_plotting,
@@ -70,7 +70,8 @@ __all__ = [
     'main',
     'report',
     'is_running_in_uvicorn',
+    'version'
     
 ]
 
-__version__ = get_version()
+__version__ = version()

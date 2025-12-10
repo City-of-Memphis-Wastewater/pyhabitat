@@ -3,13 +3,13 @@ from pathlib import Path
 from .report import report
 from . import environment 
 from .environment import * # to enable CLI --list
-from .utils import get_version
+from .version_info import get_package_version
 #import __init__ as pyhabitat # works if everything is in root, v1.0.28
 import pyhabitat # refers to the folder
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
-    current_version = get_version()
+    current_version = get_package_version()
     parser = argparse.ArgumentParser(
         description="PyHabitat: Python environment and build introspection"
     )
