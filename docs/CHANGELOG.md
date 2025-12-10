@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.48] - 2025-12-09
+
+### Fixed:
+- Version checks had relied on read_text(), which is no good for binaries. Incorporate zipimport and  _read_embedded_version() to handle this.
+
+---
+
 
 ## [1.0.47] - 2025-12-09
 

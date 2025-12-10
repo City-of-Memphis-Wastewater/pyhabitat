@@ -4,17 +4,36 @@ import sys
 from importlib.metadata import version, PackageNotFoundError
 from pathlib import Path  
 import re
-
+import zipimport
 
 from .system_info import SystemInfo
 
 # -- Versioning --
 PIP_PACKAGE_NAME = "pyhabitat"
+# Auto-detected at build time (fallback)
+FALLBACK_VERSION = "dev"
 
+def _running_inside_pyz() -> bool:
+    return isinstance(__loader__, zipimport.zipimporter)
+
+def _read_embedded_version() -> str | None:
+    try:
+        data = Path(__file__).with_name("VERSION").read_text()
+        return data.strip()
+    except Exception:
+        return None
+    
+
+def find_pyproject(start: Path) -> Path | None:
+    for p in start.resolve().parents:
+        candidate = p / "pyproject.toml"
+        if candidate.exists():
+            return candidate
+    return None
 
 def get_package_name() -> str:
     try:
-        pyproject = Path(__file__).parent.parent / "pyproject.toml"
+        pyproject = find_pyproject(Path(__file__))
         content = pyproject.read_text(encoding="utf-8")
         match = re.search(r'^\s*name\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
         if match:
@@ -23,18 +42,8 @@ def get_package_name() -> str:
         pass
     return "pyhabitat"
 
-try:
-    __version__ = version(PIP_PACKAGE_NAME)
 
-except PackageNotFoundError:
-    # fallback if running from source
-    try:
-            with open(Path(__file__).parent / "VERSION") as f:
-                __version__ = f.read().strip()
-    except FileNotFoundError:
-        __version__ = "dev" 
-
-def get_package_version() -> str:
+def get_version_for_build() -> str:
     return get_version_from_pyproject()
 
 def get_version_from_pyproject() -> str:
@@ -45,13 +54,14 @@ def get_version_from_pyproject() -> str:
         [project]
         version = "0.1.0"
     """
-    pyproject = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject = find_pyproject(Path(__file__))
+    
 
     if not pyproject.exists():
         return "Unknown (pyproject.toml missing)"
 
     text = pyproject.read_text(encoding="utf-8")
-
+    #print(text)
     # 1. Match PEP 621 style:
     #    version = "0.1.0" inside a [project] table
     project_section = re.search(
@@ -86,6 +96,34 @@ def get_version_from_pyproject() -> str:
     # fallback
     return "Unknown (version not found)"
 
+def get_package_version() -> str:
+    """
+    Correct priority:
+    1. pyproject.toml (local source)
+    2. embedded VERSION file (inside .pyz)
+    3. installed package metadata (pip)
+    4. fallback
+    """
+
+    # 1. Local source tree → pyproject.toml
+    v = get_version_from_pyproject()
+    if v and not v.startswith("Unknown"):
+        return v
+
+    # 2. Running inside pyz
+    if _running_inside_pyz():
+        v = _read_embedded_version()
+        return v or FALLBACK_VERSION
+
+    # 3. Installed package
+    try:
+        return version(PIP_PACKAGE_NAME)
+    except PackageNotFoundError:
+        pass
+
+    # 4. Default
+    return FALLBACK_VERSION
+
 
 def get_python_version():
     py_major = sys.version_info.major
@@ -96,6 +134,8 @@ def get_python_version():
 def form_dynamic_binary_name(package_name: str, package_version: str, py_version: str, os_tag: str, arch: str) -> str:    
     # Use hyphens for the CLI/EXE/ELF name
     return f"{package_name}-{package_version}-{py_version}-{os_tag}-{arch}"
+
+__version__ = get_package_version()
 
 if __name__ == "__main__":
     package_name = get_package_name()

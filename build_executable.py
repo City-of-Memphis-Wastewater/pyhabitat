@@ -9,13 +9,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pyhabitat.version_info import get_package_name, get_package_version, get_python_version, form_dynamic_binary_name
+from pyhabitat.version_info import get_package_name, get_package_version, get_version_for_build, get_python_version, form_dynamic_binary_name
 from pyhabitat.system_info import SystemInfo
 
 # Config
 
-VERSION = get_package_version()
-
+VERSION = get_version_for_build()
 
 main_script = "__main__.py"
 dist_dir = Path("dist")
@@ -81,7 +80,7 @@ def run_pyinstaller(exe_name):
 
 if __name__ == "__main__":
     package_name = get_package_name()
-    package_version = get_package_version()
+    package_version = get_version_for_build()
     py_version = get_python_version()
 
     sysinfo = SystemInfo()

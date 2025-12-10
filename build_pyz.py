@@ -32,7 +32,7 @@ def run_build():
         print("1. Extracting version...")
         # Use sys.executable for cross-platform Python interpreter
         result = subprocess.run(
-            [sys.executable, '-c', 'from pyhabitat.version_info import get_package_version; print(get_package_version())'],
+            [sys.executable, '-c', 'from pyhabitat.version_info import get_version_for_build; print(get_version_for_build())'],
             capture_output=True,
             text=True,
             check=True # Raise exception on error (equivalent to $ErrorActionPreference = "Stop")
