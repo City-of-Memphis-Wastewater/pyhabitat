@@ -3,9 +3,9 @@ name: Build and push multi-arch pyhabitat image
 on:
   push:
     tags:
-      - 'v*.*.*'      # triggers on v1.0.37, v2.1.0, etc.
-      - 'v*.*.*-*'    # also allows pre-releases like v1.0.37-rc1
-  workflow_dispatch: # allows manual trigger from GitHub UI
+      - 'v*.*.*'
+      - 'v*.*.*-*'
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -35,12 +35,13 @@ jobs:
         id: tag
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Build and push multi-arch image
+      - name: Build and push
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             -t ghcr.io/city-of-memphis-wastewater/pyhabitat:${{ steps.tag.outputs.version }} \
             -t ghcr.io/city-of-memphis-wastewater/pyhabitat:latest \
             -f Dockerfile.multi-dev . \
-            --push
+            --push \
+            --label "org.opencontainers.image.source=https://github.com/city-of-memphis-wastewater/pyhabitat"
 
