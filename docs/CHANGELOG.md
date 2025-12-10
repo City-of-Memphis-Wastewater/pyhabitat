@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.51] - 2025-12-10
+
+### Added:
+- `.github/workflows/docker.yml`
+
+---
+
 ## [1.0.48] - 2025-12-09
 
 ### Fixed:
