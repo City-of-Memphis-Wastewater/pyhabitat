@@ -11,6 +11,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ### Fixed:
 - Clean up spare imports from utils.
+- Remove "GUI" as a keyword in the pyproject.toml.
 
 ### Removed:
 - Remove the utils.py file after improving and migrating all contents to version_info.py.

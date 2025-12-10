@@ -7,7 +7,6 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyhabitat"
 version = "1.0.47"
-#dynamic = ["version"] 
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
@@ -15,7 +14,7 @@ description = "A lightweight library for detecting system environment, GUI, and 
 readme = "README.md"
 requires-python = ">=3.7"
 license = "MIT"
-keywords = ["environment", "os-detection", "gui", "build-system"]
+keywords = ["environment", "os-detection", "build-system"]
 classifiers=[
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
