@@ -16,7 +16,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.0.48] - 2025-12-09
 
 ### Fixed:
-- Version checks had relied on read_text(), which is no good for binaries. Ensure that a VERSION file is placed in the build/ directory, and referenced properly with `f"--add-data={version_file.resolve()}:."`
+- Version checks had relied on read_text(), which is no good for binaries. 
+- Ensure that a VERSION file is placed in the build/ directory, and referenced properly with `f"--add-data={version_file.resolve()}:."`
 
 ---
 
