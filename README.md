@@ -277,7 +277,7 @@ Standard python -m build creates a distributable wheel and source archive suitab
 ---
 
 
-elf 🤝 Contributing
+🤝 Contributing
 
 
 Contributions are welcome\! If you find an environment or build system that is not correctly detected (e.g., a new container or a specific bundler), please open an issue or submit a pull request with the relevant detection logic.
