@@ -42,7 +42,7 @@ version.rc
 *.tar.gz
 *.cfg
 *.exe
-
+VERSION
 # Other
 !workspaces/
 !src/
