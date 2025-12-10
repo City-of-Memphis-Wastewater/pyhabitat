@@ -14,7 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
 
@@ -23,16 +22,16 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          # First push → use PAT, after that you can switch back to GITHUB_TOKEN
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Build and push
         run: |
           TAG=${GITHUB_REF#refs/tags/v}
+          LOWER_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            -t ghcr.io/${{ github.actor }}/pyhabitat:$TAG \
-            -t ghcr.io/${{ github.actor }}/pyhabitat:latest \
+            -t ghcr.io/$LOWER_OWNER/pyhabitat:$TAG \
+            -t ghcr.io/$LOWER_OWNER/pyhabitat:latest \
             -f Dockerfile.multi-dev . \
             --push
 
