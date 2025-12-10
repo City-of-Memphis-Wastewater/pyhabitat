@@ -14,11 +14,13 @@ from pyhabitat.system_info import SystemInfo
 
 # Config
 
-VERSION = get_version_for_build()
-
 main_script = "__main__.py"
 dist_dir = Path("dist")
 build_dir = Path("build")
+
+build_dir.mkdir(parents=True, exist_ok=True)
+version_file = Path("VERSION")
+version_file.write_text(get_version_for_build(), encoding="utf-8")
 
 def clean(exe_name):
     """Remove only the specific output executable if it exists."""
@@ -64,6 +66,7 @@ def run_pyinstaller(exe_name):
         "--onefile",
         "--name",
         exe_name,
+        f"--add-data={version_file.resolve()}:.",
         *specpath_flag,
         *exclusion_flags,
         main_script

@@ -4,7 +4,6 @@ import sys
 from importlib.metadata import version, PackageNotFoundError
 from pathlib import Path  
 import re
-import zipimport
 
 from .system_info import SystemInfo
 
@@ -13,16 +12,22 @@ PIP_PACKAGE_NAME = "pyhabitat"
 # Auto-detected at build time (fallback)
 FALLBACK_VERSION = "dev"
 
-def _running_inside_pyz() -> bool:
-    return isinstance(__loader__, zipimport.zipimporter)
+
+def _running_inside_pyinstaller() -> bool:
+    return hasattr(sys, "_MEIPASS")
 
 def _read_embedded_version() -> str | None:
+    # Check PyInstaller runtime
+    if _running_inside_pyinstaller():
+        base = Path(sys._MEIPASS)  # temp folder where PyInstaller unpacks files
+    else:
+        base = Path(__file__).parent
+
     try:
-        data = Path(__file__).with_name("VERSION").read_text()
-        return data.strip()
+        return (base / "VERSION").read_text().strip()
     except Exception:
         return None
-    
+
 
 def find_pyproject(start: Path) -> Path | None:
     for p in start.resolve().parents:
@@ -57,7 +62,7 @@ def get_version_from_pyproject() -> str:
     pyproject = find_pyproject(Path(__file__))
     
 
-    if not pyproject.exists():
+    if not pyproject or not pyproject.exists():
         return "Unknown (pyproject.toml missing)"
 
     text = pyproject.read_text(encoding="utf-8")
@@ -99,21 +104,22 @@ def get_version_from_pyproject() -> str:
 def get_package_version() -> str:
     """
     Correct priority:
-    1. pyproject.toml (local source)
-    2. embedded VERSION file (inside .pyz)
+    
+    1. embedded VERSION file (inside .pyz)
+    2. pyproject.toml (local source)
     3. installed package metadata (pip)
     4. fallback
     """
 
-    # 1. Local source tree → pyproject.toml
+     # 1. Running inside a binary / .pyz
+    v = _read_embedded_version()
+    if v:
+        return v
+
+    # 2. Local source tree → pyproject.toml
     v = get_version_from_pyproject()
     if v and not v.startswith("Unknown"):
         return v
-
-    # 2. Running inside pyz
-    if _running_inside_pyz():
-        v = _read_embedded_version()
-        return v or FALLBACK_VERSION
 
     # 3. Installed package
     try:

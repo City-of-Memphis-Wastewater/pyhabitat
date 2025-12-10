@@ -9,7 +9,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.0.48] - 2025-12-09
 
 ### Fixed:
-- Version checks had relied on read_text(), which is no good for binaries. Incorporate zipimport and  _read_embedded_version() to handle this.
+- Version checks had relied on read_text(), which is no good for binaries. Ensure that a VERSION file is placed in the build/ directory, and referenced properly with `f"--add-data={version_file.resolve()}:."`
 
 ---
 
