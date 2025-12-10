@@ -14,7 +14,6 @@ SOURCE_FILES = {
     "pyhabitat/__init__.py": "pyhabitat",
     "pyhabitat/cli.py": "pyhabitat",
     "pyhabitat/environment.py": "pyhabitat",
-    "pyhabitat/utils.py": "pyhabitat",
     "pyhabitat/report.py": "pyhabitat",
     "pyhabitat/system_info.py": "pyhabitat",
     "pyhabitat/version_info.py": "pyhabitat",
@@ -29,11 +28,11 @@ def run_build():
     try:
         print("--- PyHabitat Cross-Platform Build ---")
         
-        # --- 1. Extract version from pyhabitat.utils ---
+        # --- 1. Extract version  ---
         print("1. Extracting version...")
         # Use sys.executable for cross-platform Python interpreter
         result = subprocess.run(
-            [sys.executable, '-c', 'from pyhabitat.utils import get_version; print(get_version())'],
+            [sys.executable, '-c', 'from pyhabitat.version_info import get_package_version; print(get_package_version())'],
             capture_output=True,
             text=True,
             check=True # Raise exception on error (equivalent to $ErrorActionPreference = "Stop")

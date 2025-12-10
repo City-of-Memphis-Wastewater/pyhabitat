@@ -9,13 +9,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pyhabitat.utils import get_version
 from pyhabitat.version_info import get_package_name, get_package_version, get_python_version, form_dynamic_binary_name
 from pyhabitat.system_info import SystemInfo
 
 # Config
 
-VERSION = get_version()
+VERSION = get_package_version()
 
 
 main_script = "__main__.py"

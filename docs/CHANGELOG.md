@@ -6,14 +6,24 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+
+## [1.0.47] - 2025-12-09
+
+### Fixed:
+- Clean up spare imports from utils.
+
+### Removed:
+- Remove the utils.py file after improving and migrating all contents to version_info.py.
+- Remove build_pyz.ps1 and build_pyz.sh.
+
+
+---
+
 ## [1.0.46] - 2025-12-09
 
 ### Changed:
 - Alter get_package_version code to work in the [project] context.
 - Migrate all version code to version_info.py
-
-### Removed:
-- Remove the utils.py file after improving and migrating all contents to version_info.py.
 
 ---
 
