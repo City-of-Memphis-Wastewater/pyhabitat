@@ -280,7 +280,7 @@ Standard python -m build creates a distributable wheel and source archive suitab
 🤝 Contributing
 
 
-Contributions are welcome\! If there is an environment or build system that is not correctly detected, or thst you would like to be added, please open an issue or submit a pull request with the relevant detection logic.
+Contributions are welcome\! If there is an environment or build system that is not correctly detected, or that you would like to have added, please open an issue or submit a pull request with the relevant detection logic.
 
 ## 📄 License
 
