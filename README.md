@@ -104,9 +104,9 @@ Key Question: "What could I do next?"
 
 | Function | Description |
 | :--- | :--- |
-| `edit_textfile(path)` | Opens a text file for editing using the default editor (Windows, Linux, macOS) or nano in Termux/iSH. In REPL mode, prints an error. Path argument (str or Path) uses Path.resolve() for stability. |
+| `edit_textfile(path)` | Opens a text file for editing using the default editor (Windows, Linux, macOS) or nano in Termux/iSH. Can be called from REPL mode. Path argument (str or Path) uses Path.resolve() for stability. |
 | `interp_path()` | Returns the path to the Python interpreter binary (sys.executable). Returns empty string if unavailable. |
-| `main()` | Prints a comprehensive environment report with sections: Interpreter Checks (sys.executable), Current Environment Check (sys.argv[0]), Current Build Checks (sys attributes), Operating System Checks (platform.system()), and Capability Checks. Run via `python -m pyhabitat` or `import pyhabitat; pyhabitat.main()` in the REPL. |
+| `report()` | Prints a comprehensive environment report with sections: Interpreter Checks (sys.executable), Current Environment Check (sys.argv[0]), Current Build Checks (sys attributes), Operating System Checks (platform.system()), and Capability Checks. Run via `python -m pyhabitat` or `import pyhabitat; pyhabitat.main()` in the REPL. |
 
 </details>
 
@@ -280,7 +280,7 @@ Standard python -m build creates a distributable wheel and source archive suitab
 🤝 Contributing
 
 
-Contributions are welcome\! If you find an environment or build system that is not correctly detected (e.g., a new container or a specific bundler), please open an issue or submit a pull request with the relevant detection logic.
+Contributions are welcome\! If there is an environment or build system that is not correctly detected, or thst you would like to be added, please open an issue or submit a pull request with the relevant detection logic.
 
 ## 📄 License
 
