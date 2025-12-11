@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.0.52] - 2025-12-10
+### Added:
+- Add SystemInfo to the pyhabitat.__init__
+
+---
+
 ## [1.0.51] - 2025-12-10
 
 ### Added:

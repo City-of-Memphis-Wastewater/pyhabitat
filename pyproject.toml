@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyhabitat"
-version = "1.0.51"
+version = "1.0.52"
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
@@ -34,11 +34,4 @@ pyhabitat = "pyhabitat.cli:run_cli"
 where = ["."]  
 include = ["pyhabitat*"] 
 
-#[project.optional-dependencies]
-#typer = ["click", "typer", "rich"]
 
-
-
-#[tool.setuptools_scm] 
-# This tells setuptools_scm to look at the git history/tags for the version
-#write_to = "pyhabitat/_version.py"
