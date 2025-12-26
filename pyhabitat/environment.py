@@ -17,6 +17,7 @@ import logging
 import getpass
 import select 
 from functools import cache
+from typing import Optional
 
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:
@@ -683,7 +684,77 @@ def web_browser_is_available() -> bool:
 
 
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
-def edit_textfile(path: Path | str | None = None) -> None:
+def edit_textfile(path: Path | str | None = None, background: Optional[bool] = None) -> None:
+    """
+    Opens a file with the environment's default application.
+    
+    Logic:
+    - If background is None: 
+        - Blocks (waits) if in REPL or Interactive Terminal (supports nano/vim).
+        - Runs backgrounded if in a GUI/headless environment.
+    - If background is True/False: Manual override.
+    
+    Ensures line-ending compatibility and dependency installation in 
+    constrained environments (Termux, iSH).
+    """
+    if path is None:
+        return
+    
+    path = Path(path).resolve()
+
+    # --- 1. Intelligent Context Detection ---
+    if background is None:
+        # Detect if we have a TTY/REPL to determine if blocking is necessary
+        if in_repl() or interactive_terminal_is_available():
+            is_async = False  
+        else:
+            is_async = True   
+    else:
+        is_async = background
+
+    # Choose runner: Popen for fire-and-forget, run for blocking
+    launcher = subprocess.Popen if is_async else subprocess.run
+
+    try:
+        # Windows: os.startfile is natively non-blocking
+        if on_windows():
+            os.startfile(path)
+            
+        # Termux (Android)
+        elif on_termux():
+            subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            _run_dos2unix(path)
+            subprocess.run(['nano', str(path)]) # Must block for console editor
+            
+        # iSH (iOS Alpine)
+        elif on_ish_alpine():
+            subprocess.run(['apk','add', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            _run_dos2unix(path)
+            subprocess.run(['nano', str(path)]) # Must block for console editor
+            
+        # Standard Desktop Linux
+        elif on_linux():
+            _run_dos2unix(path)
+            try:
+                # Use detected launcher for xdg-open (async in GUI, blocking in TTY)
+                launcher(['xdg-open', str(path)])
+            except Exception:
+                # Fallback to nano MUST block or it corrupts the shell session
+                print("xdg-open unavailable; falling back to nano.")
+                subprocess.run(['nano', str(path)])
+                
+        # macOS
+        elif on_apple():
+            _run_dos2unix(path)
+            launcher(['open', str(path)])
+            
+        else:
+            print("Unsupported operating system.")
+            
+    except Exception as e:
+        print(f"The file could not be opened: {e}")
+
+def edit_textfile_blocking(path: Path | str | None = None) -> None:
 #def open_text_file_for_editing(path): # defunct function name as of 1.0.16
     """
     Opens a file with the environment's default application (Windows, Linux, macOS)
