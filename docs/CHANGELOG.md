@@ -6,6 +6,24 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.1] - 2025-12-26
+### Added
+- Implemented a `src/` layout to improve package isolation and follow modern Python packaging best practices.
+- Moved `__main__.py` into the package namespace to support `python -m pyhabitat` execution.
+- Added a prioritized "Editor Ladder" to `edit_textfile` that favors lightweight standalone editors (gedit, mousepad, kate) over heavy IDEs (VS Code) to prevent workspace pollution.
+
+### Changed
+- Refactored `build_pyz.py` and `build_executable.py` to support the new `src/` directory structure.
+- Enhanced `edit_textfile` logic to provide a robust fallback to `nano` when `xdg-open` or GUI editors are unavailable, preventing shell crashes in headless environments.
+- Updated `pyproject.toml` to use `setuptools` find-package logic within the `src` directory.
+    
+### Fixed
+- Resolved a "bad interpreter" error in WSL caused by CRLF-encoded Windows shims taking priority over Linux binaries.
+- Corrected a PyInstaller argument ordering bug in the executable build script.    
+- Suppressed `xdg-open` error noise when system-level mailcap rules or file associations are missing.
+
+---
+
 ## [1.0.52] - 2025-12-10
 ### Added:
 - Add SystemInfo to the pyhabitat.__init__
