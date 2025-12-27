@@ -421,6 +421,7 @@ def is_windows_portable_executable(exec_path: Path | str | None = None, debug: b
             logging.debug(f"is_windows_portable_executable() = False (Exception: {e})")
         return False
 
+@cache
 def is_msix() -> bool:
     """
     Detect whether the current Python process is running inside an MSIX
@@ -433,9 +434,6 @@ def is_msix() -> bool:
 
     Returns:
         bool: True if running inside an MSIX/AppX package; False otherwise.
-
-    This function cannot be dual-use for introspection as well as checking arbitrary paths.
-    This function is only for introspection  and should accept no arguments.
     """
     if platform.system() != "Windows":
         return False

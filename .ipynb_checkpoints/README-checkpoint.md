@@ -86,7 +86,7 @@ These functions accept an optional path argument (Path or str), defaulting to sy
 | `is_elf(path=None)` | Returns `True` if the script or specified path is an ELF binary (Linux standalone executable, non-pipx). |
 | `is_pyz(path=None)` | Returns `True` if the script or specified path is a Python zipapp (.pyz, non-pipx). |
 | `is_windows_portable_executable(path=None)` | Returns `True` if the script or specified path is a Windows PE binary (MZ header, non-pipx). |
-| `is_msix()` | Returns `True` if the currently running software or the target path is an MSIX package, like distributed from the Microsoft Store. |
+| `is_msix(path=None)` | Returns `True` if the currently running software or the target path is an MSIX package, like distributed from the Microsoft Store. |
 | `is_macos_executable(path=None)` | Returns `True` if the script or specified path is a macOS Mach-O binary (non-pipx). |
 
 ### Capability Checking
