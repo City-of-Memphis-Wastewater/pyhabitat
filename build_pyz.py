@@ -8,15 +8,15 @@ from pathlib import Path
 # The key structure is (source_path, destination_dir_relative_to_build_root)
 SOURCE_FILES = {
     # Root files
-    "__main__.py": ".",
+    "src/pyhabitat/__main__.py": ".",
     "pyproject.toml": ".",
     # pyhabitat subdirectory files
-    "pyhabitat/__init__.py": "pyhabitat",
-    "pyhabitat/cli.py": "pyhabitat",
-    "pyhabitat/environment.py": "pyhabitat",
-    "pyhabitat/report.py": "pyhabitat",
-    "pyhabitat/system_info.py": "pyhabitat",
-    "pyhabitat/version_info.py": "pyhabitat",
+    "src/pyhabitat/__init__.py": "pyhabitat",
+    "src/pyhabitat/cli.py": "pyhabitat",
+    "src/pyhabitat/environment.py": "pyhabitat",
+    "src/pyhabitat/report.py": "pyhabitat",
+    "src/pyhabitat/system_info.py": "pyhabitat",
+    "src/pyhabitat/version_info.py": "pyhabitat",
 }
 
 BUILD_ROOT = "pyhabitat-build"

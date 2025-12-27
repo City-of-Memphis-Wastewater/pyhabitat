@@ -28,9 +28,12 @@ RUN pip install --no-cache-dir setuptools wheel \
 
 # Run the build script to create the single PYZ executable and make it executable.
 # The filename is now constructed dynamically using the build argument.
-RUN python build_pyz.py \
-    && chmod +x ./dist/pyhabitat-1.0.35.pyz
+#RUN python build_pyz.py \
+#    && chmod +x ./dist/pyhabitat-1.0.35.pyz
 
+
+RUN python build_pyz.py \
+    && chmod +x ./dist/pyhabitat-*.pyz
 ##########################################
 # STAGE 2: THE FINAL IMAGE (Minimal Runtime)
 ##########################################

@@ -14,7 +14,8 @@ from pyhabitat.system_info import SystemInfo
 
 # Config
 
-main_script = "__main__.py"
+#main_script = "__main__.py"
+main_script = "src/pyhabitat/__main__.py"
 dist_dir = Path("dist")
 build_dir = Path("build")
 
@@ -65,6 +66,7 @@ def run_pyinstaller(exe_name):
         str(pyinstaller_exe),
         "--onefile",
         "--name",
+        "--paths", "src",  # Critical: Tells PyInstaller to look in src/
         exe_name,
         f"--add-data={version_file.resolve()}:.",
         *specpath_flag,
