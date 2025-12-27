@@ -65,9 +65,8 @@ def run_pyinstaller(exe_name):
     cmd = [
         str(pyinstaller_exe),
         "--onefile",
-        "--name",
+        "--name",exe_name,
         "--paths", "src",  # Critical: Tells PyInstaller to look in src/
-        exe_name,
         f"--add-data={version_file.resolve()}:.",
         *specpath_flag,
         *exclusion_flags,
