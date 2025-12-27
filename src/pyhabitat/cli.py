@@ -1,11 +1,22 @@
+# src/pyhabitat/cli.py
 import argparse
 from pathlib import Path
-from .report import report
+
+from .version_info import get_package_version
+from .reporting import report
+
+"""
 from . import environment 
 from .environment import * # to enable CLI --list
-from .version_info import get_package_version
-#import __init__ as pyhabitat # works if everything is in root, v1.0.28
 import pyhabitat # refers to the folder
+"""
+# Instead of wildcarding .environment, we pull the clean API from the package root
+from . import (
+    environment, 
+    __all__ as public_api
+)
+
+import pyhabitat
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
@@ -64,6 +75,17 @@ def run_cli():
         return # avoid running the report
     
     if args.list:
+        # Use the __all__ we imported from .
+        for name in public_api:
+            func = getattr(pyhabitat, name, None)
+            if callable(func):
+                print(name)
+                if args.debug:
+                    doc = func.__doc__ or "(no description)"
+                    print(f"  {doc}")
+        return
+    
+    """if args.list:
         for name in pyhabitat.__all__:
             func = getattr(pyhabitat, name, None)
             if callable(func):
@@ -71,7 +93,7 @@ def run_cli():
                 if args.debug:
                     doc = func.__doc__ or "(no description)"
                     print(f"{name}: {doc}")
-        return
+        return"""
     '''
     if args.command:
         func = getattr(pyhabitat, args.command, None)
@@ -82,7 +104,7 @@ def run_cli():
             print(f"Unknown function: {args.command}")
             return # Exit after reporting the unknown command
     '''    
-    if args.command:
+    """if args.command:
         func = getattr(pyhabitat, args.command, None)
         if callable(func):
             kwargs = {}
@@ -95,6 +117,22 @@ def run_cli():
         else:
             # necessary to avoid printing report if specific function matching the command is not found
             print(f"Function not callable. Check spelling: {args.command}")
+            return"""
+        
+    if args.command:
+        func = getattr(pyhabitat, args.command, None)
+        if callable(func):
+            kwargs = {}
+            if args.path:
+                kwargs['path'] = Path(args.path)
+            if args.debug:
+                kwargs['debug'] = args.debug
+            
+            # Run the specific requested function
+            print(func(**kwargs))
+            return
+        else:
+            print(f"Function not found or not callable: {args.command}")
             return
 
 

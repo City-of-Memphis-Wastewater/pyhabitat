@@ -6,6 +6,21 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.2] - 2025-12-27
+### Added
+- More robust Windows file handling in environment.edit_textfile(), to handle commonly unassociated files like JSON. Default notepad.exe is the first in the try list, which will always succeed. So why have the other text editors in a try list? Documentation mostly, and maybe future work.
+
+### Internal
+- an old copy of environment.py was still active in the IDE and saved at a defunct path. This has been destroyed.
+
+### Changed
+- File naming: report.py -> reporting.py, to avoid a naming collision with reporting.report(), especially because __init__.py raising report() to the top level.
+
+### Fixed:
+- Instead of wildcard imports in reporting.py, use `from pyhabitat import environment as env` and then a `env.on_termux()` prefix, for example. 
+
+---
+
 ## [1.1.1] - 2025-12-26
 ### Added
 - Implemented a `src/` layout to improve package isolation and follow modern Python packaging best practices.

@@ -734,6 +734,7 @@ def web_browser_is_available() -> bool:
 
 
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
+
 def edit_textfile(path: Path | str | None = None, background: Optional[bool] = None) -> None:
     """
     Opens a file with the environment's default application.
@@ -766,33 +767,52 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
     launcher = subprocess.Popen if is_async else subprocess.run
 
     try:
-        # Windows: os.startfile is natively non-blocking
+        
+        # --- Windows --- 
         if on_windows():
-            os.startfile(path)
+            success = False
             
-        # Termux (Android)
+            # 1. Try System Default (os.startfile)
+            try:
+                # os.startfile is natively non-blocking (async)
+                os.startfile(path)
+                success = True
+            except Exception:
+                # This catches the "No program associated" or "Access denied" errors
+                pass
+
+            if not success:
+                # 2. Fallback Ladder: Common Windows Editors
+                # Notepad is guaranteed to be there. 
+                # Others are checked via shutil.which.
+                win_editors = ['notepad.exe', 'notepad++.exe', 'code.cmd', 'subl.exe']
+                
+                for editor in win_editors:
+                    if shutil.which(editor):
+                        # We use 'launcher' to respect the background/blocking logic
+                        # though for GUI editors on Windows, Popen is usually preferred.
+                        try:
+                            launcher([editor, str(path)])
+                            success = True
+                            break
+                        except Exception:
+                            continue
+
+            if not success:
+                print(f"\n[Error] Windows could not open the file automatically. File saved at: {path}")
+            
+        # --- Termux (Android) ---
         elif on_termux():
             subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             _run_dos2unix(path)
             subprocess.run(['nano', str(path)]) # Must block for console editor
             
-        # iSH (iOS Alpine)
+        # --- iSH (iOS Alpine) ---
         elif on_ish_alpine():
             subprocess.run(['apk','add', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             _run_dos2unix(path)
             subprocess.run(['nano', str(path)]) # Must block for console editor
             
-        # Standard Desktop Linux
-        elif False and on_linux():
-            _run_dos2unix(path)
-            try:
-                # Use detected launcher for xdg-open (async in GUI, blocking in TTY)
-                launcher(['xdg-open', str(path)])
-            except Exception:
-                # Fallback to nano MUST block or it corrupts the shell session
-                print("xdg-open unavailable; falling back to nano.")
-                subprocess.run(['nano', str(path)])
-        # Standard Desktop Linux
         # --- Standard Desktop Linux ---
         elif on_linux():
             _run_dos2unix(path)
@@ -835,7 +855,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                     # Absolute last resort
                     print(f"\n[Error] No suitable editor (GUI or Terminal) found. File saved at: {path}")
                 
-        # macOS
+        # --- macOS ---
         elif on_apple():
             _run_dos2unix(path)
             # 'open' on Mac usually returns immediately for GUI apps anyway, 
@@ -851,57 +871,6 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
             
     except Exception as e:
         print(f"The file could not be opened: {e}")
-
-def edit_textfile_blocking(path: Path | str | None = None) -> None:
-#def open_text_file_for_editing(path): # defunct function name as of 1.0.16
-    """
-    Opens a file with the environment's default application (Windows, Linux, macOS)
-    or a guaranteed console editor (nano) in constrained environments (Termux, iSH).
-    Ensures line-ending compatibility where possible.
-
-    This function is known to fail on PyDroid3, where on_linus() is True but xdg-open 
-    is not available.
-    """
-    if path is None:
-        return
-    
-    path = Path(path).resolve()
-
-    try:
-        if on_windows():
-            os.startfile(path)
-        elif on_termux():
-    	    # Install dependencies if missing (Termux pkg returns non-zero if already installed, so no check=True)
-            subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _run_dos2unix(path)
-            subprocess.run(['nano', str(path)])
-        elif on_ish_alpine():
-            # Install dependencies if missing (apk returns 0 if already installed, so check=True is safe)
-            subprocess.run(['apk','add', 'dos2unix'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-            subprocess.run(['apk','add', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-            _run_dos2unix(path)
-            subprocess.run(['nano', str(path)])
-    	# --- Standard Unix-like Systems (Conversion + Default App) ---
-        elif on_linux():
-            _run_dos2unix(path) # Safety conversion for user-defined console apps
-            try:
-                # Attempt GUI / desktop default opener first
-                subprocess.run(['xdg-open', str(path)])
-            except Exception:
-                # Explicit fallback to nano
-                print("xdg-open unavailable; falling back to nano.")
-                subprocess.run(['nano', str(path)])
-        elif on_apple():
-            _run_dos2unix(path) # Safety conversion for user-defined console apps
-            subprocess.run(['open', str(path)])
-        else:
-            print("Unsupported operating system.")
-    except Exception as e:
-        print("The file could not be opened for editing in the current environment: {e}")
-    """
-    Why Not Use check=True on Termux:
-    The pkg utility in Termux is a wrapper around Debian's apt. When you run pkg install <package>, if the package is already installed, the utility often returns an exit code of 100 (or another non-zero value) to indicate that no changes were made because the package was already present.
-    """
 
 # --- Helper Functions ---    
 def _run_dos2unix(path: Path | str | None = None):
@@ -1024,11 +993,9 @@ def check_executable_path(exec_path: Path | str | None,
     return exec_path, True       
  
 
-# --- Main Function for report and CLI compatibility ---
-
 def main(path=None, debug=False):
-    import report
-    report.report(path=path, debug=debug)
+    from pyhabitat.reporting import report
+    report(path=path, debug=debug)
     
 if __name__ == "__main__": 
     main(debug=True)

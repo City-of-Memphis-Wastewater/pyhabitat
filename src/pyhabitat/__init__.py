@@ -1,7 +1,7 @@
-# ./__init__.py
+# src/pyhabitat/__init__.py
 from .version_info import get_package_version as version
 from .system_info import SystemInfo
-from .report import report
+from .reporting import report
 from .environment import (
     matplotlib_is_available_for_gui_plotting,
     matplotlib_is_available_for_headless_image_export,
