@@ -2,8 +2,9 @@
 import argparse
 from pathlib import Path
 
-from .version_info import get_package_version
-from .reporting import report
+import pyhabitat
+from pyhabitat.version_info import get_package_version
+from pyhabitat.reporting import report
 
 """
 from . import environment 
@@ -11,12 +12,11 @@ from .environment import * # to enable CLI --list
 import pyhabitat # refers to the folder
 """
 # Instead of wildcarding .environment, we pull the clean API from the package root
-from . import (
+from pyhabitat import (
     environment, 
     __all__ as public_api
 )
 
-import pyhabitat
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
