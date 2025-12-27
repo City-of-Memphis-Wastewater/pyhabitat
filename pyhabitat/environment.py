@@ -400,7 +400,6 @@ def is_pyz(exec_path: Path | str | None = None, debug: bool = False, suppress_de
 
     return True
 
-
 def is_windows_portable_executable(exec_path: Path | str | None = None, debug: bool = False, suppress_debug: bool =False) -> bool:
     """
     Checks if the specified path or sys.argv[0] is a Windows Portable Executable (PE) binary.
@@ -784,7 +783,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
             subprocess.run(['nano', str(path)]) # Must block for console editor
             
         # Standard Desktop Linux
-        elif on_linux():
+        elif False and on_linux():
             _run_dos2unix(path)
             try:
                 # Use detected launcher for xdg-open (async in GUI, blocking in TTY)
@@ -793,12 +792,60 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 # Fallback to nano MUST block or it corrupts the shell session
                 print("xdg-open unavailable; falling back to nano.")
                 subprocess.run(['nano', str(path)])
+        # Standard Desktop Linux
+        # --- Standard Desktop Linux ---
+        elif on_linux():
+            _run_dos2unix(path)
+            success = False
+            
+            # 1. Try System Default (xdg-open)
+            # We use subprocess.run here to check if the OS actually knows how to handle the file.
+            try:
+                # capture_output=True keeps the 'no mailcap rules' error out of the user's console
+                subprocess.run(['xdg-open', str(path)], check=True, capture_output=True)
+                success = True
+            except (subprocess.CalledProcessError, FileNotFoundError, Exception):
+                # If xdg-open fails (like the JSON error you saw), we move to manual fallbacks
+                pass
+
+            if not success:
+                # 2. Fallback Ladder: Common GUI Editors
+                # These are safe to background (using the 'launcher' Popen/run logic)
+                # Prioritize standalone editors over IDEs
+                gui_editors = ['gedit', 'mousepad', 'kate', 'xed', 'code']
+                for editor in gui_editors:
+                    if shutil.which(editor):
+                        # launcher will be Popen if we are in a GUI, or run if in a TTY
+                        launcher([editor, str(path)])
+                        success = True
+                        break
+            
+            if not success:
+                # 3. Final Fallback: Terminal Editor
+                # This MUST be blocking (subprocess.run) to work in a TTY/REPL context.
+                # We don't spawn a new window to avoid environmental/SSH crashes.
+                if shutil.which('nano'):
+                    # If we are in a GUI, the user might need to look at the terminal they launched from
+                    if is_async: 
+                        print(f"\n[Note] No GUI editor found. Opening {path.name} in nano within the terminal.")
+                    
+                    subprocess.run(['nano', str(path)])
+                    success = True
+                else:
+                    # Absolute last resort
+                    print(f"\n[Error] No suitable editor (GUI or Terminal) found. File saved at: {path}")
                 
         # macOS
         elif on_apple():
             _run_dos2unix(path)
-            launcher(['open', str(path)])
-            
+            # 'open' on Mac usually returns immediately for GUI apps anyway, 
+            # but using our launcher keeps the Popen logic consistent.
+            try:
+                launcher(['open', str(path)])
+            except Exception:
+                # Terminal fallback for Mac if 'open' fails (very rare)
+                if shutil.which('nano'):
+                    subprocess.run(['nano', str(path)])
         else:
             print("Unsupported operating system.")
             
