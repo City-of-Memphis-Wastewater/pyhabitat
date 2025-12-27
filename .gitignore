@@ -56,3 +56,5 @@ Postman*
 .python-version
 
 uv.lock
+
+.ipynb_checkpoints/
