@@ -767,84 +767,18 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
     launcher = subprocess.Popen if is_async else subprocess.run
 
     try:
-        
+
         # --- Windows --- 
-        if False and on_windows():
-            success = False
-            
-            # 1. Try System Default (os.startfile)
+        if on_windows():
+
+            # 1. Use System Default (os.startfile)
             try:
                 # os.startfile is natively non-blocking (async)
                 os.startfile(path)
-                success = True
             except Exception:
-                # This catches the "No program associated" or "Access denied" errors
-                print(f"os.startfile failed: {e}")
-                #pass
-
-            if not success:
-                # 2. Fallback Ladder: Common Windows Editors
-                # Notepad is guaranteed to be there. 
-                # Others are checked via shutil.which.
-                win_editors = ['notepad.exe', 'notepad++.exe', 'code.cmd', 'subl.exe']
-                
-                for editor in win_editors:
-                    if shutil.which(editor):
-                        # We use 'launcher' to respect the background/blocking logic
-                        # though for GUI editors on Windows, Popen is usually preferred.
-                        try:
-                            launcher([editor, str(path)])
-                            success = True
-                            break
-                        except Exception:
-                            continue
-
-            if not success:
-                print(f"\n[Error] Windows could not open the file automatically. File saved at: {path}")
-        
-        # --- Windows, alt ---
-        if on_windows():
-            success = False
-
-            # 1. Try os.startfile first (native, non-blocking)
-            try:
-                os.startfile(str(path))
-                success = True
-            except Exception as e:
+                # This is never expected.
                 print(f"os.startfile failed: {e}")
 
-            if not success:
-                # 2. Force Notepad as primary fallback (always present)
-                notepad_path = shutil.which("notepad.exe")
-                if notepad_path:
-                    try:
-                        # Use Popen for non-blocking (GUI context)
-                        subprocess.Popen([notepad_path, str(path)])
-                        success = True
-                    except Exception as e:
-                        print(f"Notepad fallback failed: {e}")
-
-                # 3. Optional: Try other editors if you know they exist
-                if not success:
-                    for editor in ['notepad++.exe', 'code.exe', 'subl.exe']:  # code.exe for VS Code
-                        editor_path = shutil.which(editor)
-                        if editor_path:
-                            try:
-                                subprocess.Popen([editor_path, str(path)])
-                                success = True
-                                break
-                            except Exception:
-                                continue
-
-            if not success:
-                message = f"Could not open file automatically.\nFile saved at: {path}\n\nPlease open it manually with a text editor."
-                print(f"\n[Error] {message}")
-                # Optional: Show a messagebox if in GUI context
-                if not in_repl() and not interactive_terminal_is_available():
-                    from tkinter import messagebox
-                    messagebox.showwarning("Open Failed", message)
-
-            
         # --- Termux (Android) ---
         elif on_termux():
             subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
