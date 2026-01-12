@@ -781,7 +781,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 os.startfile(abs_path)
                 #success = True
                 return
-            except Exception:
+            except Exception as e:
                 # This catches the "No program associated" or "Access denied" errors
                 print(f"os.startfile() failed in pyhbaitat.edit_textfile(): {e}")
 
@@ -791,7 +791,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 subprocess.Popen(['notepad.exe', abs_path])
                 #success = True
                 return
-            except Exception:
+            except Exception as e:
                 print(f"notepad.exe failed in pyhbaitat.edit_textfile(): {e}")
 
             print(f"\n[Error] Windows could not open the file: {abs_path}")
