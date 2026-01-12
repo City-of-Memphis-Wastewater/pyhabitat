@@ -771,14 +771,31 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
         # --- Windows --- 
         if on_windows():
 
-            # 1. Use System Default (os.startfile)
+            # Force resolve to handle MSIX VFS redirection
+            abs_path = str(Path(path).resolve())
+            success = False
+            
+            # 1. Primary: System Default (Natively non-blocking/async)
             try:
                 # os.startfile is natively non-blocking (async)
-                os.startfile(path)
+                os.startfile(abs_path)
+                #success = True
+                return
             except Exception:
-                # This is never expected.
-                print(f"os.startfile failed: {e}")
+                # This catches the "No program associated" or "Access denied" errors
+                print(f"os.startfile() failed in pyhbaitat.edit_textfile(): {e}")
 
+            # 2. Secondary: Force Notepad (Guaranteed fallback)
+            # Use Popen to ENSURE it never blocks the caller, regardless of REPL status.
+            try:
+                subprocess.Popen(['notepad.exe', abs_path])
+                #success = True
+                return
+            except Exception:
+                print(f"notepad.exe failed in pyhbaitat.edit_textfile(): {e}")
+
+            print(f"\n[Error] Windows could not open the file: {abs_path}")
+            
         # --- Termux (Android) ---
         elif on_termux():
             subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
