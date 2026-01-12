@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.1.6] - 2026-01-12
+- Simplify environment.edit_textfile(). Now it will only use the surefire opening tools os.startfile, and if that files (very rare) notepad.exe. Remove the bloat of explicitly listing common third party editors; these will never hit anyways, and are brittle. Ensure that Exceptions will print.
+- Ensure path resolutions for windows in edit_texfile(), for safe useage from an MSIX package.
+
 ---
 
 ## [1.1.2] - 2025-12-27
