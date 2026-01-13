@@ -194,7 +194,10 @@ def on_freebsd() -> bool:
     return platform.system() == 'FreeBSD'
 
 def on_linux():
-    """Detect if running on Linux."""
+    """
+    Detect if running on Linux.
+    Basic, expected; `platform.system() == 'Linux'` 
+    """
     return platform.system() == 'Linux' 
 
 def on_android() -> bool:

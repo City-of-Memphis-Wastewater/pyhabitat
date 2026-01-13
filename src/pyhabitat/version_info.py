@@ -1,4 +1,4 @@
-# pyhabitat.version_info.py
+# pyhabitat.version_info.pyclear
 from __future__ import annotations # Delays annotation evaluation, allowing modern 3.10+ type syntax and forward references in older Python versions 3.8 and 3.9
 import sys
 from importlib.metadata import version, PackageNotFoundError
@@ -30,22 +30,56 @@ def _read_embedded_version() -> str | None:
 
 
 def find_pyproject(start: Path) -> Path | None:
-    for p in start.resolve().parents:
-        candidate = p / "pyproject.toml"
+    # Look back up to 3 levels: pyhabitat/, src/, project_root/
+    # This covers the src-layout structure you showed.
+    # Ensure we start at the directory of the file, resolved to absolute path
+    current = start.resolve().parent if start.is_file() else start.resolve()
+    
+    # Climb up to 3 levels (package -> src -> project_root)
+    for _ in range(4):
+        candidate = current / "pyproject.toml"
         if candidate.exists():
-            return candidate
+            if _ensure_relevant_pyproject_file(candidate):
+                return candidate
+        # Move up one level for the next iteration
+        if current.parent == current: break # Hit root
+        current = current.parent
+        
     return None
 
+def _ensure_relevant_pyproject_file(candidate):
+    content = candidate.read_text(encoding="utf-8")
+    # Ensure this TOML defines 'name = "pyhabitat"' 
+    # (handles both [project] and [tool.poetry] name definitions)
+    name_match = re.search(r'^name\s*=\s*["\']pyhabitat["\']', content, re.MULTILINE)
+    poetry_name_match = re.search(r'\[tool\.poetry\].*?name\s*=\s*["\']pyhabitat["\']', content, re.DOTALL)
+    
+    if name_match or poetry_name_match:
+        return True
+    else:
+        return False
+
 def get_package_name() -> str:
+    # 1. Check pyproject.toml FIRST (Crucial for Build/Dev environments)
     try:
         pyproject = find_pyproject(Path(__file__))
-        content = pyproject.read_text(encoding="utf-8")
-        match = re.search(r'^\s*name\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
-        if match:
-            return match.group(1)
+        if pyproject:
+            content = pyproject.read_text(encoding="utf-8")
+            match = re.search(r'^\s*name\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+            if match:
+                return match.group(1)
     except Exception:
         pass
-    return "pyhabitat"
+
+    # 2. Check installed metadata (If running from a pip/pipx install)
+    try:
+        from importlib.metadata import metadata
+        return metadata(PIP_PACKAGE_NAME)["Name"]
+    except Exception:
+        pass
+
+    # 3. Final Hardcoded Fallback
+    return PIP_PACKAGE_NAME
 
 
 def get_version_for_build() -> str:
@@ -101,6 +135,7 @@ def get_version_from_pyproject() -> str:
     # fallback
     return "Unknown (version not found)"
 
+
 def get_package_version() -> str:
     """
     Correct priority:
@@ -116,16 +151,17 @@ def get_package_version() -> str:
     if v:
         return v
 
-    # 2. Local source tree → pyproject.toml
-    v = get_version_from_pyproject()
-    if v and not v.startswith("Unknown"):
-        return v
-
-    # 3. Installed package
+    # 2. Try installed metadata first (Fastest and safest for users)
     try:
         return version(PIP_PACKAGE_NAME)
     except PackageNotFoundError:
         pass
+
+    # 3. Local source tree → pyproject.toml
+    v = get_version_from_pyproject()
+    if v and not v.startswith("Unknown"):
+        return v
+
 
     # 4. Default
     return FALLBACK_VERSION

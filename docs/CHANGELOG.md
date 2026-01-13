@@ -7,6 +7,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.7] - 2026-01-13
+### Fixed:
+- Updated version_info.py so that non-pyhabitat pyproject.toml files can be used to identify the version of pyhabitat.
+
+---
+
 ## [1.1.6] - 2026-01-12
 - Simplify environment.edit_textfile(). Now it will only use the surefire opening tools os.startfile, and if that files (very rare) notepad.exe. Remove the bloat of explicitly listing common third party editors; these will never hit anyways, and are brittle. Ensure that Exceptions will print.
 - Ensure path resolutions for windows in edit_texfile(), for safe useage from an MSIX package.
