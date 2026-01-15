@@ -9,8 +9,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.1.8] - 2026-01-15
 ### Changed:
 - Make edit_textfile() always use system notepad for msix packages
-- If dos2unix fails on termux, fall back to installing and then running, in edit_textfile(). Before it tried toi install every time.
-- If dos2unix and nano fails on ish-alpine-ios, fall back to installing and then running, in edit_textfile(). Before it tried toi install every time.
+- If dos2unix fails on termux, fall back to installing and then running, in edit_textfile(). Before, it tried to install every time.
+- If dos2unix and nano fails on ish-alpine-ios, fall back to installing and then running, in edit_textfile(). Before, it tried to install every time.
 
 ---
 
