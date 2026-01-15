@@ -12,6 +12,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - If dos2unix fails on termux, fall back to installing and then running, in edit_textfile(). Before it tried toi install every time.
 - If dos2unix and nano fails on ish-alpine-ios, fall back to installing and then running, in edit_textfile(). Before it tried toi install every time.
 
+---
 
 ## [1.1.7] - 2026-01-13
 ### Fixed:
