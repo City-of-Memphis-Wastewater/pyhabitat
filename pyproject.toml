@@ -1,9 +1,4 @@
 # pyproject.toml
-
-[build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "pyhabitat"
 version = "1.1.8"
@@ -36,5 +31,10 @@ pyhabitat = "pyhabitat.cli:run_cli"
 [tool.setuptools.packages.find]
 where = ["src"] # Tell setuptools to look in src/
 include = ["pyhabitat*"]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 
 
