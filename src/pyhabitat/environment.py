@@ -776,8 +776,19 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
 
             # Force resolve to handle MSIX VFS redirection
             abs_path = str(Path(path).resolve())
-            success = False
-            
+            #success = False
+
+            # 0: Special case: MSIX files (Sandboxed, os.startfile() known to fail
+            if is_msix(): # 
+
+                try:
+                    # Use the explicit path to System32 notepad to bypass environment issues
+                    system_notepad = os.path.join(os.environ.get('SystemRoot', 'C:\\Windows'), 'System32', 'notepad.exe')
+                    subprocess.Popen([system_notepad, abs_path])
+                    return
+                except Exception as e:
+                    print(f"Notepad launch failed via MSIX package: {e}")
+
             # 1. Primary: System Default (Natively non-blocking/async)
             try:
                 # os.startfile is natively non-blocking (async)
@@ -786,7 +797,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 return
             except Exception as e:
                 # This catches the "No program associated" or "Access denied" errors
-                print(f"os.startfile() failed in pyhbaitat.edit_textfile(): {e}")
+                print(f"os.startfile() failed in pyhabitat.edit_textfile(): {e}")
 
             # 2. Secondary: Force Notepad (Guaranteed fallback)
             # Use Popen to ENSURE it never blocks the caller, regardless of REPL status.
@@ -795,22 +806,36 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 #success = True
                 return
             except Exception as e: 
-                print(f"notepad.exe failed in pyhbaitat.edit_textfile(): {e}")
+                print(f"notepad.exe failed in pyhabitat.edit_textfile(): {e}")
 
             print(f"\n[Error] Windows could not open the file: {abs_path}")
-            
+
         # --- Termux (Android) ---
         elif on_termux():
-            subprocess.run(['pkg','install', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _run_dos2unix(path)
-            subprocess.run(['nano', str(path)]) # Must block for console editor
+            try:
+                # Try to run directly assuming tools exist
+                _run_dos2unix(path)
+                subprocess.run(['nano', str(path)])
+            except FileNotFoundError:
+                # Fallback: Install missing tools
+                # Using -y ensures the package manager doesn't hang waiting for a 'Yes'
+                subprocess.run(['pkg', 'install', '-y', 'dos2unix', 'nano'], 
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                _run_dos2unix(path)
+                subprocess.run(['nano', str(path)])
             
         # --- iSH (iOS Alpine) ---
         elif on_ish_alpine():
-            subprocess.run(['apk','add', 'dos2unix', 'nano'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _run_dos2unix(path)
-            subprocess.run(['nano', str(path)]) # Must block for console editor
-            
+            try:
+                _run_dos2unix(path)
+                subprocess.run(['nano', str(path)])
+            except FileNotFoundError:
+                # Alpine uses 'apk add'
+                subprocess.run(['apk', 'add', 'dos2unix', 'nano'], 
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                _run_dos2unix(path)
+                subprocess.run(['nano', str(path)])
+
         # --- Standard Desktop Linux ---
         elif on_linux():
             _run_dos2unix(path)
@@ -880,7 +905,7 @@ def _run_dos2unix(path: Path | str | None = None):
         # We rely on shutil.which not being needed, as this is a robust built-in utility on most targets
         # The command won't raise an exception unless the process itself fails, not just if the utility isn't found.
         # We also don't use check=True here to allow silent failure if the utility is missing (e.g., minimalist Linux).
-        subprocess.run(['dos2unix', path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(['dos2unix', str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except FileNotFoundError:
         # This will be raised if 'dos2unix' is not on the system PATH
         pass 

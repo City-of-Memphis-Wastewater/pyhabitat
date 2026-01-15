@@ -10,6 +10,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.1.7] - 2026-01-13
 ### Fixed:
 - Updated version_info.py so that non-pyhabitat pyproject.toml files can be used to identify the version of pyhabitat.
+- Improve version_info.get_package_name() to leverage the PIP_PACKAGE_NAME if pyproject.toml is not found.
 
 ---
 
