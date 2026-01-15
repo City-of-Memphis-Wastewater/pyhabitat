@@ -34,7 +34,6 @@ dependencies = []
 pyhabitat = "pyhabitat.cli:run_cli"
 
 [tool.setuptools.packages.find]
-#where = ["."]  
 where = ["src"] # Tell setuptools to look in src/
 include = ["pyhabitat*"]
 
