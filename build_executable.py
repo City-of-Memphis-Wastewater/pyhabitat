@@ -25,14 +25,8 @@ VERSION_FILE = BUILD_DIR/ "VERSION"  # Move the temp VERSION file into build/ fo
 BUILD_DIR.mkdir(parents=True, exist_ok=True)
 VERSION_FILE.write_text(get_version_for_build(), encoding="utf-8")
 
-def clean(exe_name):
-    """Remove only the specific output executable if it exists."""
-    output_file = DIST_DIR / exe_name
-
-    if output_file.exists():
-        print(f"Removing old executable: {output_file}")
-        output_file.unlink()
-    # Optionally remove the PyInstaller build folder, since it's temp
+def clean_build_folder():
+    """Remove build folder after completion"""
     if BUILD_DIR.exists():
         print(f"Removing build folder: {BUILD_DIR}")
         shutil.rmtree(BUILD_DIR)
@@ -41,7 +35,7 @@ def clean(exe_name):
 def run_pyinstaller(exe_name):
     """Run PyInstaller to build the executable."""
     print(f"--- PyHabitat executable Builder --")
-    clean(exe_name = exe_name)
+    
     print(f"Building executable: {exe_name}")
 
     pyinstaller_exe = Path(sys.executable).parent / ("pyinstaller.exe" if sys.platform.startswith("win") else "pyinstaller")
@@ -84,7 +78,7 @@ def run_pyinstaller(exe_name):
             cmd += ["--version-file", str(rc_file)]
             
         # If you have an icon, you'd add it here
-        icon_file = "assets/pyhabitat-ico_256x256.ico"
+        icon_file = "assets/pyhabitat-ico-alpha_256x256.ico"
         if Path(icon_file).exists():
             cmd += ["--icon", icon_file]
         
@@ -104,6 +98,7 @@ def run_pyinstaller(exe_name):
         print("Build failed!")
         print(e)
         raise
+    
 
 def prepare_windows_version_info(version_str):
     """
@@ -139,3 +134,4 @@ if __name__ == "__main__":
     architecture = sysinfo.get_arch()
     executable_descriptor = form_dynamic_binary_name(package_name, package_version, py_version, os_tag, architecture)
     run_pyinstaller(exe_name = executable_descriptor)
+    clean_build_folder()

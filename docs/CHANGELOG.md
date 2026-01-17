@@ -6,10 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.11] - 2026-01-16
+### Fixed:
+- clean() -> clean_build_folder(), and repositioned, in build_executable.py
+
+---
 
 ## [1.1.10] - 2026-01-16
 ### Fixed:
-- publish.yml needs some love for how uv is leveraged; be consistent.
+- publish.yml needs some love for how uv is leveraged; be consistent and use `uv sync --group dev`.
 
 ---
 
