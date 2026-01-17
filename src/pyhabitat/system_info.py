@@ -1,3 +1,5 @@
+# src/pyhabitat/system_info.py
+from __future__ import annotations
 import platform
 import sys
 from pathlib import Path

@@ -1,4 +1,5 @@
 # src/pyhabitat/__init__.py
+from __future__ import annotations
 from .version_info import get_package_version as version
 from .system_info import SystemInfo
 from .reporting import report
@@ -28,6 +29,7 @@ from .environment import (
     interactive_terminal_is_available,
     web_browser_is_available,
     edit_textfile,
+    show_system_explorer,
     interp_path,
     main,
     user_darrin_deyoung,
@@ -65,6 +67,7 @@ __all__ = [
     'is_running_in_uvicorn',
     'web_browser_is_available',
     'edit_textfile',
+    'show_system_explorer',
     'interp_path',
     'user_darrin_deyoung',
     'can_spawn_shell',

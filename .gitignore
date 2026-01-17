@@ -12,6 +12,9 @@ venv/
 myenv/
 test-pypi-venv/
 
+# WSL artifacts
+*:Zone.Identifier
+
 # Poetry lock files (optional, but recommended to commit poetry.lock)
 # poetry.lock
 
@@ -35,6 +38,7 @@ logs/
 dist/
 pyhabitat-build/
 build/
+build_assets/
 *.spec
 version.rc
 *.pyz
@@ -43,6 +47,8 @@ version.rc
 *.cfg
 *.exe
 VERSION
+
+
 # Other
 !workspaces/
 !src/

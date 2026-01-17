@@ -1,7 +1,7 @@
 # pyproject.toml
 [project]
 name = "pyhabitat"
-version = "1.1.8"
+version = "1.1.9"
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
@@ -12,18 +12,47 @@ description = "A lightweight library for detecting system environment, GUI, and 
 readme = "README.md"
 requires-python = ">=3.7"
 license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["environment", "os-detection", "build-system"]
 classifiers=[
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research", # Techs, engineering
+    "Intended Audience :: Other Audience", 
     "Environment :: Console",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
 ]
 
-dependencies = []
+dependencies = [
+    "importlib-metadata; python_version < '3.8'",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/city-of-memphis-wastewater/pyhabitat"
+Repository = "https://github.com/city-of-memphis-wastewater/pyhabitat"
+
+
+[dependency-groups]
+dev = [
+    "build>=1.0.0",
+    "setuptools>=61.0.0",
+    "wheel",
+    "uv>=0.5.0; python_version >= '3.8'",
+    "pyinstaller>=6.0.0; python_version >= '3.8'",
+]
 
 [project.scripts]
 pyhabitat = "pyhabitat.cli:run_cli"
@@ -35,6 +64,3 @@ include = ["pyhabitat*"]
 [build-system]
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
-
-
-

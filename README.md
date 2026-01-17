@@ -106,6 +106,7 @@ Key Question: "What could I do next?"
 | Function | Description |
 | :--- | :--- |
 | `edit_textfile(path)` | Opens a text file for editing using the default editor (Windows, Linux, macOS) or nano in Termux/iSH. Can be called from REPL mode. Path argument (str or Path) uses Path.resolve() for stability. |
+| `show_system_explorer(path)` | Launches the appropriate view of the folder based on system. Defaults to Path.cwd(). |
 | `interp_path()` | Returns the path to the Python interpreter binary (sys.executable). Returns empty string if unavailable. |
 | `report()` | Prints a comprehensive environment report with sections: Interpreter Checks (sys.executable), Current Environment Check (sys.argv[0]), Current Build Checks (sys attributes), Operating System Checks (platform.system()), and Capability Checks. Run via `python -m pyhabitat` or `import pyhabitat; pyhabitat.main()` in the REPL. |
 

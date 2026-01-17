@@ -50,6 +50,7 @@ __all__ = [
     'interactive_terminal_is_available',
     'web_browser_is_available',
     'edit_textfile',
+    'show_system_explorer'
     'in_repl',
     'interp_path',
     'main',
@@ -775,7 +776,8 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
         if on_windows():
 
             # Force resolve to handle MSIX VFS redirection
-            abs_path = str(Path(path).resolve())
+            # Force resolve AND normalize slashes for the Windows API
+            abs_path = os.path.normpath(str(Path(path).resolve()))
             #success = False
 
             # 0: Special case: MSIX files (Sandboxed, os.startfile() known to fail
@@ -912,7 +914,52 @@ def _run_dos2unix(path: Path | str | None = None):
     except Exception:
         # Catch other subprocess errors (e.g. permission issues)
         pass
+
+def show_system_explorer(path: str = None) -> None:
+    """
+    Opens the system file explorer (File Explorer, Finder, or Nautilus/etc.)
+    to the directory containing the exported reports.
+    """
+    if path is None:
+        path = Path.cwd()
     
+    # Ensure path is a string and expanded
+    path = str(Path(path).expanduser().resolve())
+
+    # 2. Smart Trim: If they pointed to a file, we want to open the folder it's in
+    if path.is_file():
+        path = path.parent
+    
+    # Ensure it exists before we try to open it (prevents shell crashes)
+    if not path.exists():
+        print(f"Error: Path does not exist: {path}")
+        return
+
+    try:
+        if on_wsl():
+            win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
+            subprocess.Popen(["explorer.exe", win_path])
+        elif on_windows():
+            # use os.startfile for the most native Windows experience
+            os.startfile(path)
+        elif sys.platform == "darwin":
+            # macOS
+            subprocess.Popen(["open", str(path)])
+
+        #  Android (Termux)
+        if on_termux():
+            # termux-open passes the intent to the Android system explorer
+            subprocess.Popen(["termux-open", path])
+            return
+        
+        else:
+            # Linux/Other: pyhabitat or xdg-open fallback
+            # Using xdg-open is the standard for Nautilus, Dolphin, Thunar, etc.
+            subprocess.Popen(["xdg-open", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception as e:
+        print(f"Could not open system explorer. Path: {path}. Error: {e}")
+
+
 def read_magic_bytes(path: str, length: int = 4, debug: bool = False) -> bytes | None:
     """Return the first few bytes of a file for type detection.
     Returns None if the file cannot be read or does not exist.

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.1.9] - 2026-01-16
+### Added:
+- environment.show_system_explorer(). Migrated from the pdflinkcheck package.
+- Dev dependencies
+- pyproject.toml details
+
+### Changed:
+- publish.yml now leverages uv and also builds the EXE and PYZ and then uploads the artifacts to the release.
+
 ---
 
 ## [1.1.8] - 2026-01-15

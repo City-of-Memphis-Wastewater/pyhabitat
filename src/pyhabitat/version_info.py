@@ -1,9 +1,23 @@
-# pyhabitat.version_info.pyclear
+# src/pyhabitat/version_info
 from __future__ import annotations # Delays annotation evaluation, allowing modern 3.10+ type syntax and forward references in older Python versions 3.8 and 3.9
 import sys
-from importlib.metadata import version, PackageNotFoundError
 from pathlib import Path  
 import re
+
+try:
+    # Python 3.8+
+    from importlib import metadata
+    PackageNotFoundError = metadata.PackageNotFoundError
+except (ImportError, AttributeError):
+    try:
+        # Python 3.7 Backport
+        import importlib_metadata as metadata
+        PackageNotFoundError = metadata.PackageNotFoundError
+    except ImportError:
+        metadata = None
+        # Define a dummy exception so the code doesn't crash on 3.7 
+        # if the backport is missing
+        class PackageNotFoundError(Exception): pass
 
 from .system_info import SystemInfo
 
@@ -72,11 +86,11 @@ def get_package_name() -> str:
         pass
 
     # 2. Check installed metadata (If running from a pip/pipx install)
-    try:
-        from importlib.metadata import metadata
-        return metadata(PIP_PACKAGE_NAME)["Name"]
-    except Exception:
-        pass
+    if metadata:
+        try:
+            return metadata(PIP_PACKAGE_NAME)["Name"]
+        except Exception:
+            pass
 
     # 3. Final Hardcoded Fallback
     return PIP_PACKAGE_NAME
@@ -151,16 +165,19 @@ def get_package_version() -> str:
     if v:
         return v
 
-    # 2. Try installed metadata first (Fastest and safest for users)
-    try:
-        return version(PIP_PACKAGE_NAME)
-    except PackageNotFoundError:
-        pass
+    # 3. Check installed metadata (Only if metadata lib is available)
+    if metadata:
+        try:
+            return metadata.version(PIP_PACKAGE_NAME)
+        except (metadata.PackageNotFoundError, AttributeError):
+            pass
 
     # 3. Local source tree → pyproject.toml
     v = get_version_from_pyproject()
     if v and not v.startswith("Unknown"):
         return v
+    
+    
 
 
     # 4. Default
