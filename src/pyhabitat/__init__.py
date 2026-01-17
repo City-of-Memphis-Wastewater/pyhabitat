@@ -41,46 +41,22 @@ from .environment import (
 """
 Detect whether Python is running inside WSL, Docker, CI, or mobile environments.
 """
-# Optional: Set __all__ for explicit documentation and cleaner imports
+from .platform import *
+from .runtime import *
+from .packaging import *
+
+__all__ = []
+for module in (
+    globals()['platform'], 
+    globals()['runtime'], 
+    globals()['packaging']):
+    __all__.extend(module.__all__)
+
+# Dynamically re-export everything environment declares in its __all__
 __all__ = [
-    'matplotlib_is_available_for_gui_plotting',
-    'matplotlib_is_available_for_headless_image_export',
-    'tkinter_is_available',
-    'in_repl',
-    'on_termux',
-    'on_pydroid',
-    'on_wsl',
-    'on_freebsd',
-    'on_linux',
-    'on_android',
-    'on_windows',
-    'on_apple',
-    'on_ish_alpine',
-    'as_pyinstaller',
-    'as_frozen',
-    'is_elf',
-    'is_pyz',
-    'is_windows_portable_executable',
-    'is_msix',
-    'is_macos_executable',
-    'is_pipx',
-    'is_python_script',
-    'interactive_terminal_is_available',
-    'is_running_in_uvicorn',
-    'web_browser_is_available',
-    'edit_textfile',
-    'show_system_explorer',
-    'interp_path',
-    'user_darrin_deyoung',
-    'can_spawn_shell',
-    'is_ascii',
-    'is_binary',
-    'main',
-    'report',
-    'is_running_in_uvicorn',
     'version',
-    'SystemInfo'
-    
-]
+    'SystemInfo',
+    'report',
+] + environment.__all__
 
 __version__ = version()

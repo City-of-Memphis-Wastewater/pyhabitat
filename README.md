@@ -38,7 +38,7 @@ This library is especially useful for **leveraging Python in mobile environments
 
 Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
 
-Another key goal of this project is to facilitate the orchestration of wider system installation for **`pipx` CLI tools** for additional touch points, like context menus and widgets.
+This project has a `pipx` installable **CLI**
 
 Ultimately, [City-of-Memphis-Wastewater](https://github.com/City-of-Memphis-Wastewater) aims to produce **reference-quality code** for the documented proper approach. We recognize that many people (and bots) are searching for ideal solutions, and our functions are built upon extensive research and testing to go **beyond simple `platform.system()` checks**.
 
@@ -128,7 +128,7 @@ The module exposes all detection functions directly for easy access.
 
 ### 0\. Example of PyHabitat in Action
 
-The `pipeline-eds` package uses the `pyhabitat` library to handle [configuration](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/cli.py), among other things.
+The `pyhabitat` library is used extensively in [PDF Link Check](https://github.com/City-of-Memphis-Wastewater/pipeline/blob/main/src/pipeline/security_and_config.py) and [plotting](https://github.com/City-of-Memphis-Wastewater/pdflinkcheck/blob/main/pyproject.toml).
 
 ### 1\. Running the Environment Report
 
@@ -142,59 +142,10 @@ python -m pyhabitat
 ```python
 # In the Python REPL
 import pyhabitat as ph
-ph.main()
+ph.report()
 ```
 
-### 2\. Checking Environment and Build Type
-
-```python
-from pyhabitat import on_termux, on_windows, is_pipx, is_python_script, as_frozen
-
-if is_pipx():
-    print("Running inside a pipx virtual environment. This is not a standalone binary.")
-
-if as_frozen():
-    print("Running as a frozen executable (PyInstaller, cx_Freeze, etc.).")
-
-if is_python_script():
-    print("Running as a Python source script (.py).")
-
-if on_termux(): 
-	# Expected cases: 
-	#- pkg install python-numpy python-cryptography
-	#- Avoiding matplotlib unless the user explicitly sets termux_has_gui=True in matplotlib_is_available_for_gui_plotting().
-	#- Auto-selection of 'termux-open-url' and 'xdg-open' in logic.
-	#- Installation on the system, like orchestrating the construction of Termux Widget entries in ~/.shortcuts.
-    print("Running in the Termux environment on Android.")
-    
-if on_windows():
-    print("Running on Windows.")
-```
-
-### 3\. Checking GUI and Plotting Availability
-
-Use these functions to determine if you can show an interactive plot or if you must save an image file.
-
-```python
-from pyhabitat import matplotlib_is_available_for_gui_plotting, matplotlib_is_available_for_headless_image_export
-
-if matplotlib_is_available_for_gui_plotting():
-    # We can safely call plt.show()
-    print("GUI plotting is available! Using TkAgg backend.")
-    import matplotlib.pyplot as plt
-    plt.figure()
-    plt.show()
-
-elif matplotlib_is_available_for_headless_image_export():
-    # We must save the plot to a file or buffer
-    print("GUI unavailable, but headless image export is possible.")
-    # Code to use 'Agg' backend and save to disk...
-    
-else:
-    print("Matplotlib is not installed or the environment is too restrictive for plotting.")
-```
-
-### 4\. Text Editing
+### Text Editing
 
 Use this function to open a text file for editing. 
 Ideal use case: Edit a configuration file, if prompted by a CLI command like 'config --textedit'.
@@ -211,75 +162,19 @@ ph.edit_textfile(path=Path('./config.json'))
 
 <details> <summary>🏗️ Build Instructions</summary>
 
-Follow these steps to build PyHabitat for different distributions (PYZ, EXE, or Wheel):
+### Build Options
 
-1. Activate the Virtual Environment
-#### On Windows (PowerShell)
-```PowerShell
-.venv\Scripts\Activate.ps1
-```
-#### Windows (cmd)
-```cmd
-.venv\Scripts\activate.bat
-```
-#### On Unix/macOS
-```bash
-source .venv/bin/activate
-```
+You can build PyHabitat in two ways:
 
-2. Install Build Dependencies
-
-bash
-```
-pip install -U pip setuptools wheel pyinstaller
-```
-(Optional for .pyz: zipapp is included in the standard library.)
-
-3. Build Options
-
-You can build PyHabitat in three ways:
-
-| Output                       | Command                  | Notes                                                                 |
-|-------------------------------|--------------------------|-----------------------------------------------------------------------|
-| PYZ (Python Zipapp)           | `python build_pyz.py`    | Cross-platform; requires a Python interpreter to run.                |
-| EXE (Windows Executable)      | `python build_executable.py` | Windows-only standalone executable with embedded Python.             |
-| ELF (Linux Executable)        | `python build_executable.py` | Linux-only standalone executable; generated by PyInstaller on Linux. |
-| Mach-O (macOS Executable)     | `python build_executable.py` | macOS-only standalone executable; generated by PyInstaller on macOS. |
-| Wheel / Source                | `python -m build`        | Standard Python package for pip install.                              |
+| Output  | Command                      | Notes                                                                 |
+|---------|------------------------------|-------------------------|
+| PYZ     | `python build_pyz.py`        | Cross-platform zipapp   |
+| EXE/ELF | `python build_executable.py` | PyIndtaller executable  |
 
 
-#### Build Process Diagram
-
-          ┌─────────────────────────────┐
-          │       Source Code           │
-          │        pyhabitat            │
-          └─────────────┬─────────────┘
-                        │
-                        ▼
-          ┌─────────────────────────────┐
-          │        Build Outputs        │
-          ├─────────────┬───────────────┤
-          │             │               │
-          ▼             ▼               ▼
-┌─────────────┐  ┌───────────────┐  ┌──────────────┐
-│ Python Zipapp│  │ PyInstaller   │  │ Wheel/Source│
-│ build_pyz.py │  │ Executable    │  │ python -m build│
-│─────────────│  │───────────────│  │──────────────│
-│ dist/*.pyz   │  │ dist/*.[exe,elf,macho] │ │ dist/*.whl  │
-│ Cross-plat. │  │ Platform-native standalone │ │ pip install │
-│ Requires Python │ │ Requires no Python on host │ │ Source/wheel│
-└─────────────┘  └───────────────┘  └──────────────┘
 ✅ Notes:
 
 .pyz is cross-platform but requires Python on the host system.
-
-.exe is Windows-only and contains a full Python runtime.
-
-.elf is Linux-only and contains a full Python runtime.
-
-.macho is macOS-only and contains a full Python runtime.
-
-Standard python -m build creates a distributable wheel and source archive suitable for pip/pypi.
 
 </details>
 
