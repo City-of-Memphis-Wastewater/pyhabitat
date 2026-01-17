@@ -10,9 +10,6 @@
 
 Stop writing verbose `sys.platform` and environment variable checks. Use **`pyhabitat`** to implement clean, **architectural logic** based on the execution habitat.
 
-![pyhabitat png](https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico.png)
-![pyhabitat ico](https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico_256x256.ico)
-
 ---
 
 Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py). 🌐
@@ -290,3 +287,9 @@ Contributions are welcome\! If there is an environment or build system that is n
 ## 📄 License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
+</p>
