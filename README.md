@@ -34,9 +34,10 @@ pip install pyhabitat
 <details>
 <summary> 🧠 Motivation </summary>
 
-This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, it helps automate work-arounds like using **localhost plotting** when `matplotlib` is unavailable or **web-based interfaces** when `tkinter` is missing. 
+This library is especially useful for **leveraging Python in mobile environments** (`Termux` on Android and `iSH` on iOS), which often have particular limitations and require special handling. For example, projects use pyhabitat in their logic to trigger **localhost plotting** when a GUI is not available. You can set different behaviors for pyhabitat.on_wsl(), pyhabitat.on_termux(), pyhabitat.on_windows(), and pyhabitat.on_linux(). 
 
-Our team is fundamentally driven by enabling mobile computing for true utility applications, leveraging environments like Termux (Android) and iSH (iOS). This includes highly practical solutions, such as deploying a lightweight Python web server (e.g., Flask, http.server, FastAPI) directly on a handset, or orchestrating full-stack, utility-grade applications that allow technicians to manage data and systems right from their mobile device in a way that is cross-platform and not overly catered to the App Store.
+Our team is fundamentally driven by enabling mobile computing for true utility applications.
+We liked it when our CLI's and our servers run on every device in the drawer.
 
 This project has a `pipx` installable **CLI**
 
