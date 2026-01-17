@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.1.16] - 2026-01-16
+### Fixed:
+- Alter the sanity check in build.yml to test each of the build artifacts with the --debug flag, rather than trying to reference the nonexistent whl, now that we no longer use uv build.
+
 
 ---
 

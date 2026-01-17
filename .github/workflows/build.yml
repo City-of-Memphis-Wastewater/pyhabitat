@@ -40,8 +40,15 @@ jobs:
 
       - name: Run Sanity Check
         run: |
-          uv pip install dist/*.whl
-          uv run pyhabitat --debug
+          # 1. Install dependencies for the environment
+          uv pip install . # not excpeted to need any
+
+          # 2. Test the ZipApp directly
+          python dist/zipapp/*.pyz --debug
+
+          # 3. Test the Binary (Linux ELF)
+          chmod +x dist/onefile/*
+          ./dist/onefile/* --debug
 
       - name: Upload Binaries to GitHub Release
         uses: softprops/action-gh-release@v2
