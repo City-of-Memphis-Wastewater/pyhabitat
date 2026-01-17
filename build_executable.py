@@ -17,7 +17,7 @@ from pyhabitat.environment import on_windows
 # --- Config ---
 
 MAIN_SCRIPT = "src/pyhabitat/__main__.py"
-DIST_DIR = Path("dist")
+DIST_DIR = Path("dist") / "onefile"
 BUILD_DIR= Path("build")
 BUILD_ASSETS_DIR = Path("build_assets")
 VERSION_FILE = BUILD_DIR/ "VERSION"  # Move the temp VERSION file into build/ folder

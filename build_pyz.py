@@ -16,7 +16,7 @@ from pyhabitat.environment import on_termux
 
 # --- Configuration ---
 PROJECT_NAME = "pyhabitat"
-DIST_DIR = Path("dist")
+DIST_DIR = Path("dist") / "zipapp"
 BUILD_ROOT = Path("pyhabitat-build")
 
 def run_command(cmd, env=None):

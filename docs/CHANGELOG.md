@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.12] - 2026-01-16
+### Fixed:
+- Ensure that PyPI publish does not try to validate the PYZ or the EXE, use dist/zipapp/ and dist/onefile/
+
+---
+
 ## [1.1.11] - 2026-01-16
 ### Fixed:
 - clean() -> clean_build_folder(), and repositioned, in build_executable.py
