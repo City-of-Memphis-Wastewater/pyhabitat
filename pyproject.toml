@@ -26,9 +26,7 @@ classifiers=[
     "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
-    "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Science/Research", # Techs, engineering
-    "Intended Audience :: Other Audience", 
     "Environment :: Console",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -39,6 +37,20 @@ dependencies = [
     "importlib-metadata; python_version < '3.8'",
 ]
 
+keywords = [
+    "environment",
+    "platform-detection",
+    "os-detection",
+    "container",
+    "docker",
+    "wsl",
+    "termux",
+    "unix",
+    "windows",
+    "macos",
+    "ci",
+    "runtime-detection",
+]
 
 [project.urls]
 Homepage = "https://github.com/city-of-memphis-wastewater/pyhabitat"

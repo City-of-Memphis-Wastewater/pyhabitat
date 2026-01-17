@@ -38,7 +38,9 @@ from .environment import (
     is_binary,
     is_running_in_uvicorn
 )
-
+"""
+Detect whether Python is running inside WSL, Docker, CI, or mobile environments.
+"""
 # Optional: Set __all__ for explicit documentation and cleaner imports
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
