@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+
+## [1.1.10] - 2026-01-16
+### Fixed:
+- publish.yml needs some love for how uv is leveraged.
 
 ---
 
@@ -12,6 +18,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - environment.show_system_explorer(). Migrated from the pdflinkcheck package.
 - Dev dependencies
 - pyproject.toml details
+- Logo :)
 
 ### Changed:
 - publish.yml now leverages uv and also builds the EXE and PYZ and then uploads the artifacts to the release.

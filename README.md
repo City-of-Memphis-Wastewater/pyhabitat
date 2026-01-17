@@ -17,6 +17,9 @@ Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabita
 <p align="center">
   <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
 </p>
+<!--p align="center">
+  <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico_256x256.ico" width="200" alt="ICO Version" />
+</p-->
 
 ---
 

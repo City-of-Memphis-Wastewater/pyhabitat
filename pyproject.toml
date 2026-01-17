@@ -1,7 +1,7 @@
 # pyproject.toml
 [project]
 name = "pyhabitat"
-version = "1.1.9"
+version = "1.1.10"
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
