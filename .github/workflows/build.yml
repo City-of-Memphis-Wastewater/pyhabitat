@@ -1,0 +1,54 @@
+# .github/workflows/build.yml
+name: Build and Check
+
+# This workflow is triggered when a new Release is created and published on GitHub.
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-binaries:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Needed for OIDC authentication
+      contents: write 
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          # Fixes the warning: tells uv exactly what to watch for caching
+          cache-dependency-glob: "pyproject.toml" 
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: UV Sync
+        run: |
+          uv sync --group dev
+
+      - name: Build PYZ and Binary
+        run: |
+          uv run python build_pyz.py
+          uv run python build_executable.py
+
+      - name: Run Sanity Check
+        run: |
+          uv pip install dist/*.whl
+          uv run pyhabitat --debug
+
+      - name: Upload Binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/zipapp/*.pyz
+            dist/onefile/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

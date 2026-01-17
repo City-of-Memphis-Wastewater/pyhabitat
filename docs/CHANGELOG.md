@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.14] - 2026-01-16
+### Fixed:
+- Separate build.yml and publish.yml; PyPI relly wanted to check the dist/ folder for everything.
+
+---
+
 ## [1.1.13] - 2026-01-16
 ### Fixed:
 - Ensure that PyPI publish does not try to validate the PYZ or the EXE, use dist/zipapp/ and dist/onefile/
