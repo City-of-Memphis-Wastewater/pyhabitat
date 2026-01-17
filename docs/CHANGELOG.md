@@ -9,7 +9,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.1.10] - 2026-01-16
 ### Fixed:
-- publish.yml needs some love for how uv is leveraged.
+- publish.yml needs some love for how uv is leveraged; be consistent.
 
 ---
 

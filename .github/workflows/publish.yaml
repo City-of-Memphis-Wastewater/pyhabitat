@@ -49,7 +49,8 @@ jobs:
       - name: Install Build Dependencies
         if: false # uv managed this automatically
         # We need these to run your local build scripts
-        run: uv pip install --system pyinstaller shiv
+        #run: uv pip install --system pyinstaller shiv
+        run: uv sync --group dev
 
       - name: Build PYZ and Linux Binary
         # Run your existing build scripts in the CI environment
