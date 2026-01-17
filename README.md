@@ -14,6 +14,10 @@ Stop writing verbose `sys.platform` and environment variable checks. Use **`pyha
 
 Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py). 🌐
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
+</p>
+
 ---
 
 ## 📦 Installation
@@ -290,6 +294,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ---
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
-</p>
