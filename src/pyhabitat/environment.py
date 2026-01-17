@@ -915,17 +915,17 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
 
-def show_system_explorer(path: str = None) -> None:
+def show_system_explorer(path: str | Path = None) -> None:
     """
     Opens the system file explorer (File Explorer, Finder, or Nautilus/etc.)
     to the directory containing the exported reports.
     """
+    # 1. Standardize to a Path object immediately
     if path is None:
         path = Path.cwd()
+    else:
+        path = Path(path)
     
-    # Ensure path is a string and expanded
-    path = str(Path(path).expanduser().resolve())
-
     # 2. Smart Trim: If they pointed to a file, we want to open the folder it's in
     if path.is_file():
         path = path.parent
@@ -934,6 +934,10 @@ def show_system_explorer(path: str = None) -> None:
     if not path.exists():
         print(f"Error: Path does not exist: {path}")
         return
+    
+    # Ensure path is a string and expanded
+    path = str(Path(path).expanduser().resolve())
+
 
     try:
         if on_wsl():
