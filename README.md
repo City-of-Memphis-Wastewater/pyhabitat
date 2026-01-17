@@ -10,6 +10,9 @@
 
 Stop writing verbose `sys.platform` and environment variable checks. Use **`pyhabitat`** to implement clean, **architectural logic** based on the execution habitat.
 
+![pyhabitat png](https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico.png)
+![pyhabitat ico](https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico_256x256.ico)
+
 ---
 
 Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py). 🌐
