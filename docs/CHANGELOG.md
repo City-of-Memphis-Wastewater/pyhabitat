@@ -8,7 +8,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.1.17] - 2026-01-16
 ### Fixed:
-- Correct Path and str order of conversion for that it doesnt trip. Default to None and allow str or Path as inputs.
+- In show_system_explorer(), correct Path and str order of conversion for that it doesnt trip. Default to None and allow str or Path as inputs.
 
 ### Internal:
 - We are finally building.
