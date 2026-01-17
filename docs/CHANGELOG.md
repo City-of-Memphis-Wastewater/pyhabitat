@@ -6,9 +6,10 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.1.12] - 2026-01-16
+## [1.1.13] - 2026-01-16
 ### Fixed:
 - Ensure that PyPI publish does not try to validate the PYZ or the EXE, use dist/zipapp/ and dist/onefile/
+- Ensure that build_executiable.py PyInstaller call knows where to send the output, with the `--distpath` flag.
 
 ---
 

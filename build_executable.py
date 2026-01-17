@@ -62,6 +62,7 @@ def run_pyinstaller(exe_name):
         str(pyinstaller_exe),
         "--onefile",
         "--name",exe_name,
+        "--distpath", str(DIST_DIR),  
         "--paths", "src",  # Critical: Tells PyInstaller to look in src/
         f"--add-data={VERSION_FILE.resolve()}:.",
         *specpath_flag,
