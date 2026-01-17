@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.1.15] - 2026-01-16
+### Fixed:
+In build_pyz.py, because we have a nested export folder, we need: DIST_DIR.mkdir(exist_ok=True) -> DIST_DIR.mkdir(parents=True, exist_ok=True)
+
 ---
 
 ## [1.1.14] - 2026-01-16
 ### Fixed:
-- Separate build.yml and publish.yml; PyPI relly wanted to check the dist/ folder for everything.
+- Separate build.yml and publish.yml; PyPI really wanted to check the dist/ folder for everything.
 
 ---
 

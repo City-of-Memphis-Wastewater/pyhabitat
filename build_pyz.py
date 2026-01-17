@@ -42,7 +42,7 @@ def run_build():
     # 1. Setup Directories
     if BUILD_ROOT.exists():
         shutil.rmtree(BUILD_ROOT)
-    DIST_DIR.mkdir(exist_ok=True)
+    DIST_DIR.mkdir(parents=True, exist_ok=True)
     
     custom_env = get_custom_env()
 

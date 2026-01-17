@@ -22,7 +22,11 @@ BUILD_DIR= Path("build")
 BUILD_ASSETS_DIR = Path("build_assets")
 VERSION_FILE = BUILD_DIR/ "VERSION"  # Move the temp VERSION file into build/ folder
 
+if BUILD_DIR.exists():
+    print(f"Removing build folder: {BUILD_DIR}")
+    shutil.rmtree(BUILD_DIR)
 BUILD_DIR.mkdir(parents=True, exist_ok=True)
+DIST_DIR.mkdir(parents=True, exist_ok=True) 
 VERSION_FILE.write_text(get_version_for_build(), encoding="utf-8")
 
 def clean_build_folder():
