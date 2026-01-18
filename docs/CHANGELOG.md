@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.19] - 2026-01-17
+### Internal:
+- Demonstrate Git Actions
+
+---
+
 ## [1.1.18] - 2026-01-16
 ### Fixed:
 - Logic chain was broken by an erroneous if that should have been an elif.

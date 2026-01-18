@@ -915,7 +915,7 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
 
-def show_system_explorer(path: str | Path = None) -> None:
+def show_system_explorer(path: str | Path = None) -> None: 
     """
     Opens the system file explorer (File Explorer, Finder, or Nautilus/etc.)
     to the directory containing the exported reports.
