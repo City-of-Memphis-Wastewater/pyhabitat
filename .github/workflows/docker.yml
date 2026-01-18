@@ -1,8 +1,10 @@
 name: Build and push multi-arch pyhabitat image
 
 on:
-  push:
-    tags: [ 'v*.*.*', 'v*.*.*-*' ]
+  release:
+    types: [published]
+  #push:
+  #  tags: [ 'v*.*.*', 'v*.*.*-*' ]
   workflow_dispatch:
 
 jobs:
