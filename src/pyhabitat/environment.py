@@ -36,7 +36,7 @@ __all__ = [
     'on_android',
     'on_windows',
     'on_wsl',
-    'on_apple',
+    'on_macos',
     'on_ish_alpine',
     'as_pyinstaller',
     'as_frozen',
@@ -300,9 +300,9 @@ def on_windows() -> bool:
     """Detect if running on Windows."""
     return platform.system() == 'Windows'
 
-def on_apple() -> bool:
-    """Detect if running on Apple."""
-    return (platform.system() == 'Darwin') or on_ish_alpine()
+def on_macos() -> bool:
+    """Detect if running on MacOS. Does not consider on_ish_alpine()."""
+    return (platform.system() == 'Darwin')
 
 def on_ish_alpine() -> bool:
     """Detect if running in iSH Alpine environment on iOS."""
@@ -881,7 +881,7 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                     print(f"\n[Error] No suitable editor (GUI or Terminal) found. File saved at: {path}")
                 
         # --- macOS ---
-        elif on_apple():
+        elif on_macos():
             _run_dos2unix(path)
             # 'open' on Mac usually returns immediately for GUI apps anyway, 
             # but using our launcher keeps the Popen logic consistent.

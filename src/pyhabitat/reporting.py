@@ -28,7 +28,7 @@ def report(path=None, debug=False):
     print("# // Based on platform.system()")
     print("------------------------------")
     print(f"on_windows(): {env.on_windows()}")
-    print(f"on_apple(): {env.on_apple()}")
+    print(f"on_macos(): {env.on_macos()}")
     print(f"on_linux(): {env.on_linux()}")
     print(f"on_wsl(): {env.on_wsl()}")
     print(f"on_android(): {env.on_android()}")

@@ -69,7 +69,7 @@ Key question: "What is this running on?"
 | Function | Description |
 | :--- | :--- |
 | `on_windows()` | Returns `True` on Windows. |
-| `on_apple()` | Returns `True` on macOS (Darwin). |
+| `on_macos()` | Returns `True` on macOS (Darwin). |
 | `on_linux()` | Returns `True` on Linux in general. |
 | `on_wsl()` | Returns `True` if running inside Windows Subsystem for Linux (WSL or WSL2). |
 | `on_termux()` | Returns `True` if running in the Termux Android environment. |

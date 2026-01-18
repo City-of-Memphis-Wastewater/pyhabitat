@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+---
+
+## [1.1.22] - 2026-01-18
+### BREAKING
+- `os_apple()` → `on_macos()`
+- The old version of on_apple() would be true if on_ish_alpine(); os_macos() does not do this.
+
 ---
 
 ## [1.1.21] - 2026-01-17

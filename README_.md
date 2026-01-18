@@ -42,7 +42,7 @@ ph.matplotlib_is_available_for_gui_plotting()  # Interactive plots ok?
 ### OS & Special Environments
 
 ```python
-on_windows / on_apple / on_linux / on_freebsd
+on_windows / on_macos / on_linux / on_freebsd
 on_wsl / on_termux / on_ish_alpine / on_android / on_pydroid
 in_repl
 ```
