@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.21] - 2026-01-17
+### Fixed:
+- Add missing comma in __all__ list in enviroment.py
+- Remove duplicate keyword section in pyproject.toml.
+
+---
+
 ## [1.1.19] - 2026-01-17
 ### Internal:
 - Demonstrate Git Actions

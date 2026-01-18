@@ -50,7 +50,7 @@ __all__ = [
     'interactive_terminal_is_available',
     'web_browser_is_available',
     'edit_textfile',
-    'show_system_explorer'
+    'show_system_explorer',
     'in_repl',
     'interp_path',
     'main',
