@@ -31,7 +31,7 @@ jobs:
 
       - name: UV Sync
         run: |
-          uv sync --group dev --extra dev
+          uv sync --group build --extra dev
 
       - name: Build PYZ and Binary
         run: |

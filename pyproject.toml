@@ -57,7 +57,7 @@ Repository = "https://github.com/city-of-memphis-wastewater/pyhabitat"
 
 
 [dependency-groups]
-dev = [
+build = [
     "build>=1.0.0",
     "setuptools>=61.0.0",
     "wheel",
