@@ -6,7 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.1.23] - 2026-01-23
+## [1.1.24] - 2026-01-19
+### Fixed:
+- Use functools.lru_cache to add backport functionality for 3.7, @cache
+
+---
+
+## [1.1.23] - 2026-01-18
 ### Fixed:
 - in tkinter_is_available(), return False if on_linux() and not os.environ.get("DISPLAY").
 
