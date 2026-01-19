@@ -19,14 +19,8 @@ import select
 from typing import Optional
 
 # Backport functools.cache for Python < 3.9
-from functools import lru_cache
+from pyhabitat._compat import cache
 
-if sys.version_info >= (3, 9):
-    from functools import cache
-else:
-    # Mimic the behavior of functools.cache
-    cache = lambda func: lru_cache(maxsize=None)(func)
-    
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:
     import msvcrt
