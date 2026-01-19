@@ -31,10 +31,6 @@ classifiers=[
     "Topic :: Utilities",
 ]
 
-dependencies = [
-    "importlib-metadata; python_version < '3.8'",
-]
-
 keywords = [
     "environment",
     "platform-detection",
