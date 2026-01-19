@@ -1,7 +1,7 @@
 # pyproject.toml
 [project]
 name = "pyhabitat"
-version = "1.1.23"
+version = "1.1.24"
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
@@ -17,6 +17,8 @@ classifiers=[
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -29,6 +31,10 @@ classifiers=[
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
+]
+
+dependencies = [
+    "importlib-metadata; python_version < '3.8'",
 ]
 
 keywords = [
@@ -56,8 +62,13 @@ dev = [
     "build>=1.0.0",
     "setuptools>=61.0.0",
     "wheel",
+]
+
+[project.optional-dependencies]
+dev = [
     "uv>=0.5.0; python_version >= '3.8'",
     "pyinstaller>=6.0.0; python_version >= '3.8'",
+
 ]
 
 [project.scripts]
