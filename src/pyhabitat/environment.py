@@ -147,6 +147,11 @@ def matplotlib_is_available_for_headless_image_export():
 @cache
 def tkinter_is_available() -> bool:
     """Check if tkinter is available and can successfully connect to a display."""
+
+    # Quick exit: If no DISPLAY is set on Linux/WSL, GUI is impossible
+    if on_linux() and not os.environ.get("DISPLAY"):
+        return False
+        
     try:
         import tkinter as tk
         

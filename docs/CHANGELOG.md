@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.1.23] - 2026-01-23
+### Fixed:
+- in tkinter_is_available(), return False if on_linux() and not os.environ.get("DISPLAY").
 
 ---
 
