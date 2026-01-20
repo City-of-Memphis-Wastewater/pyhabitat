@@ -8,6 +8,8 @@ authors = [
 maintainers = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
+author = "George Clayton Bennett" 
+author_email = "george.bennett@memphistn.gov"
 description = "A lightweight library for detecting system environment, GUI, and build properties."
 readme = "README.md"
 requires-python = ">=3.7"
@@ -50,10 +52,12 @@ keywords = [
     "ci",
     "runtime-detection",
 ]
+long_description_content_type = "text/markdown"
 
 [project.urls]
 Homepage = "https://github.com/city-of-memphis-wastewater/pyhabitat"
 Repository = "https://github.com/city-of-memphis-wastewater/pyhabitat"
+Issues = "https://github.com/city-of-memphis-wastewater/pyhabitat/issues"
 
 
 [dependency-groups]
