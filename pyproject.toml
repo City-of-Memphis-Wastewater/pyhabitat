@@ -2,19 +2,18 @@
 [project]
 name = "pyhabitat"
 version = "1.1.25"
+description = "A lightweight library for detecting system environment, GUI, and build properties."
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
 maintainers = [
   { name="George Clayton Bennett", email="george.bennett@memphistn.gov" },
 ]
-author = "George Clayton Bennett" 
-author_email = "george.bennett@memphistn.gov"
-description = "A lightweight library for detecting system environment, GUI, and build properties."
-readme = "README.md"
-requires-python = ">=3.7"
-license = "MIT"
-license-files = ["LICENSE"]
+
 classifiers=[
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -52,7 +51,6 @@ keywords = [
     "ci",
     "runtime-detection",
 ]
-long_description_content_type = "text/markdown"
 
 [project.urls]
 Homepage = "https://github.com/city-of-memphis-wastewater/pyhabitat"
