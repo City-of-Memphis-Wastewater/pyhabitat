@@ -57,6 +57,7 @@ __all__ = [
     'interp_path',
     'main',
     'user_darrin_deyoung',
+    'is_in_git_repo',
     'can_spawn_shell',
     'read_magic_bytes',
     'check_executable_path',
@@ -686,6 +687,31 @@ def user_darrin_deyoung():
         return False
     username = getpass.getuser()
     return username.lower() == "darrin deyoung"
+
+def is_in_git_repo(path='.'):
+    """
+    Check if the given path is inside a Git repository.
+
+    Uses 'git rev-parse --is-inside-work-tree' command.
+
+    """
+    try:
+        # Run the git command, suppressing output
+        result = subprocess.run(
+            ['git', 'rev-parse', '--is-inside-work-tree'],
+            cwd=path,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        return result.stdout.strip().decode('utf-8') == 'true'
+    except subprocess.CalledProcessError:
+        # The command fails if it's not a git repository
+        return False
+    except FileNotFoundError:
+        # Handle the case where the 'git' executable is not found
+        print("Error: 'git' command not found. Please ensure Git is installed and in your PATH.")
+        return False
 
 @cache
 def can_spawn_shell_lite()->bool: 
