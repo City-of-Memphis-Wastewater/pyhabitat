@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.26] - 2026-01-21
+### Added:
+- `is_in_git_repo()` command added to environment.py;
+
+### Removed:
+- Get rid of errors in pyproject.toml: long description of markdown file, author, and author-email
+
+---
+
 ## [1.1.24] - 2026-01-19
 ### Fixed:
 - Use functools.lru_cache to add backport functionality for 3.7, @cache
