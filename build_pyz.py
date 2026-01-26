@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 import pyhabitat
 
-from pyhabitat.version_info import get_version_from_pyproject
+from pyhabitat._version import get_version
 from pyhabitat.environment import on_termux
 
 # --- Configuration ---
@@ -73,7 +73,7 @@ def run_build():
     print(f"\n3. Packaging ZipApp: {output_pyz.name}")
 
     # 1. Get the version from the source TOML
-    version = get_version_from_pyproject()
+    version = get_version()
 
     internal_pkg_dir = BUILD_ROOT / "pyhabitat"
     internal_pkg_dir.mkdir(parents=True, exist_ok=True) # Defensive check

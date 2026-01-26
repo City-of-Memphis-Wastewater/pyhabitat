@@ -1,8 +1,4 @@
-'''
-Title: environment.py
-Author: Clayton Bennett
-Created: 23 July 2024
-'''
+# src/pyhabitat/environment.py
 from __future__ import annotations # Delays annotation evaluation, allowing modern 3.10+ type syntax and forward references in older Python versions 3.8 and 3.9
 import platform
 import sys
@@ -15,7 +11,6 @@ import io
 import zipfile
 import logging
 import getpass
-import select 
 from typing import Optional
 
 # Backport functools.cache for Python < 3.9
@@ -688,30 +683,37 @@ def user_darrin_deyoung():
     username = getpass.getuser()
     return username.lower() == "darrin deyoung"
 
-def is_in_git_repo(path='.'):
+    
+def is_in_git_repo(path: str = '.') -> Optional[bool]:
     """
-    Check if the given path is inside a Git repository.
-
-    Uses 'git rev-parse --is-inside-work-tree' command.
-
+    Checks if a path is in a Git repo.
+    Returns:
+        True: Confirmed inside a work tree.
+        False: Confirmed NOT inside a work tree.
+        None: Inconclusive (Git not installed, permission denied, etc.)
+    The exisiting use case is to check if the source code is running from within developer environment for a typical Python project.
+    
     """
+    abs_path = os.path.abspath(path)
     try:
-        # Run the git command, suppressing output
         result = subprocess.run(
             ['git', 'rev-parse', '--is-inside-work-tree'],
-            cwd=path,
-            check=True,
+            cwd=abs_path,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
         )
-        return result.stdout.strip().decode('utf-8') == 'true'
-    except subprocess.CalledProcessError:
-        # The command fails if it's not a git repository
+        return result.stdout.strip() == 'true'
+    
+    except subprocess.CalledProcessError as e:
+        # Git is installed, and it explicitly said "No" (exit code 128)
+        # or we are in a subfolder that isn't a repo.
         return False
-    except FileNotFoundError:
-        # Handle the case where the 'git' executable is not found
-        print("Error: 'git' command not found. Please ensure Git is installed and in your PATH.")
-        return False
+        
+    except (FileNotFoundError, PermissionError):
+        # The tool is missing or blocked. We don't know the answer.
+        return None
 
 @cache
 def can_spawn_shell_lite()->bool: 

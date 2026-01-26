@@ -1,7 +1,8 @@
 # pyproject.toml
 [project]
 name = "pyhabitat"
-version = "1.1.26"
+#version = "1.1.26"
+dynamic = ["version"] # look in src/pyhabitat/VERSION
 description = "A lightweight library for detecting system environment, GUI, and build properties."
 readme = "README.md"
 requires-python = ">=3.7"
@@ -82,3 +83,6 @@ include = ["pyhabitat*"]
 [build-system]
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {file = "src/pyhabitat/VERSION"}

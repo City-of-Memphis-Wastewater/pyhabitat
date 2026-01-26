@@ -10,12 +10,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pyhabitat.version_info import get_package_name, get_package_version, get_version_for_build, get_python_version, form_dynamic_binary_name
+from pyhabitat.version_info import get_python_version, form_dynamic_binary_name
+from pyhabitat._version import get_version
 from pyhabitat.system_info import SystemInfo
 from pyhabitat.environment import on_windows
 
 # --- Config ---
 
+PACKAGE_NAME = "pyhabitat"
 MAIN_SCRIPT = "src/pyhabitat/__main__.py"
 DIST_DIR = Path("dist") / "onefile"
 BUILD_DIR= Path("build")
@@ -27,7 +29,7 @@ if BUILD_DIR.exists():
     shutil.rmtree(BUILD_DIR)
 BUILD_DIR.mkdir(parents=True, exist_ok=True)
 DIST_DIR.mkdir(parents=True, exist_ok=True) 
-VERSION_FILE.write_text(get_version_for_build(), encoding="utf-8")
+VERSION_FILE.write_text(get_version(), encoding="utf-8")
 
 def clean_build_folder():
     """Remove build folder after completion"""
@@ -77,7 +79,7 @@ def run_pyinstaller(exe_name):
     # 2. Windows-Specific Resource Logic
     if on_windows():
 
-        rc_file = prepare_windows_version_info(get_version_for_build())
+        rc_file = prepare_windows_version_info(get_version())
         if rc_file:
             # Tell PyInstaller to use this version info
             cmd += ["--version-file", str(rc_file)]
@@ -130,8 +132,8 @@ def prepare_windows_version_info(version_str):
     return out_rc
 
 if __name__ == "__main__":
-    package_name = get_package_name()
-    package_version = get_version_for_build()
+    package_name = PACKAGE_NAME
+    package_version = get_version()
     py_version = get_python_version()
 
     sysinfo = SystemInfo()

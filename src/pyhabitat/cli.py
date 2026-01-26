@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 import pyhabitat
-from pyhabitat.version_info import get_package_version
+from pyhabitat._version import get_version
 from pyhabitat.reporting import report
 
 """
@@ -21,7 +21,7 @@ from pyhabitat import (
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
-    current_version = get_package_version()
+    current_version = get_version()
     parser = argparse.ArgumentParser(
         description="PyHabitat: Python environment and build introspection"
     )
