@@ -22,7 +22,7 @@ for module in (
 """
 # Dynamically re-export everything environment declares in its __all__
 __all__ = [
-    '__version__'
+    '__version__',
     'version',
     'SystemInfo',
     'report',
