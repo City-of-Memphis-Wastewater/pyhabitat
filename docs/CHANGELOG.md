@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.27] - 2026-01-26
+### Added:
+- `is_in_git_repo()` adjusting to be tri-state (to return None if git is not installed or otherwise cannot be called with subprocess.run())
+
+### Changed:
+- versioning now uses src/pyhabitat/VERSION as king, the source of truth, or first importlib if pyhabitat is installed. 
+
+---
+
 ## [1.1.26] - 2026-01-21
 ### Added:
 - `is_in_git_repo()` command added to environment.py;
