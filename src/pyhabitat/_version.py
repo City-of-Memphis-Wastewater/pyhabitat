@@ -1,6 +1,4 @@
-from importlib.metadata import version, PackageNotFoundError
-from pathlib import Path
-
+# src/pyhabitat/_version.py
 from pathlib import Path
 
 def get_version() -> str:

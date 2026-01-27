@@ -87,5 +87,5 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
-#version = {file = "src/pyhabitat/VERSION"}
-version = {file = ["src/pyhabitat/VERSION"]}
+version = {file = "src/pyhabitat/VERSION"}
+#version = {file = ["src/pyhabitat/VERSION"]}
