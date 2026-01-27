@@ -29,7 +29,6 @@ jobs:
         run: |
           uv venv
           uv sync --group build --extra dev
-          #uv pip install -e .
 
       - name: Build PYZ and Binary
         run: |

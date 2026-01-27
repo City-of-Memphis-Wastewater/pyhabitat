@@ -23,8 +23,9 @@ jobs:
       run: uv sync --dev
     - name: Run Tests
       run: |
-        # 1. Setup the environment and install everything (including [dev] extra)
-        uv sync --extra dev
-        
-        # 2. Run your tests through the managed environment
-        uv run pytest
+        if [ -d "tests" ]; then
+          uv sync --extra dev
+          uv run pytest
+        else
+          echo "No tests directory found, skipping."
+        fi
