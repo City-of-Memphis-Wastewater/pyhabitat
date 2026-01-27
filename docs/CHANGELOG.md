@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.33] - 2026-01-26
+### Fixed:
+- Removed VERSION from .gitignore. Wow, what a wild adventure in debugging that resulted in a full CI refactor.
+
+
+---
+
 ## [1.1.29] - 2026-01-26
 ### Added:
 - Use `bump-my-version` and add section to pyproject.toml
