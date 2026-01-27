@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 from pyhabitat.version_info import get_python_version, form_dynamic_binary_name
-from pyhabitat._version import __version__
+from pyhabitat._version import get_version
 from pyhabitat.system_info import SystemInfo
 from pyhabitat.environment import on_windows
 
@@ -133,7 +133,7 @@ def prepare_windows_version_info(version_str):
 
 if __name__ == "__main__":
     package_name = PACKAGE_NAME
-    package_version = __version__
+    package_version = get_version()
     py_version = get_python_version()
 
     sysinfo = SystemInfo()

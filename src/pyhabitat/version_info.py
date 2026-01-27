@@ -20,7 +20,7 @@ def get_python_version():
 
 def form_dynamic_binary_name(package_name: str, package_version: str, py_version: str, os_tag: str, arch: str) -> str:    
     # Use hyphens for the CLI/EXE/ELF name
-    return f"{package_name}-{__version__}-{py_version}-{os_tag}-{arch}"
+    return f"{package_name}-{package_version}-{py_version}-{os_tag}-{arch}"
 
 
 if __name__ == "__main__":
