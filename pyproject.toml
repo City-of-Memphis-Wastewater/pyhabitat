@@ -92,7 +92,7 @@ version = {file = "src/pyhabitat/VERSION"}
 #version = {file = ["src/pyhabitat/VERSION"]}
 
 [tool.bumpversion]
-current_version = "1.1.33"
+current_version = "1.1.34"
 allow_dirty = false # true  # Don't complain if I have uncommitted changes
 commit = true      # Don't create a git commit
 tag = true         # Don't create a git tag
