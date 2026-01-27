@@ -14,7 +14,6 @@ def get_version() -> str:
         # Path relative to this file: src/pyhabitat/VERSION
         version_file = Path(__file__).resolve().parent / "VERSION"
         if version_file.exists():
-            print("VERSION found!")
             return version_file.read_text(encoding="utf-8").strip()
     except Exception:
         print("VERSION not found")
