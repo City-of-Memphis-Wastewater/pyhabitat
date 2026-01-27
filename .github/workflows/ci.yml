@@ -22,4 +22,9 @@ jobs:
     - name: Install dependencies
       run: uv sync --dev
     - name: Run Tests
-      run: uv run --with pytest pytest
+      run: |
+        # 1. Setup the environment and install everything (including [dev] extra)
+        uv sync --extra dev
+        
+        # 2. Run your tests through the managed environment
+        uv run pytest

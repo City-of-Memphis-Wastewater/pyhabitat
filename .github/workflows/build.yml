@@ -23,17 +23,13 @@ jobs:
           enable-cache: true
           # Fixes the warning: tells uv exactly what to watch for caching
           cache-dependency-glob: "pyproject.toml" 
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
           python-version: '3.12'
 
       - name: UV Sync
         run: |
           uv venv
           uv sync --group build --extra dev
-          uv pip install -e .
+          #uv pip install -e .
 
       - name: Build PYZ and Binary
         run: |
@@ -42,13 +38,10 @@ jobs:
 
       - name: Run Sanity Check
         run: |
-          # 1. Install dependencies for the environment
-          #uv pip install . # not excpeted to need any
+          # 1. Test the ZipApp directly
+          uv run python dist/zipapp/*.pyz --debug
 
-          # 2. Test the ZipApp directly
-          python dist/zipapp/*.pyz --debug
-
-          # 3. Test the Binary (Linux ELF)
+          # 2. Test the Binary (Linux ELF)
           chmod +x dist/onefile/*
           ./dist/onefile/* --debug
 
