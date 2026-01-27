@@ -8,9 +8,15 @@ import shutil
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-import pyhabitat
+# Add 'src' to the front and REMOVE any existing pyhabitat paths
+src_path = str(Path(__file__).parent / "src")
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
 
+# Force a re-import if it was already loaded
+if "pyhabitat" in sys.modules:
+    del sys.modules["pyhabitat"]
+    
 from pyhabitat._version import get_version
 from pyhabitat.environment import on_termux
 

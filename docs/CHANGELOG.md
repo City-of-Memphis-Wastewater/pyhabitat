@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.29] - 2026-01-26
+### Added:
+- Use `bump-my-version` and add section to pyproject.toml
+
+### Fixed:
+- Troubleshoot version numbering
+
+---
+
 ## [1.1.27] - 2026-01-26
 ### Added:
 - `is_in_git_repo()` adjusting to be tri-state (to return None if git is not installed or otherwise cannot be called with subprocess.run())
