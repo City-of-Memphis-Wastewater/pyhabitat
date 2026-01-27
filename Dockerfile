@@ -23,17 +23,14 @@ RUN apk update \
 COPY . .
 
 # Install build dependencies (setuptools/wheel) and the project itself
-RUN pip install --no-cache-dir setuptools wheel \
-    && pip install --no-cache-dir -e . 
+RUN pip install -e . 
 
 # Run the build script to create the single PYZ executable and make it executable.
 # The filename is now constructed dynamically using the build argument.
-#RUN python build_pyz.py \
-#    && chmod +x ./dist/pyhabitat-1.0.35.pyz
-
 
 RUN python build_pyz.py \
-    && chmod +x ./dist/pyhabitat-*.pyz
+    && chmod +x ./dist/zipapp/pyhabitat-*.pyz \
+    && mv $(ls ./dist/zipapp/pyhabitat-*.pyz | head -n 1) ./dist/pyhabitat-latest.pyz
 ##########################################
 # STAGE 2: THE FINAL IMAGE (Minimal Runtime)
 ##########################################
@@ -47,9 +44,8 @@ ENV PYHABITAT_VERSION=${PYHABITAT_VERSION}
 # Set the working directory for consistency
 WORKDIR /app
 
-# Copy ONLY the final PYZ executable from the 'builder' stage.
-# The filename is referenced dynamically using the build argument.
-COPY --from=builder /app/dist/pyhabitat-1.0.35.pyz /usr/local/bin/pyhabitat
+# Use a wildcard to find the PYZ, then rename it to just 'pyhabitat' in the destination
+COPY --from=builder /app/dist/pyhabitat-latest.pyz /usr/local/bin/pyhabitat
 
 # Expose ports (still placeholder, but kept for consistency)
 EXPOSE 8000

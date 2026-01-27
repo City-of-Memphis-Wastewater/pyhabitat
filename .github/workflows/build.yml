@@ -32,6 +32,7 @@ jobs:
       - name: UV Sync
         run: |
           uv sync --group build --extra dev
+          uv pip install -e .
 
       - name: Build PYZ and Binary
         run: |
@@ -41,7 +42,7 @@ jobs:
       - name: Run Sanity Check
         run: |
           # 1. Install dependencies for the environment
-          uv pip install . # not excpeted to need any
+          #uv pip install . # not excpeted to need any
 
           # 2. Test the ZipApp directly
           python dist/zipapp/*.pyz --debug
