@@ -69,7 +69,8 @@ build = [
 dev = [
     "uv>=0.5.0; python_version >= '3.8'",
     "pyinstaller>=6.0.0; python_version >= '3.8'",
-
+    "pytest>=7.4.4",
+    "pytest-mock>=3.11.1",
 ]
 
 [project.scripts]

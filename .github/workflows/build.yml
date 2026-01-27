@@ -31,6 +31,7 @@ jobs:
 
       - name: UV Sync
         run: |
+          uv venv
           uv sync --group build --extra dev
           uv pip install -e .
 
