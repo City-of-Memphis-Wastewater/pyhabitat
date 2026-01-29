@@ -170,7 +170,7 @@ You can build PyHabitat in two ways:
 | Output  | Command                      | Notes                                                                 |
 |---------|------------------------------|-------------------------|
 | PYZ     | `python build_pyz.py`        | Cross-platform zipapp   |
-| EXE/ELF | `python build_executable.py` | PyIndtaller executable  |
+| EXE/ELF | `python build_executable.py` | PyInstaller executable  |
 
 
 ✅ Notes:
