@@ -61,7 +61,6 @@ __all__ = [
 
 def clear_all_caches()->None:
     """Clear every @cache used in pyhabitat, and call from CLI using --clear-cache"""
-    tkinter_is_available.cache_clear()
     matplotlib_is_available_for_gui_plotting.cache_clear()
     matplotlib_is_available_for_headless_image_export.cache_clear()
     can_spawn_shell.cache_clear()
@@ -142,7 +141,6 @@ def matplotlib_is_available_for_headless_image_export():
         except:
             pass
 
-@cache
 def tkinter_is_available() -> bool:
     """Check if tkinter is available and can successfully connect to a display."""
 
