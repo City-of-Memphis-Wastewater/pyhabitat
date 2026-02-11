@@ -12,7 +12,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - Use get_interp_shebang() in build_pyz.py
 
 ### Changed:
-- Remove bump-my-version. Too many dependcies. While it wouldn't necessarily trickle into my dependency tree, it is too risky for something so basic.
+- Remove bump-my-version. Too many dependencies. While it wouldn't necessarily trickle into my dependency tree, it is too risky for something so basic.
 
 ---
 
