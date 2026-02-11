@@ -57,6 +57,7 @@ __all__ = [
     'read_magic_bytes',
     'check_executable_path',
     'is_running_in_uvicorn',
+    'get_shebang'
 ]
 
 def clear_all_caches()->None:
@@ -1098,7 +1099,18 @@ def check_executable_path(exec_path: Path | str | None,
                 return exec_path, False
 
     return exec_path, True       
- 
+
+def get_shebang() -> str:
+    """
+    Returns the most compatible shebang for the current platform.
+    """
+    if os.name == 'nt':
+        # Generic python call for Windows PATH/Registry association
+        return "python" 
+    
+    # Standard Unix/Termux portable path
+    return "/usr/bin/env python3"
+     
 
 def main(path=None, debug=False):
     from pyhabitat.reporting import report
