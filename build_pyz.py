@@ -104,7 +104,7 @@ def run_build():
     # 6. Finalize
     # Only chmod on Unix-like systems
     if os.name != "nt":
-        output_path.chmod(0o755)
+        output_pyz.chmod(0o755)
     # Optional: Keep build_root for debugging or delete it
     shutil.rmtree(BUILD_ROOT)
     
