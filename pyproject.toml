@@ -89,14 +89,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 version = {file = "src/pyhabitat/VERSION"}
-
-[tool.bumpversion]
-current_version = "1.1.37"
-allow_dirty = false # true  # Don't complain if I have uncommitted changes
-commit = true      # Don't create a git commit
-tag = false         # Don't create a git tag
-tag_name = "v{new_version}"
-
-[[tool.bumpversion.files]]
-filename = "src/pyhabitat/VERSION"
-
