@@ -87,17 +87,24 @@ def run_build():
     # 2. "Stamp" the build directory so the PYZ carries its identity
     version_file = internal_pkg_dir / "VERSION"
     version_file.write_text(version, encoding="utf-8")
+
+    # Determine the interpreter preamble
+    # On Windows, we usually want 'python' or nothing. 
+    # On Unix/Termux, we want '/usr/bin/env python3'
+    interpreter = "python" if os.name == "nt" else "/usr/bin/env python3"
     
     run_command([
         sys.executable, "-m", "zipapp",
         str(BUILD_ROOT),
         "-o", str(output_pyz),
         "-m", "pyhabitat.cli:run_cli", # Matches [project.scripts]
-        "-p", "/usr/bin/env python3"
+        "-p", interpreter
     ])
 
     # 6. Finalize
-    output_pyz.chmod(0o755)
+    # Only chmod on Unix-like systems
+    if os.name != "nt":
+        output_path.chmod(0o755)
     # Optional: Keep build_root for debugging or delete it
     shutil.rmtree(BUILD_ROOT)
     
