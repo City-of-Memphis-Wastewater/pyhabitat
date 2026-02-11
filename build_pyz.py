@@ -18,7 +18,7 @@ if "pyhabitat" in sys.modules:
     del sys.modules["pyhabitat"]
     
 from pyhabitat._version import get_version
-from pyhabitat.environment import on_termux
+from pyhabitat.environment import on_termux, get_interp_shebang
 
 # --- Configuration ---
 PROJECT_NAME = "pyhabitat"
@@ -98,7 +98,7 @@ def run_build():
         str(BUILD_ROOT),
         "-o", str(output_pyz),
         "-m", "pyhabitat.cli:run_cli", # Matches [project.scripts]
-        "-p", interpreter
+        "-p", get_interp_shebang()
     ])
 
     # 6. Finalize

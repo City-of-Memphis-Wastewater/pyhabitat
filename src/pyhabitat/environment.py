@@ -57,7 +57,7 @@ __all__ = [
     'read_magic_bytes',
     'check_executable_path',
     'is_running_in_uvicorn',
-    'get_shebang'
+    'get_interp_shebang'
 ]
 
 def clear_all_caches()->None:
@@ -1100,9 +1100,10 @@ def check_executable_path(exec_path: Path | str | None,
 
     return exec_path, True       
 
-def get_shebang() -> str:
+def get_interp_shebang() -> str:
     """
     Returns the most compatible shebang for the current platform.
+    No hash symbol is included.
     """
     if os.name == 'nt':
         # Generic python call for Windows PATH/Registry association

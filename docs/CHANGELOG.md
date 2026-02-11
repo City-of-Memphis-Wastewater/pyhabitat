@@ -6,6 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.38] - 2026-02-11
+### Added:
+- environment.get_interp_shebang(), for use in identifying the python interpreter, like for the -p flag in shiv/zipapp.
+- Use get_interp_shebang() in build_pyz.py
+
+### Changed:
+- Remove bump-my-version. Too many dependcies. While it wouldn't necessarily trickle into my dependency tree, it is too risky for something so basic.
+
+---
+
 ## [1.1.33] - 2026-01-26
 ### Fixed:
 - Removed VERSION from .gitignore. Wow, what a wild adventure in debugging that resulted in a full CI refactor.
