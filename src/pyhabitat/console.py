@@ -170,7 +170,14 @@ def is_running_in_uvicorn():
     return getattr(sys, '_uvicorn_workers', None) is not None
 
 def user_darrin_deyoung():
-    """Common demo unit undicator, edge case that is unable to launch terminal"""
+    """
+    Detect typical demo/kiosk Windows user account on retail systems (e.g. Walmart demo units).
+    
+    These machines often allow installing Python from the Microsoft Store and running the REPL,
+    but block spawning real consoles (cmd.exe, PowerShell) or subprocess shells.
+    
+    Used to disable tty/shell-dependent features that would fail silently or crash.
+    """
     # Enable teating on non-Windows, non-demo systems
     #  where this function would otherwise return False.
     # Linux: `export USER_DARRIN_DEYOUNG=True`
