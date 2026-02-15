@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.2] - 2026-02-15
+### Fixed:
+- Missing logging import.
+
+---
+
 ## [1.2.1] - 2026-02-14
 ### Added:
 - console.is_likely_ci_or_non_interactive()
