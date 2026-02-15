@@ -6,7 +6,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.1.39] - 2026-02-14
+## [1.2.1] - 2026-02-14
 ### Added:
 - console.is_likely_ci_or_non_interactive()
 
