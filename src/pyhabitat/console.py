@@ -169,7 +169,7 @@ def is_running_in_uvicorn():
     """
     return getattr(sys, '_uvicorn_workers', None) is not None
 
-def user_darrin_deyoung():
+def     ():
     """
     Detect typical demo/kiosk Windows user account on retail systems (e.g. Walmart demo units).
     
