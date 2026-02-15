@@ -3,6 +3,7 @@ from __future__ import annotations # Delays annotation evaluation, allowing mode
 import platform
 import sys
 import os
+import logging
 
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:

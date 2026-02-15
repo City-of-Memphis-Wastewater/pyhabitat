@@ -12,9 +12,6 @@ import zipfile
 import logging
 from typing import Optional
 
-# Backport functools.cache for Python < 3.9
-from ._compat import cache
-from .console import interactive_terminal_is_available
 
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:
