@@ -1,4 +1,15 @@
 # src/pyhabitat/__init__.py
+"""
+pyhabitat: Lightweight introspection utilities for Python runtime, OS, build, and GUI environments.
+
+Public API categories:
+- Platform/OS detection: on_windows(), on_wsl(), on_termux(), ...
+- Interactive/terminal checks: interactive_terminal_is_available(), is_likely_ci_or_non_interactive()
+- GUI/backend availability: tkinter_is_available(), matplotlib_is_available_for_gui_plotting()
+- Executable/file type checks: is_elf(), is_pyz(), is_pipx(), ...
+- Launch helpers: edit_textfile(), show_system_explorer()
+- High-level introspection: SystemInfo, report()
+"""
 from __future__ import annotations
 
 from ._version import __version__
