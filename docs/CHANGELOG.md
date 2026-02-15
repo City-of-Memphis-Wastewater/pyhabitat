@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.1.39] - 2026-02-14
+### Added:
+- console.is_likely_ci_or_non_interactive()
+
+---
+
 ## [1.1.38] - 2026-02-11
 ### Added:
 - environment.get_interp_shebang(), for use in identifying the python interpreter, like for the -p flag in shiv/zipapp.
