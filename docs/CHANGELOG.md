@@ -10,6 +10,10 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Added:
 - console.is_likely_ci_or_non_interactive()
 
+### Changed:
+- Massive refactor, breaking up environment.py into separate files like console.py
+- Explicitness in __init__.py 
+
 ---
 
 ## [1.1.38] - 2026-02-11
