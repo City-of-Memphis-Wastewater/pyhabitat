@@ -7,14 +7,10 @@ import pyhabitat
 from pyhabitat._version import get_version
 from pyhabitat.reporting import report
 
-"""
-from . import environment 
-from .environment import * # to enable CLI --list
-import pyhabitat # refers to the folder
-"""
 # Instead of wildcarding .environment, we pull the clean API from the package root
 from pyhabitat import (
     environment, 
+    console,
     __all__ as public_api
 )
 
@@ -71,7 +67,8 @@ def run_cli():
     args = parser.parse_args()
 
     if args.clear_cache:
-        environment.clear_all_caches() # 
+        environment.clear_mpl_cache()
+        console.clear_shell_cache() # 
         print("All cached results cleared to allow for fresh checks.")
         return # avoid running the report
     

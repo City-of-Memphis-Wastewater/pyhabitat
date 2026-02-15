@@ -4,7 +4,6 @@ import sys
 import logging
 from pathlib import Path
 
-from pyhabitat import environment as env
 def report(path=None, debug=False):
     """Print a comprehensive environment report.
 
@@ -12,6 +11,7 @@ def report(path=None, debug=False):
         path (Path | str | None): Path to inspect (defaults to sys.argv[0]).
         debug (bool): Enable verbose debug output.
     """
+    import pyhabitat as ph
     if debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('matplotlib').setLevel(logging.WARNING)  # Suppress matplotlib debug logs
@@ -21,47 +21,47 @@ def report(path=None, debug=False):
     print("\nCurrent Build Checks ")
     print("# // Based on hasattr(sys,..) and getattr(sys,..)")
     print("------------------------------")
-    print(f"in_repl(): {env.in_repl()}")
-    print(f"as_frozen(): {env.as_frozen()}")
-    print(f"as_pyinstaller(): {env.as_pyinstaller()}")
+    print(f"in_repl(): {ph.in_repl()}")
+    print(f"as_frozen(): {ph.as_frozen()}")
+    print(f"as_pyinstaller(): {ph.as_pyinstaller()}")
     print("\nOperating System Checks")
     print("# // Based on platform.system()")
     print("------------------------------")
-    print(f"on_windows(): {env.on_windows()}")
-    print(f"on_macos(): {env.on_macos()}")
-    print(f"on_linux(): {env.on_linux()}")
-    print(f"on_wsl(): {env.on_wsl()}")
-    print(f"on_android(): {env.on_android()}")
-    print(f"on_termux(): {env.on_termux()}")
-    print(f"on_pydroid(): {env.on_pydroid()}")
-    print(f"on_ish_alpine(): {env.on_ish_alpine()}")
-    print(f"on_freebsd(): {env.on_freebsd()}")
+    print(f"on_windows(): {ph.on_windows()}")
+    print(f"on_macos(): {ph.on_macos()}")
+    print(f"on_linux(): {ph.on_linux()}")
+    print(f"on_wsl(): {ph.on_wsl()}")
+    print(f"on_android(): {ph.on_android()}")
+    print(f"on_termux(): {ph.on_termux()}")
+    print(f"on_pydroid(): {ph.on_pydroid()}")
+    print(f"on_ish_alpine(): {ph.on_ish_alpine()}")
+    print(f"on_freebsd(): {ph.on_freebsd()}")
     print("\nCapability Checks")
     print("-------------------------")
-    print(f"tkinter_is_available(): {env.tkinter_is_available()}")
-    print(f"matplotlib_is_available_for_gui_plotting(): {env.matplotlib_is_available_for_gui_plotting()}")
-    print(f"matplotlib_is_available_for_headless_image_export(): {env.matplotlib_is_available_for_headless_image_export()}")
-    print(f"web_browser_is_available(): {env.web_browser_is_available()}")
-    print(f"interactive_terminal_is_available(): {env.interactive_terminal_is_available()}")
+    print(f"tkinter_is_available(): {ph.tkinter_is_available()}")
+    print(f"matplotlib_is_available_for_gui_plotting(): {ph.matplotlib_is_available_for_gui_plotting()}")
+    print(f"matplotlib_is_available_for_headless_image_export(): {ph.matplotlib_is_available_for_headless_image_export()}")
+    print(f"web_browser_is_available(): {ph.web_browser_is_available()}")
+    print(f"interactive_terminal_is_available(): {ph.interactive_terminal_is_available()}")
     print("\nInterpreter Checks")
     print("# // Based on sys.executable()")
     print("-----------------------------")
-    print(f"interp_path(): {env.interp_path()}")
+    print(f"interp_path(): {ph.interp_path()}")
     if debug:
         # Do these debug prints once to avoid redundant prints
         # Supress redundant prints explicity using suppress_debug=True, 
         # so that only unique information gets printed for each check, 
         # even when more than one use the same functions which include debugging logs.
-        #print(f"env.check_executable_path(env.interp_path(), debug=True)")
-        env.check_executable_path(env.interp_path(), debug=debug)    
-        #print(f"read_magic_bites(env.interp_path(), debug=True)")
-        env.read_magic_bytes(env.interp_path(), debug=debug)
-    print(f"is_elf(env.interp_path()): {env.is_elf(env.interp_path(), debug=debug, suppress_debug=True)}")
-    print(f"is_windows_portable_executable(env.interp_path()): {env.is_windows_portable_executable(env.interp_path(), debug=debug, suppress_debug=True)}")
-    print(f"is_macos_executable(env.interp_path()): {env.is_macos_executable(env.interp_path(), debug=debug, suppress_debug=True)}")
-    print(f"is_pyz(env.interp_path()): {env.is_pyz(env.interp_path(), debug=debug, suppress_debug=True)}")
-    print(f"is_pipx(env.interp_path()): {env.is_pipx(env.interp_path(), debug=debug, suppress_debug=True)}")
-    print(f"is_python_script(env.interp_path()): {env.is_python_script(env.interp_path(), debug=debug, suppress_debug=True)}")
+        #print(f"ph.check_executable_path(ph.interp_path(), debug=True)")
+        ph.check_executable_path(ph.interp_path(), debug=debug)    
+        #print(f"read_magic_bites(ph.interp_path(), debug=True)")
+        ph.read_magic_bytes(ph.interp_path(), debug=debug)
+    print(f"is_elf(ph.interp_path()): {ph.is_elf(ph.interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_windows_portable_executable(ph.interp_path()): {ph.is_windows_portable_executable(ph.interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_macos_executable(ph.interp_path()): {ph.is_macos_executable(ph.interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_pyz(ph.interp_path()): {ph.is_pyz(ph.interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_pipx(ph.interp_path()): {ph.is_pipx(ph.interp_path(), debug=debug, suppress_debug=True)}")
+    print(f"is_python_script(ph.interp_path()): {ph.is_python_script(ph.interp_path(), debug=debug, suppress_debug=True)}")
     print("\nCurrent Environment Check")
     print("# // Based on sys.argv[0]")
     print("-----------------------------")
@@ -87,15 +87,15 @@ def report(path=None, debug=False):
             # so that only unique information gets printed for each check, 
             # even when more than one use the same functions which include debugging logs.
             #print(f"check_executable_path(script_path, debug=True)")
-            env.check_executable_path(script_path, debug=debug)
+            ph.check_executable_path(script_path, debug=debug)
             #print(f"read_magic_bites(script_path, debug=True)")
-            env.read_magic_bytes(script_path, debug=debug)
-        print(f"is_elf(): {env.is_elf(script_path, debug=debug, suppress_debug=True)}")
-        print(f"is_windows_portable_executable(): {env.is_windows_portable_executable(script_path, debug=debug, suppress_debug=True)}")
-        print(f"is_macos_executable(): {env.is_macos_executable(script_path, debug=debug, suppress_debug=True)}")
-        print(f"is_pyz(): {env.is_pyz(script_path, debug=debug, suppress_debug=True)}")
-        print(f"is_pipx(): {env.is_pipx(script_path, debug=debug, suppress_debug=True)}")
-        print(f"is_python_script(): {env.is_python_script(script_path, debug=debug, suppress_debug=True)}")
+            ph.read_magic_bytes(script_path, debug=debug)
+        print(f"is_elf(): {ph.is_elf(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_windows_portable_executable(): {ph.is_windows_portable_executable(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_macos_executable(): {ph.is_macos_executable(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_pyz(): {ph.is_pyz(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_pipx(): {ph.is_pipx(script_path, debug=debug, suppress_debug=True)}")
+        print(f"is_python_script(): {ph.is_python_script(script_path, debug=debug, suppress_debug=True)}")
     else:
         print("Skipping: ") 
         print("    is_elf(), ")
@@ -110,7 +110,7 @@ def report(path=None, debug=False):
     print("=== PyHabitat Report Complete ===")
     print("=================================")
     print("")
-    interactive = env.in_repl() or sys.flags.interactive
+    interactive = ph.in_repl() or sys.flags.interactive
     if not interactive:
         # Keep window open.
         try:
