@@ -22,7 +22,9 @@ jobs:
     permissions:
       id-token: write  # Needed for OIDC authentication
       contents: read  
-      
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+        
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,11 +37,17 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
+          # cache for speed
           enable-cache: true
-      
+          # This tells the action: "Don't look for uv.lock, 
+          # use this file to decide if the cache is valid."
+          cache-dependency-glob: "pyproject.toml"
+
       - name: Build S-Dist and Wheel
         run: |
+          uv lock
           uv venv
+          uv sync
           uv pip install -e .
           uv build
 
