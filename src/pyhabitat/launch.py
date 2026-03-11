@@ -228,9 +228,33 @@ def show_system_explorer(path: str | Path = None) -> None:
 
 
     try:
-        if on_wsl():
+        if False:#on_wsl():
             win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
             subprocess.Popen(["explorer.exe", win_path])
+
+        # --- Robust WSL Explorer Support ---
+        if on_wsl():
+            # When appendWindowsPath=false in wsl.conf, explorer.exe isn't in $PATH.
+            # We must find the Windows mount point and call the binary directly.
+            
+            # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
+            try:
+                win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                # Fallback if wslpath fails: just use the path as-is (though likely to fail explorer)
+                win_path = path
+
+            # 2. Locate explorer.exe (Defaulting to /mnt/c/Windows/explorer.exe)
+            # This handles cases where System32 is missing from the Linux $PATH.
+            explorer_cmd = "explorer.exe"
+            if shutil.which("explorer.exe") is None:
+                # Manual path injection for stripped environments
+                possible_explorer = Path("/mnt/c/Windows/explorer.exe")
+                if possible_explorer.exists():
+                    explorer_cmd = str(possible_explorer)
+
+            subprocess.Popen([explorer_cmd, win_path])
+            
         elif on_windows():
             # use os.startfile for the most native Windows experience
             os.startfile(path)

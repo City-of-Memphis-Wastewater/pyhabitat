@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.3] - 2026-03-11
+### Fixed:
+- launch.show_system_explorer() improved for WSL handling in finding explorer.exe.
+
+---
+
 ## [1.2.2] - 2026-02-15
 ### Fixed:
 - Missing logging import.
