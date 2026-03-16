@@ -8,7 +8,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.2.4] - 2026-03-16
 ### Added:
-- console.safe_notify
+- New function, migrated from /memphisdrip: console.safe_notify()
+- Guard safe_notify() from inclusion in CLI
 
 ---
 
