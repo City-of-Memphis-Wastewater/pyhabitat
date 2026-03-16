@@ -84,12 +84,6 @@ def run_cli():
                     doc = func.__doc__ or "(no description)"
                     safe_notify(f"  {doc}")
         return
-
-    if False:
-        safe_notify(args.safe_notify) # 
-        safe_notify("All cached results cleared to allow for fresh checks.")
-        return 
-
         
     if args.command:
         # 1. Prevent functions with arguments from being called via CLI
