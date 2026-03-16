@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.5] - 2026-03-16
+### Added:
+- Add safe_notify() to README.md.
+
+---
+
 ## [1.2.4] - 2026-03-16
 ### Added:
 - New function, migrated from /memphisdrip: console.safe_notify()
