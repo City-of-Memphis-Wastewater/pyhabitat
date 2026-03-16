@@ -42,6 +42,7 @@ from .console import (
     user_darrin_deyoung,
     is_running_in_uvicorn,
     can_spawn_shell_lite,          # if you want it public (it's @cache'd helper)
+    safe_notify,
 )
 
 # gui_elements.py
@@ -115,6 +116,7 @@ __all__ = [
     "user_darrin_deyoung",
     "is_running_in_uvicorn",
     "can_spawn_shell_lite",
+    "safe_notify",
     # gui_elements
     "matplotlib_is_available_for_gui_plotting",
     "matplotlib_is_available_for_headless_image_export",

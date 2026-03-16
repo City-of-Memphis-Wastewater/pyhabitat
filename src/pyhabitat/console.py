@@ -15,7 +15,7 @@ __all__ = [
     "user_darrin_deyoung",
     "is_running_in_uvicorn",
     "can_spawn_shell"
-
+    "safe_notify"
 ]
 
 def clear_shell_cache()->None:
@@ -189,3 +189,16 @@ def user_darrin_deyoung():
         return False
     username = getpass.getuser()
     return username.lower() == "darrin deyoung"
+
+def safe_notify(msg: str | list[str]):
+    """
+    Direct-to-stderr notification. 
+    Ensures message visibility regardless of stdout redirection/piping.
+    """
+    if isinstance(msg, (list, tuple)):
+        msg = "\n".join(map(str, msg))
+    
+    # 1. Use print(..., file=sys.stderr) for better handling of non-string types
+    # 2. Add a leading newline for visual separation in dense CLI output
+    # 3. flush=True ensures the message appears immediately (crucial for prompts)
+    print(f"\n{msg}", file=sys.stderr, flush=True)
