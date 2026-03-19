@@ -9,6 +9,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.2.6] - 2026-03-19
 ### Fixed:
 - on_termux() now allows for platform.system() check to result in Android or Linux.
+- Citation: "https://docs.python.org/3/library/platform.html"
 
 ---
 
