@@ -11,6 +11,8 @@ try:
 except ImportError:
     msvcrt = None
 
+logger = logging.getLogger(__name__)
+
 __all__ = [
     'on_termux',
     'on_freebsd',
@@ -33,7 +35,7 @@ __all__ = [
 def on_termux() -> bool:
     """Detect if running in Termux environment on Android, based on Termux-specific environmental variables."""
     
-    if platform.system() != 'Linux':
+    if platform.system() not in ('Linux', 'Android'):
         return False
     
     termux_path_prefix = '/data/data/com.termux'
