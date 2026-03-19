@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.6] - 2026-03-19
+### Fixed:
+- on_termux() now allows for platform.system() check to result in Android or Linux.
+
+---
+
 ## [1.2.5] - 2026-03-16
 ### Added:
 - Add safe_notify() to README.md.
