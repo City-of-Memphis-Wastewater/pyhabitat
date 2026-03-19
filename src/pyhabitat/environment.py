@@ -93,13 +93,17 @@ def on_android() -> bool:
             - VMware
             - QEMU      
     """
-    # Explicitly check for Linux kernel name first
-    if platform.system() not in ('Linux', 'Android'):
-        return False
-        
-    return "android" in platform.platform().lower()
+    
+    # Newer Python (3.13+)
+    if platform.system() == "Android":
+        return True
 
+    # Older Python (Termux / Android still reports Linux)
+    if platform.system() == "Linux":
+        return "android" in platform.platform().lower()
 
+    return False
+    
 def on_wsl():
     """Return True if running inside Windows Subsystem for Linux (WSL or WSL2)."""
     # Must look like Linux, not Windows
