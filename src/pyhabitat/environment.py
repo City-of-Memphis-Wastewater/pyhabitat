@@ -94,8 +94,9 @@ def on_android() -> bool:
             - QEMU      
     """
     # Explicitly check for Linux kernel name first
-    if platform.system() != 'Linux':
+    if platform.system() not in ('Linux', 'Android'):
         return False
+        
     return "android" in platform.platform().lower()
 
 
@@ -178,9 +179,9 @@ def on_ish_alpine() -> bool:
     # platform.system() usually returns 'Linux' in iSH
 
     # iSH runs on iOS but reports 'Linux' via platform.system()
-    if platform.system() != 'Linux':
+    if platform.system() not in ('Linux', 'iOS','iPadOS'):
         return False
-    
+        
     # On iSH, /etc/apk/ will exist. However, this is not unique to iSH as standard Alpine Linux also has this directory.
     # Therefore, we need an additional check to differentiate iSH from standard Alpine.
     # HIGHLY SPECIFIC iSH CHECK: Look for the unique /proc/ish/ directory.

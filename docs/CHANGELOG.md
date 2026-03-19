@@ -10,6 +10,8 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Fixed:
 - on_termux() now allows for platform.system() check to result in Android or Linux.
 - Citation: "https://docs.python.org/3/library/platform.html"
+- on_android() also check for Android in platform.system()
+- on_ish_alpine() now allows for 'iOS' and 'iPadOS' in platform.system() check.
 
 ---
 
