@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.7] - 2026-04-20
+### Fixed:
+- Instance of `input()` used in reporting.py was changed to `sys.stdin.readline()`, to reduce the underlying use of `eval()` inside of `input()`. This is to reduce security flagging seen at https://socket.dev/pypi/package/pyhabitat/.
+
+---
+
 ## [1.2.6] - 2026-03-19
 ### Fixed:
 - on_termux() now allows for platform.system() check to result in Android or Linux.
