@@ -7,6 +7,9 @@ on:
   release:
     types: [published]
 
+#env:
+#  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 # This job builds the package and then publishes it using PyPI Trusted Publishing.
 jobs:
   pypi-publish:
@@ -27,7 +30,7 @@ jobs:
         
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # This fetches all history and tags,
           # allowing the 'build' command to correctly determine the version
@@ -35,8 +38,9 @@ jobs:
           fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
+          version: "latest"
           # cache for speed
           enable-cache: true
           # This tells the action: "Don't look for uv.lock, 
