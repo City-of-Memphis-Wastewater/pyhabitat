@@ -114,7 +114,9 @@ def report(path=None, debug=False):
     if not interactive:
         # Keep window open.
         try:
-            input("Press Return to Continue...")
+            print("Press Return to Continue...", file=sys.stderr)
+            sys.stdin.readline() # does not use eval() under the hood, reduce security concern
+            #input("Press Return to Continue...")
         except Exception as e:
             logging.debug("input() failed")
                
