@@ -12,7 +12,7 @@ Stop writing verbose `sys.platform` and environment variable checks. Use **`pyha
 
 ---
 
-Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/blob/main/pyhabitat/environment.py). 🌐
+Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/tree/main/src/pyhabitat/). 🌐
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
