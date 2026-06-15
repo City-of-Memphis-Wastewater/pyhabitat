@@ -11,6 +11,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - Lazy load all imports in __init__.py
 - Simplify imports into cli.py.
 - 'version_info.py' -> 'packaging.py'
+-  get_version() -> __version__
 
 ### Fixed:
 - Ensure SystemInfo is accessible.
