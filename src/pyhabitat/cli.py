@@ -6,13 +6,7 @@ import sys
 
 import pyhabitat
 from ._version import get_version
-from .reporting import report
-from .console import safe_notify
-# Instead of wildcarding .environment, we pull the clean API from the package root
-
 from pyhabitat import (
-    environment, 
-    console,
     __all__ as public_api
 )
 
@@ -69,9 +63,9 @@ def run_cli():
     args = parser.parse_args()
 
     if args.clear_cache:
-        environment.clear_mpl_cache()
-        console.clear_shell_cache() # 
-        safe_notify("All cached results cleared to allow for fresh checks.")
+        pyhabitat.clear_mpl_cache()
+        pyhabitat.clear_shell_cache() # 
+        pyhabitat.safe_notify("All cached results cleared to allow for fresh checks.")
         return # avoid running the report
     
     if args.list:
@@ -79,16 +73,16 @@ def run_cli():
         for name in public_api:
             func = getattr(pyhabitat, name, None)
             if callable(func):
-                safe_notify(name)
+                pyhabitat.safe_notify(name)
                 if args.debug:
                     doc = func.__doc__ or "(no description)"
-                    safe_notify(f"  {doc}")
+                    pyhabitat.safe_notify(f"  {doc}")
         return
         
     if args.command:
         # 1. Prevent functions with arguments from being called via CLI
         if args.command == "safe_notify":
-            safe_notify(f"Error: 'safe_notify' is a utility and cannot be called via CLI.")
+            pyhabitat.safe_notify(f"Error: 'safe_notify' is a utility and cannot be called via CLI.")
             sys.exit(1)
         func = getattr(pyhabitat, args.command, None)
         if callable(func):
@@ -102,8 +96,8 @@ def run_cli():
             print(func(**kwargs))
             return
         else:
-            safe_notify(f"Function not found or not callable: {args.command}")
+            pyhabitat.safe_notify(f"Function not found or not callable: {args.command}")
             sys.exit(1)
 
 
-    report(path=Path(args.path) if args.path else None, debug=args.debug)
+    pyhabitat.report(path=Path(args.path) if args.path else None, debug=args.debug)
