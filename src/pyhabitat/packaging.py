@@ -3,7 +3,7 @@ from __future__ import annotations # Delays annotation evaluation, allowing mode
 import sys
 from pathlib import Path  
 
-from pyhabitat._version import __version__
+from ._version import __version__
 from .system_info import SystemInfo
 
 # -- Versioning --

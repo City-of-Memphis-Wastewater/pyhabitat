@@ -10,6 +10,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Changed:
 - Lazy load all imports in __init__.py
 - Simplify imports into cli.py.
+- 'version_info.py' -> 'packaging.py'
 
 ---
 
