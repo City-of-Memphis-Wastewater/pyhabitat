@@ -1,11 +1,6 @@
 # src/pyhabitat/_version.py
 from pathlib import Path
 
-def get_version_():
-    # Direct file read is the only way to be 100% sure in CI
-    version_file = Path(__file__).parent / "src" / "pyhabitat" / "VERSION"
-    return version_file.read_text(encoding="utf-8").strip()
-    
 def get_version() -> str:
     # 1. Try local VERSION file FIRST (Source/Dev/Bundled)
     # This ensures that even if an old version is installed via pip,
