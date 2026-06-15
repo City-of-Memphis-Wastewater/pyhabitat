@@ -12,6 +12,9 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - Simplify imports into cli.py.
 - 'version_info.py' -> 'packaging.py'
 
+### Fixed:
+- Ensure SystemInfo is accessible.
+
 ---
 
 ## [1.2.7] - 2026-04-20

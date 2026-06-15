@@ -17,8 +17,8 @@ if src_path not in sys.path:
 if "pyhabitat" in sys.modules:
     del sys.modules["pyhabitat"]
     
-from pyhabitat._version import get_version
-from pyhabitat.environment import on_termux, get_interp_shebang
+from pyhabitat._version import __version__
+from pyhabitat import on_termux, get_interp_shebang
 
 # --- Configuration ---
 PROJECT_NAME = "pyhabitat"
@@ -79,7 +79,7 @@ def run_build():
     print(f"\n3. Packaging ZipApp: {output_pyz.name}")
 
     # 1. Get the version from the source TOML
-    version = get_version()
+    version = __version__
 
     internal_pkg_dir = BUILD_ROOT / "pyhabitat"
     internal_pkg_dir.mkdir(parents=True, exist_ok=True) # Defensive check

@@ -10,9 +10,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pyhabitat import get_python_version, form_dynamic_binary_name
+from pyhabitat.packaging import get_python_version, form_dynamic_binary_name
 from pyhabitat._version import __version__
-from pyhabitat import SystemInfo
+from pyhabitat.system_info import SystemInfo
 from pyhabitat import on_windows
 
 # --- Config ---

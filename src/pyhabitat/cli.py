@@ -5,14 +5,14 @@ from pathlib import Path
 import sys
 
 import pyhabitat
-from ._version import get_version
+from ._version import __version__
 
 public_api = pyhabitat.__all__
 
 
 def run_cli():
     """Parse CLI arguments and run the pyhabitat environment report."""
-    current_version = get_version()
+    current_version = __version__
     parser = argparse.ArgumentParser(
         description="PyHabitat: Python environment and build introspection"
     )
