@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.8] - 2026-06-14
+### Changed:
+- Lazy load all imports in __init__.py
+
+---
+
 ## [1.2.7] - 2026-04-20
 ### Fixed:
 - Instance of `input()` used in reporting.py was changed to `sys.stdin.readline()`, to reduce the underlying use of `eval()` inside of `input()`. This is to reduce security flagging seen at https://socket.dev/pypi/package/pyhabitat/.
