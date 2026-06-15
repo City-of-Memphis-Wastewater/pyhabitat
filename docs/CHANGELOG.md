@@ -9,6 +9,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.2.8] - 2026-06-14
 ### Changed:
 - Lazy load all imports in __init__.py
+- Simplify imports into cli.py.
 
 ---
 
