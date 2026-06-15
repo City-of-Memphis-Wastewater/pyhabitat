@@ -68,7 +68,8 @@ def on_linux():
     Detect if running on Linux.
     Basic, expected; `platform.system() == 'Linux'` 
     """
-    return platform.system() == 'Linux' 
+    #return platform.system() == 'Linux' 
+    return platform.system() in ("Linux", "Android")
 
 def on_android() -> bool:
     """

@@ -1,7 +1,6 @@
 # src/pyhabitat/gui_elements.py
 from __future__ import annotations # Delays annotation evaluation, allowing modern 3.10+ type syntax and forward references in older Python versions 3.8 and 3.9
 import os
-from pathlib import Path
 import io
 import webbrowser
 import shutil
@@ -11,10 +10,10 @@ from ._compat import cache
 from .environment import on_termux, on_linux
 
 # On Windows, we need the msvcrt module for non-blocking I/O
-try:
-    import msvcrt
-except ImportError:
-    msvcrt = None
+#try:
+#    import msvcrt
+#except ImportError:
+#    msvcrt = None
 
 __all__ = [
     'matplotlib_is_available_for_gui_plotting',
@@ -49,7 +48,8 @@ def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
         # Only switch to TkAgg is no interactive backend is already active.
         # At this point, we know tkinter is *available*.
         current_backend = matplotlib.get_backend().lower()
-        if current_backend in () or 'inline' in current_backend:
+        if not current_backend or 'inline' in current_backend:
+        #if current_backend in () or 'inline' in current_backend:
             # Non-interactive, safe to switch
             # 'TkAgg' is often the most reliable cross-platform test.
             matplotlib.use('TkAgg', force=True)
@@ -65,8 +65,8 @@ def matplotlib_is_available_for_gui_plotting(termux_has_gui=False):
         # This final test catches any edge cases where tkinter is present but 
         # Matplotlib's *integration* with it is broken
         
-        plt.figure()
-        plt.close('all')
+        fig=plt.figure()
+        plt.close(fig)
 
         return True
 
