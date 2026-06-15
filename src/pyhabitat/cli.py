@@ -6,9 +6,8 @@ import sys
 
 import pyhabitat
 from ._version import get_version
-from pyhabitat import (
-    __all__ as public_api
-)
+
+public_api = pyhabitat.__all__
 
 
 def run_cli():
