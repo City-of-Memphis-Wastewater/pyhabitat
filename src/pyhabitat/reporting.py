@@ -4,6 +4,8 @@ import sys
 import logging
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 def report(path=None, debug=False):
     """Print a comprehensive environment report.
 

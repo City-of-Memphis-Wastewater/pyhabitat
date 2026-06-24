@@ -3,9 +3,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import sys
+import loggin 
 
 import pyhabitat
 from ._version import __version__
+
+logger = logging.getLogger(__name__)
 
 public_api = pyhabitat.__all__
 
