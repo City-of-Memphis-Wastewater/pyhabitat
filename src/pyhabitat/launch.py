@@ -265,11 +265,11 @@ def show_system_explorer(path: str | Path = None) -> None:
             subprocess.Popen(["open", str(path)])
 
         #  Android (Termux)
-        elif False and on_termux():
+        elif on_termux():
             # termux-open passes the intent to the Android system explorer
             subprocess.Popen(["termux-open", path])
             return
-        elif on_chromeos_crostini() or on_termux():
+        elif on_chromeos_crostini():
             url = serve_directory(path)
             subprocess.Popen(
                 ["xdg-open", url],
