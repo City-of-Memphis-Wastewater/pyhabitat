@@ -6,6 +6,18 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.2.9] - 2026-06-23
+### Added:
+- environment.on_chromeos()
+- browser_file_navigation.py
+- For Chrome OS, use python -m http wrapper to show local file system.
+
+### Internal:
+- Please add logging, better print management.
+- Please improve the CLI experience.
+
+---
+
 ## [1.2.8] - 2026-06-14
 ### Changed:
 - Lazy load all imports in __init__.py
