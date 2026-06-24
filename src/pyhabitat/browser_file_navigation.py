@@ -62,7 +62,7 @@ def serve_directory(
 
     global _server, _server_port, _server_root
 
-    path = directory
+    directory = path
     directory = Path(directory).expanduser().resolve()
 
     if not directory.is_dir():
