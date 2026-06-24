@@ -34,7 +34,7 @@ def find_free_port(host: str = "127.0.0.1") -> int:
 
 
 def serve_directory(
-    directory: str | Path,
+    path: str | Path,
     *,
     host: str = "127.0.0.1",
     port: Optional[int] = None,
@@ -62,6 +62,7 @@ def serve_directory(
 
     global _server, _server_port, _server_root
 
+    path = directory
     directory = Path(directory).expanduser().resolve()
 
     if not directory.is_dir():
