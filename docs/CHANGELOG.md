@@ -12,9 +12,11 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 - browser_file_navigation.py, especially serve_directory()
 - For on_chromeos_crostini(), use serve_directory(), python -m http wrapper to show local file system, in show_system_explorer().
 
+### Changed:
+- Dramatically improve the CLI with cli_rising.py, better --help experience, standard appearance, better signature awareness.
+
 ### Internal:
 - Please add logging, better print management.
-- Please improve the CLI experience.
 - Please remove debug args and instead use logging best practices. Remove debug as a subcommand flag in the CLI and instead implement it as a base level flag.
 
 ---
