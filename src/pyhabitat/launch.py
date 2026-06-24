@@ -17,6 +17,7 @@ from .console import interactive_terminal_is_available
 from .environment import (
     in_repl, on_windows, is_msix, on_termux, on_ish_alpine, on_linux, on_macos, on_wsl
 )
+from .browser_file_nav import serve_directory
 
 __all__ = [
     'edit_textfile',
@@ -268,7 +269,14 @@ def show_system_explorer(path: str | Path = None) -> None:
             # termux-open passes the intent to the Android system explorer
             subprocess.Popen(["termux-open", path])
             return
-        
+        elif on_chromeos():
+            url = serve_directory(path)
+            subprocess.Popen(
+                ["xdg-open", url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+                
         else:
             # Linux/Other: pyhabitat or xdg-open fallback
             # Using xdg-open is the standard for Nautilus, Dolphin, Thunar, etc.
