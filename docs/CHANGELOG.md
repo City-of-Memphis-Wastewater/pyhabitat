@@ -15,6 +15,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Internal:
 - Please add logging, better print management.
 - Please improve the CLI experience.
+- Please remove debug args and instead use logging best practices. Remove debug as a subcommand flag in the CLI and instead implement it as a base level flag.
 
 ---
 
