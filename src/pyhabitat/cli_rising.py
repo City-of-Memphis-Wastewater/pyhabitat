@@ -1,6 +1,7 @@
-# src/pyhabitat/cli.py
+# src/pyhabitat/cli_rising.py
 from __future__ import annotations
 import argparse
+import inspect
 import logging
 from pathlib import Path
 import sys
@@ -10,58 +11,76 @@ from ._version import __version__
 
 logger = logging.getLogger(__name__)
 
-public_api = pyhabitat.__all__
-
 
 def run_cli() -> None:
-    """Parse CLI arguments and run the pyhabitat environment report or utilities."""
+    """Parse CLI arguments using subparsers for an elegant, scalable tool."""
     current_version = __version__
+    
+    # Root parser
     parser = argparse.ArgumentParser(
         description="PyHabitat: Python environment and build introspection"
     )
-    
     parser.add_argument(
         '-v', '--version',
         action='version',
         version=f'PyHabitat {current_version}'
     )
-    
-    parser.add_argument(
-        "--path",
-        type=str,
-        default=None,
-        help="Path to a script or binary to inspect (defaults to sys.argv[0])",
-    )
-    
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="Enable verbose debug output",
-    )
-    
-    parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List available callable functions in pyhabitat"
-    )
-    
     parser.add_argument(
         "--clear-cache",
         action='store_true',
         help="Force fresh environment checks with cached results.",
     )
 
-    parser.add_argument(
-        "command",
-        nargs="?",
-        help="Function name to run (or use --list)",
+    # Subparsers for independent commands
+    subparsers = parser.add_subparsers(
+        dest="command",
+        help="Target function or routine to run"
     )
 
-    args = parser.parse_args()
+    # 1. Register a dedicated subparser for the default full system report
+    report_parser = subparsers.add_parser("report", help="Run the full pyhabitat environment report (default)")
+    report_parser.add_argument("--path", type=str, default=None, help="Path to inspect (defaults to sys.argv[0])")
+    report_parser.add_argument("--debug", action="store_true", help="Enable verbose debug output")
 
-    # 1. Handle Cache Clearing
-    if args.clear_cache:
-        # Check for existence of cache clearing routines safely
+    # 2. Dynamically loop through __all__ and map functions to CLI sub-commands
+    for name in pyhabitat.__all__:
+        if name in ("__version__", "report", "safe_notify"):
+            continue
+            
+        func = getattr(pyhabitat, name, None)
+        if not callable(func):
+            continue
+
+        # Create a subcommand matching the exact function name
+        doc = func.__doc__ or f"Run pyhabitat.{name}()"
+        first_line_doc = doc.strip().split("\n")[0]
+        cmd_parser = subparsers.add_parser(name, help=first_line_doc)
+
+        # Inspect the function signature to add targeted parameters automatically
+        try:
+            sig = inspect.signature(func)
+            params = sig.parameters
+        except (ValueError, TypeError):
+            params = {}
+
+        # Adapt path/exec_path parameter signatures seamlessly to standard --path flags
+        if "path" in params or "exec_path" in params:
+            cmd_parser.add_argument(
+                "--path", 
+                type=str, 
+                default=None, 
+                help="Path to check/evaluate"
+            )
+            
+        if "debug" in params:
+            cmd_parser.add_argument(
+                "--debug", 
+                action="store_true", 
+                help="Enable verbose function debug output"
+            )
+
+    # Intercept --clear-cache before parsing so it bypasses required subcommands
+    if "--clear-cache" in sys.argv:
         if hasattr(pyhabitat, "clear_mpl_cache"):
             pyhabitat.clear_mpl_cache()
         if hasattr(pyhabitat, "clear_shell_cache"):
@@ -69,70 +88,44 @@ def run_cli() -> None:
         pyhabitat.safe_notify("All cached results cleared to allow for fresh checks.")
         return
 
-    # 2. Handle Listing Public APIs
-    if args.list:
-        for name in public_api:
-            if name == "__version__":
-                continue
-            func = getattr(pyhabitat, name, None)
-            if callable(func):
-                pyhabitat.safe_notify(name)
-                if args.debug:
-                    doc = func.__doc__ or "(no description)"
-                    pyhabitat.safe_notify(f"  {doc}")
+    # Handle the empty arguments edge-case by falling back to the standard report
+    if len(sys.argv) == 1:
+        pyhabitat.report(path=None, debug=False)
         return
 
-    # 3. Handle Running a Specific Function
-    if args.command:
-        # Prevent calling safe_notify directly via CLI as it requires mandatory args
-        if args.command == "safe_notify":
-            pyhabitat.safe_notify("Error: 'safe_notify' is a utility and cannot be called via CLI.")
-            sys.exit(1)
-            
-        func = getattr(pyhabitat, args.command, None)
-        
-        if func is None or not callable(func):
-            pyhabitat.safe_notify(f"Function not found or not callable: {args.command}")
-            sys.exit(1)
+    args = parser.parse_args()
 
-        # Build execution kwargs dynamically matching target signature options
+    # Execution logic branch
+    if args.command == "report":
+        report_path = Path(args.path) if args.path else None
+        pyhabitat.report(path=report_path, debug=args.debug)
+        return
+
+    if args.command:
+        func = getattr(pyhabitat, args.command)
         kwargs = {}
         
-        # Check what arguments the target function actually supports
-        import inspect
+        # Build kwargs based on what the parsed subcommand provides
         try:
             sig = inspect.signature(func)
             params = sig.parameters
         except (ValueError, TypeError):
             params = {}
 
-        # Safely assign 'path' or alternative keyword variable variants
-        if args.path:
+        if hasattr(args, "path") and args.path:
             resolved_path = Path(args.path)
             if "path" in params:
-                kwargs['path'] = resolved_path
+                kwargs["path"] = resolved_path
             elif "exec_path" in params:
-                kwargs['exec_path'] = resolved_path
-            else:
-                pyhabitat.safe_notify(f"Warning: Function '{args.command}' does not accept a path argument.")
-                sys.exit(1)
+                kwargs["exec_path"] = resolved_path
 
-        # Safely pass debug flag if supported
-        if args.debug and "debug" in params:
-            kwargs['debug'] = True
+        if hasattr(args, "debug") and args.debug and "debug" in params:
+            kwargs["debug"] = True
 
-        # Run the targeted API function
         try:
             result = func(**kwargs)
             if result is not None:
                 print(result)
         except Exception as e:
             pyhabitat.safe_notify(f"Error executing '{args.command}': {e}")
-            if args.debug:
-                raise
             sys.exit(1)
-        return
-
-    # 4. Default Fallback Behavior: Run the Report
-    report_path = Path(args.path) if args.path else None
-    pyhabitat.report(path=report_path, debug=args.debug)
