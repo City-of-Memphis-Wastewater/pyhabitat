@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import sys
-import loggin 
+import logging
 
 import pyhabitat
 from ._version import __version__
