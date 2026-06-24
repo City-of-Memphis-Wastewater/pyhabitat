@@ -18,7 +18,7 @@ __all__ = [
     'on_freebsd',
     'on_linux',
     'on_pydroid',
-    'on_chromeos',
+    'on_chromeos_crostini',
     'on_android',
     'on_windows',
     'on_wsl',
@@ -172,7 +172,7 @@ def on_pydroid():
 
     return any("pydroid" in p.lower() for p in sys.path)
 
-def on_chromeos() -> bool:
+def on_chromeos_crostini() -> bool:
     """
     Detects if running within a Crostini Linux container on ChromeOS.
     Checks for the Sommelier compositor and ChromeOS-specific mount points.

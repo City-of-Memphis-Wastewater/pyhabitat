@@ -8,9 +8,9 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.2.9] - 2026-06-23
 ### Added:
-- environment.on_chromeos()
-- browser_file_navigation.py
-- For Chrome OS, use python -m http wrapper to show local file system.
+- environment.on_chromeos_crostini()
+- browser_file_navigation.py, especially serve_directory()
+- For on_chromeos_crostini(), use serve_directory(), python -m http wrapper to show local file system, in show_system_explorer().
 
 ### Internal:
 - Please add logging, better print management.

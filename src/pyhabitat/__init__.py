@@ -16,7 +16,7 @@ __all__ = [
     "on_windows",
     "on_wsl",
     "on_macos",
-    "on_chromeos",
+    "on_chromeos_crostini",
     "on_ish_alpine",
     "as_pyinstaller",
     "as_frozen",
@@ -60,6 +60,7 @@ __all__ = [
     # launch
     "edit_textfile",
     "show_system_explorer",
+    "serve_directory",
 ]
 
 
@@ -72,7 +73,7 @@ _ENVIRONMENT_EXPORTS = {
     "on_windows",
     "on_wsl",
     "on_macos",
-    "on_chromeos",
+    "on_chromeos_crostini",
     "on_ish_alpine",
     "as_pyinstaller",
     "as_frozen",
@@ -114,6 +115,7 @@ _FILE_CHARACTER_EXPORTS = {
 _LAUNCH_EXPORTS = {
     "edit_textfile",
     "show_system_explorer",
+    "serve_directory",
 }
 
 
