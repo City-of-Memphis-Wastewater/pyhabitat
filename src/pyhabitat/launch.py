@@ -15,9 +15,9 @@ except ImportError:
 
 from .console import interactive_terminal_is_available
 from .environment import (
-    in_repl, on_windows, is_msix, on_termux, on_ish_alpine, on_linux, on_macos, on_wsl
+    in_repl, on_windows, is_msix, on_termux, on_ish_alpine, on_linux, on_macos, on_wsl, on_chromeos
 )
-from .browser_file_nav import serve_directory
+from .browser_file_navigation import serve_directory
 
 __all__ = [
     'edit_textfile',
@@ -265,11 +265,11 @@ def show_system_explorer(path: str | Path = None) -> None:
             subprocess.Popen(["open", str(path)])
 
         #  Android (Termux)
-        elif on_termux():
+        elif False and on_termux():
             # termux-open passes the intent to the Android system explorer
             subprocess.Popen(["termux-open", path])
             return
-        elif on_chromeos():
+        elif on_chromeos() or on_termux():
             url = serve_directory(path)
             subprocess.Popen(
                 ["xdg-open", url],
