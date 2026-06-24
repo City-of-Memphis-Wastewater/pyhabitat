@@ -203,7 +203,9 @@ def on_macos() -> bool:
     return (platform.system() == 'Darwin')
 
 def on_ish_alpine() -> bool:
-    """Detect if running in iSH Alpine environment on iOS."""
+    """
+    Detect if running in iSH Alpine environment on iOS.
+    """
     # platform.system() usually returns 'Linux' in iSH
 
     # iSH runs on iOS but reports 'Linux' via platform.system()
