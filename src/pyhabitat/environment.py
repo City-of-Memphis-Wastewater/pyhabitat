@@ -18,6 +18,7 @@ __all__ = [
     'on_freebsd',
     'on_linux',
     'on_pydroid',
+    'on_chromeos',
     'on_android',
     'on_windows',
     'on_wsl',
@@ -170,6 +171,28 @@ def on_pydroid():
         return True
 
     return any("pydroid" in p.lower() for p in sys.path)
+
+def on_chromeos() -> bool:
+    """
+    Detects if running within a Crostini Linux container on ChromeOS.
+    Checks for the Sommelier compositor and ChromeOS-specific mount points.
+    """
+    # 1. Sommelier handles Wayland/X11 bridging from the container to ChromeOS.
+    # These variables are injected by the ChromeOS guest environment.
+    if "SOMMELIER_VERSION" in os.environ or "SOMMELIER_VM_IDENTIFIER" in os.environ:
+        return True
+
+    # 2. ChromeOS maps the host filesystem to /mnt/chromeos.
+    # This is a standard architectural feature of Crostini.
+    if os.path.exists('/mnt/chromeos'):
+        return True
+
+    # 3. Fallback: Check for the 'cros' GTK input module 
+    # (present in your environment variables).
+    if os.environ.get('GTK_IM_MODULE') == 'cros':
+        return True
+
+    return False
 
 def on_windows() -> bool:
     """Detect if running on Windows."""
