@@ -120,13 +120,27 @@ def run_cli() -> None:
             elif "exec_path" in params:
                 kwargs["exec_path"] = resolved_path
 
+        elif "path" in params and params["path"].default == inspect.Parameter.empty:
+            # Traps missing mandatory path requirements (like serve_directory) cleanly 
+            pyhabitat.safe_notify(f"Error: Command '{args.command}' requires a target path parameter using '--path <target>'.")
+            sys.exit(1)
+            
         if hasattr(args, "debug") and args.debug and "debug" in params:
             kwargs["debug"] = True
 
         try:
             result = func(**kwargs)
             if result is not None:
-                print(result)
+                #print(result)
+                # Format attributes cleaner if someone inspects a structured SystemInfo object
+                if hasattr(result, "__dict__") and not isinstance(result, (str, bool, int, dict, list)):
+                    import pprint
+                    pprint.pprint(result.__dict__)
+                else:
+                    print(result)
         except Exception as e:
             pyhabitat.safe_notify(f"Error executing '{args.command}': {e}")
-            sys.exit(1)
+        elif "path" in params and params["path"].default == inspect.Parameter.empty:
+            # Traps missing mandatory path requirements (like serve_directory) cleanly 
+            pyhabitat.safe_notify(f"Error: Command '{args.command}' requires a target path parameter using '--path <target>'.")
+            sys.exit(1)    sys.exit(1)
