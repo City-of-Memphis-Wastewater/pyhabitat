@@ -34,13 +34,14 @@ def run_cli() -> None:
     # Subparsers for independent commands
     subparsers = parser.add_subparsers(
         dest="command",
+        metavar="command",
         help="Target function or routine to run"
     )
 
     # 1. Register a dedicated subparser for the default full system report
     report_parser = subparsers.add_parser("report", help="Run the full pyhabitat environment report (default)")
     report_parser.add_argument("--path", type=str, default=None, help="Path to inspect (defaults to sys.argv[0])")
-    report_parser.add_argument("--debug", action="store_true", help="Enable verbose debug output")
+    #report_parser.add_argument("--debug", action="store_true", help="Enable verbose debug output")
 
     # 2. Dynamically loop through __all__ and map functions to CLI sub-commands
     for name in pyhabitat.__all__:
@@ -72,12 +73,12 @@ def run_cli() -> None:
                 help="Path to check/evaluate"
             )
             
-        if "debug" in params:
-            cmd_parser.add_argument(
-                "--debug", 
-                action="store_true", 
-                help="Enable verbose function debug output"
-            )
+        #if "debug" in params:
+        #    cmd_parser.add_argument(
+        #        "--debug", 
+        #        action="store_true", 
+        #        help="Enable verbose function debug output"
+        #    )
 
     # Intercept --clear-cache before parsing so it bypasses required subcommands
     if "--clear-cache" in sys.argv:

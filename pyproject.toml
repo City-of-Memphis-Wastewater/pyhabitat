@@ -74,7 +74,8 @@ dev = [
 ]
 
 [project.scripts]
-pyhabitat = "pyhabitat.cli:run_cli"
+#pyhabitat = "pyhabitat.cli:run_cli"
+pyhabitat = "pyhabitat.__main__:run_cli"
 
 [tool.setuptools.packages.find]
 where = ["src"] # Tell setuptools to look in src/
