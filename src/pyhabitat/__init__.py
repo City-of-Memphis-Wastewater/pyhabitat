@@ -61,6 +61,10 @@ __all__ = [
     "edit_textfile",
     "show_system_explorer",
     "serve_directory",
+
+    # web
+    "launch_browser_when_ready",
+    "find_open_port",
 ]
 
 
@@ -118,6 +122,11 @@ _LAUNCH_EXPORTS = {
     "serve_directory",
 }
 
+_WEB_EXPORTS = {
+    "launch_browser_when_ready",
+    "find_open_port",
+}
+
 
 def __getattr__(name: str):
 
@@ -148,6 +157,10 @@ def __getattr__(name: str):
     elif name in _LAUNCH_EXPORTS:
         from . import launch
         value = getattr(launch, name)
+
+    elif name in _WEB_EXPORTS:
+        from . import web
+        value = getattr(web, name)
 
     else:
         raise AttributeError(

@@ -22,6 +22,7 @@ from .browser_file_navigation import serve_directory
 __all__ = [
     'edit_textfile',
     'show_system_explorer',
+    'serve_directory',
 ]
 
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
