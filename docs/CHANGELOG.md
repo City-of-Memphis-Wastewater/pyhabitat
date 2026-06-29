@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.2] - 2026-06-29
+### Added:
+- logging_setup.py, --debug fix
+- Adjust build.yml tests to call 'pyhabitat --debug --help'
+- launch.launch_file(), and expose in __init__.py
+- launch.send_file_path_to_windows_explorer()
+
+---
+
 ## [1.3.1] - 2026-06-29
 ### Added:
 - argparse-based CLI dramatically improved.

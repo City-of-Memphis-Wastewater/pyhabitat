@@ -42,11 +42,11 @@ jobs:
       - name: Run Sanity Check
         run: |
           # 1. Test the ZipApp directly
-          uv run python dist/zipapp/*.pyz --debug
+          uv run python dist/zipapp/*.pyz --debug --help
 
           # 2. Test the Binary (Linux ELF)
           chmod +x dist/onefile/*
-          ./dist/onefile/* --debug
+          ./dist/onefile/* --debug --help
 
       - name: Upload Binaries to GitHub Release
         uses: softprops/action-gh-release@v3

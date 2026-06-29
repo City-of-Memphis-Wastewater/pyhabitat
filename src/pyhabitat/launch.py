@@ -22,6 +22,7 @@ from .web import browse_directory
 __all__ = [
     'edit_textfile',
     'show_system_explorer',
+    'launch_file',
 ]
 
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---
@@ -231,12 +232,17 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
 
-def _send_file_path_to_windows_explorer(win_path: str | Path)->None:
+def send_file_path_to_windows_explorer(path: str | Path)->None:
     """
     # Locate explorer.exe (Defaulting to /mnt/c/Windows/explorer.exe)
     # This handles cases where System32 is missing from the Linux $PATH.
-
     """
+    path = str(Path(path).expanduser().resolve())
+    try:
+        win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # Fallback if wslpath fails: just use the path as-is (though likely to fail explorer)
+        win_path = path
     explorer_cmd = "explorer.exe"
     if shutil.which("explorer.exe") is None:
         # Manual path injection for stripped environments
@@ -244,7 +250,7 @@ def _send_file_path_to_windows_explorer(win_path: str | Path)->None:
         if possible_explorer.exists():
             explorer_cmd = str(possible_explorer)
 
-    subprocess.Popen([explorer_cmd, win_path])
+    subprocess.Popen([explorer_cmd, win_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def show_system_explorer(path: str | Path = None) -> None: 
     """
@@ -277,20 +283,14 @@ def show_system_explorer(path: str | Path = None) -> None:
             # We must find the Windows mount point and call the binary directly.
             
             # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
-            try:
-                win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                # Fallback if wslpath fails: just use the path as-is (though likely to fail explorer)
-                win_path = path
-
-            _send_file_path_to_windows_explorer(win_path)
+            send_file_path_to_windows_explorer(path)
             
         elif on_windows():
             # use os.startfile for the most native Windows experience
             os.startfile(path)
         elif sys.platform == "darwin":
             # macOS
-            subprocess.Popen(["open", str(path)])
+            subprocess.Popen(["open", path])
 
         #  Android (Termux)
         elif on_termux():
@@ -306,3 +306,43 @@ def show_system_explorer(path: str | Path = None) -> None:
             subprocess.Popen(["xdg-open", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception as e:
         print(f"Could not open system explorer. Path: {path}. Error: {e}")
+
+def launch_file(path: Path | str) -> None:
+    """
+    Opens a file or directory with the host system's default application.
+    Handles Windows, macOS, native Linux, Termux, and WSL environment edge cases.
+    """
+    path = Path(path).expanduser().resolve()
+    
+    if not path.exists():
+        raise FileNotFoundError(f"Cannot launch non-existent path: {path}")
+
+    # 1. WSL Environment
+    if on_wsl():
+        send_file_path_to_windows_explorer(path)
+        return
+
+    # 2. Native Windows Experience
+    if on_windows():
+        import os
+        os.startfile(os.path.normpath(str(path)))
+        return
+
+    # 3. macOS Experience
+    if on_macos() or sys.platform == "darwin":
+        subprocess.Popen(["open", str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+
+    # 4. Android (Termux)
+    if on_termux():
+        # Fallback to xdg-open if termux-open isn't in path for some reason
+        cmd = "termux-open" if shutil.which("termux-open") else "xdg-open"
+        subprocess.Popen([cmd, str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+
+    # 5. Standard Linux Desktop Fallback
+    if on_linux():
+        try:
+            subprocess.Popen(["xdg-open", str(path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception:
+            print(f"[Error] No default application handler found for: {path.name}")

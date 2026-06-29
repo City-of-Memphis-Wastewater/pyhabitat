@@ -60,6 +60,7 @@ __all__ = [
     # launch
     "edit_textfile",
     "show_system_explorer",
+    "launch_file",
 
     # web
     "launch_browser_when_ready",
@@ -119,6 +120,7 @@ _FILE_CHARACTER_EXPORTS = {
 _LAUNCH_EXPORTS = {
     "edit_textfile",
     "show_system_explorer",
+    "launch_file",
 }
 
 _WEB_EXPORTS = {
