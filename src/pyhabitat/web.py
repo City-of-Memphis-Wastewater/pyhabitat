@@ -56,24 +56,29 @@ __all__ = [
 # ----------------------------------------------------------------------
 # Port utilities
 # ----------------------------------------------------------------------
-
 def find_open_port(
-    start: int = 8000,
+    start: int = 0,
     host: str = "127.0.0.1",
 ) -> int:
     """
-    Return the first available TCP port at or above ``start``.
+    Return an available TCP port.
+
+    If start==0, let the operating system choose an ephemeral port.
+    Otherwise search upward from start.
     """
 
-    port = start
+    if start == 0:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind((host, 0))
+            return sock.getsockname()[1]
 
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             try:
-                sock.bind((host, port))
-                return port
+                sock.bind((host, start))
+                return start
             except OSError:
-                port += 1
+                start += 1
 
 
 # ----------------------------------------------------------------------
@@ -343,7 +348,7 @@ def serve_directory(
             _server.kill()
 
     if port is None:
-        port = find_open_port(0, host)
+        port = find_open_port(8000, host)
     _server = subprocess.Popen(
         [
             sys.executable,
