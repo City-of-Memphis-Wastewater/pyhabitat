@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.1] - 2026-06-29
+### Added:
+- CLI dramaticallt improved
+- web.py now holds port finding, web launch, and directory browsing.
+
+---
+
 ## [1.2.9] - 2026-06-23
 ### Added:
 - environment.on_chromeos_crostini()
