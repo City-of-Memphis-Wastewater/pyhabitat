@@ -60,11 +60,11 @@ __all__ = [
     # launch
     "edit_textfile",
     "show_system_explorer",
-    "serve_directory",
 
     # web
     "launch_browser_when_ready",
     "find_open_port",
+    "browse_directory",
 ]
 
 
@@ -119,12 +119,12 @@ _FILE_CHARACTER_EXPORTS = {
 _LAUNCH_EXPORTS = {
     "edit_textfile",
     "show_system_explorer",
-    "serve_directory",
 }
 
 _WEB_EXPORTS = {
     "launch_browser_when_ready",
     "find_open_port",
+    "browse_directory",
 }
 
 

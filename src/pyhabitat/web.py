@@ -38,6 +38,9 @@ import time
 import urllib.request
 import webbrowser
 import urllib.error
+import sys
+from pathlib import Path
+from typing import Optional
 
 from .environment import on_wsl, on_termux, on_linux
 
@@ -45,7 +48,9 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     'launch_browser_when_ready',
+    'launch_browser',
     'find_open_port',
+    'browse_directory',
 ]
 
 # ----------------------------------------------------------------------
@@ -269,3 +274,94 @@ def launch_browser_when_ready(
     thread.start()
 
     return thread
+
+def browse_directory(path, **kwargs):
+
+    url = serve_directory(path, **kwargs)
+
+    launch_browser(url)
+
+    return url
+
+
+
+# Cache the active server so repeated calls don't spawn duplicates.
+_server: Optional[subprocess.Popen] = None
+_server_port: Optional[int] = None
+_server_root: Optional[Path] = None
+                                                   
+def serve_directory(
+    path: str | Path,                              
+    *,
+    host: str = "127.0.0.1",                       
+    port: Optional[int] = None,
+) -> str:                                          
+    """
+    Serve a directory using Python's built-in HTTP server.
+
+    Reuses an existing server if it is already serving the requested
+    directory.
+
+    Parameters
+    ----------
+    directory
+        Directory to serve.
+    host
+        Interface to bind.
+    port
+        Optional fixed port. If omitted, a free port is chosen.
+
+    Returns
+    -------
+    str
+        URL of the directory browser.
+    """
+
+    global _server, _server_port, _server_root
+
+    directory = path
+    directory = Path(directory).expanduser().resolve()
+
+    if not directory.is_dir():
+        raise NotADirectoryError(directory)
+
+    # Reuse an existing server if possible.
+    if (
+        _server is not None
+        and _server.poll() is None
+        and _server_root == directory
+        and _server_port is not None
+    ):
+        return f"http://{host}:{_server_port}/"
+
+    # Stop previous server.
+    if _server is not None and _server.poll() is None:
+        _server.terminate()
+        try:
+            _server.wait(timeout=2)
+        except Exception:
+            _server.kill()
+
+    if port is None:
+        port = find_open_port(0, host)
+    _server = subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "http.server",
+            str(port),
+            "--bind",
+            host,
+            "--directory",
+            str(directory),
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+    _server_root = directory
+    _server_port = port
+
+    return f"http://{host}:{port}/"
+
