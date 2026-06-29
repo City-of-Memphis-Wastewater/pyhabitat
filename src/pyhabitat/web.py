@@ -7,7 +7,7 @@ Typical usage
 -------------
 
     from http.server import ThreadingHTTPServer
-    from pyhabitat.launch_web import (
+    from pyhabitat.web import (
         find_open_port,
         launch_browser_when_ready,
     )
@@ -37,6 +37,7 @@ import threading
 import time
 import urllib.request
 import webbrowser
+import urllib.error
 
 from .environment import on_wsl, on_termux, on_linux
 
@@ -97,7 +98,16 @@ def wait_until_http_ready(
             with urllib.request.urlopen(url, timeout=1):
                 return True
 
-        except Exception:
+        except urllib.error.HTTPError:
+            # Server answered.
+            return True
+
+
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            ConnectionError,
+        ):
             time.sleep(poll_interval)
 
     return False
@@ -120,8 +130,8 @@ def launch_browser(url: str) -> bool:
     #
     # Termux
     #
-
-    if on_termux(): # shutil.which("termux-open-url"):
+    termux_launcher = shutil.which("termux-open-url"):
+    if on_termux() and termux_launcher:
 
         try:
             subprocess.Popen(
@@ -139,12 +149,10 @@ def launch_browser(url: str) -> bool:
     # WSL / Windows Edge
     #
 
-    
-    if on_wsl(): #edge:
-        edge = shutil.which("microsoft-edge")
+    edge = shutil.which("microsoft-edge")
+    if on_wsl() and edge: #edge:
         env = os.environ.copy()
         env["CHROME_LOG_LEVEL"] = "3"
-
         try:
             subprocess.Popen(
                 [
@@ -170,8 +178,8 @@ def launch_browser(url: str) -> bool:
     #
     # Linux desktop
     #
-
-    if on_linux(): #shutil.which("xdg-open"):
+    linux_launcher = shutil.which("xdg-open")
+    if on_linux() and linux_launcher:
 
         try:
             subprocess.Popen(
@@ -247,14 +255,15 @@ def launch_browser_when_ready(
         else:
 
             logger.warning(
-                "Timed out waiting for server: %s",
+                "Timed out after %.1fs waiting for %s",
+                timeout,
                 url,
             )
 
     thread = threading.Thread(
         target=worker,
         daemon=True,
-        name="launch-browser-when-ready",
+        name=f"launch-browser-when-ready: {url}",
     )
 
     thread.start()
