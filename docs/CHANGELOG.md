@@ -8,7 +8,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ## [1.3.1] - 2026-06-29
 ### Added:
-- CLI dramaticallt improved
+- argparse-based CLI dramatically improved.
 - web.py now holds port finding, web launch, and directory browsing.
 
 ---
