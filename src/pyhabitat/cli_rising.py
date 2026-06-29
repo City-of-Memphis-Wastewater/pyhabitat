@@ -86,12 +86,12 @@ def run_cli() -> None:
                 help="Path to check/evaluate"
             )
             
-        if "debug" in params:
-            cmd_parser.add_argument(
-                "--debug", 
-                action="store_true", 
-                help="Enable verbose function debug output"
-            )
+        #if "debug" in params:
+        #    cmd_parser.add_argument(
+        #        "--debug", 
+        #        action="store_true", 
+        #        help="Enable verbose function debug output"
+        #    )
 
     # Intercept --clear-cache before parsing so it bypasses required subcommands
     if "--clear-cache" in sys.argv:
