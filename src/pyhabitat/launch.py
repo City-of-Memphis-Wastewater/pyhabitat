@@ -231,6 +231,21 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
 
+def _send_file_path_to_windows_explorer(win_path: str | Path)->None:
+    """
+    # Locate explorer.exe (Defaulting to /mnt/c/Windows/explorer.exe)
+    # This handles cases where System32 is missing from the Linux $PATH.
+
+    """
+    explorer_cmd = "explorer.exe"
+    if shutil.which("explorer.exe") is None:
+        # Manual path injection for stripped environments
+        possible_explorer = Path("/mnt/c/Windows/explorer.exe")
+        if possible_explorer.exists():
+            explorer_cmd = str(possible_explorer)
+
+    subprocess.Popen([explorer_cmd, win_path])
+
 def show_system_explorer(path: str | Path = None) -> None: 
     """
     Opens the system file explorer (File Explorer, Finder, or Nautilus/etc.)
@@ -256,10 +271,6 @@ def show_system_explorer(path: str | Path = None) -> None:
 
 
     try:
-        if False:#on_wsl():
-            win_path = subprocess.check_output(["wslpath", "-w", path]).decode().strip()
-            subprocess.Popen(["explorer.exe", win_path])
-
         # --- Robust WSL Explorer Support ---
         if on_wsl():
             # When appendWindowsPath=false in wsl.conf, explorer.exe isn't in $PATH.
@@ -272,16 +283,7 @@ def show_system_explorer(path: str | Path = None) -> None:
                 # Fallback if wslpath fails: just use the path as-is (though likely to fail explorer)
                 win_path = path
 
-            # 2. Locate explorer.exe (Defaulting to /mnt/c/Windows/explorer.exe)
-            # This handles cases where System32 is missing from the Linux $PATH.
-            explorer_cmd = "explorer.exe"
-            if shutil.which("explorer.exe") is None:
-                # Manual path injection for stripped environments
-                possible_explorer = Path("/mnt/c/Windows/explorer.exe")
-                if possible_explorer.exists():
-                    explorer_cmd = str(possible_explorer)
-
-            subprocess.Popen([explorer_cmd, win_path])
+            _send_file_path_to_windows_explorer(win_path)
             
         elif on_windows():
             # use os.startfile for the most native Windows experience
