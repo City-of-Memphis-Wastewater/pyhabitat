@@ -135,7 +135,7 @@ def launch_browser(url: str) -> bool:
     #
     # Termux
     #
-    termux_launcher = shutil.which("termux-open-url"):
+    termux_launcher = shutil.which("termux-open-url")
     if on_termux() and termux_launcher:
 
         try:
