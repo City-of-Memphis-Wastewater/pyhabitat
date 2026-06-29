@@ -127,6 +127,32 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 _run_dos2unix(path)
                 subprocess.run(['nano', str(path)])
 
+        elif on_wsl():
+            _run_dos2unix(path)
+            success = False
+            gui_editors = ['gedit', 'mousepad', 'kate', 'xed', 'code']
+            for editor in gui_editors:
+                if shutil.which(editor):
+                    # launcher will be Popen if we are in a GUI, or run if in a TTY
+                    launcher([editor, str(path)])
+                    success = True
+                    break
+            
+            if not success:
+                # 3. Final Fallback: Terminal Editor
+                # This MUST be blocking (subprocess.run) to work in a TTY/REPL context.
+                # We don't spawn a new window to avoid environmental/SSH crashes.
+                if shutil.which('nano'):
+                    # If we are in a GUI, the user might need to look at the terminal they launched from
+                    if is_async: 
+                        print(f"\n[Note] No GUI editor found. Opening {path.name} in nano within the terminal.")
+                    
+                    subprocess.run(['nano', str(path)])
+                    success = True
+                else:
+                    # Absolute last resort
+                    print(f"\n[Error] No suitable editor (GUI or Terminal) found. File saved at: {path}")
+
         # --- Standard Desktop Linux ---
         elif on_linux():
             _run_dos2unix(path)
