@@ -8,6 +8,7 @@ import sys
 
 import pyhabitat
 from ._version import __version__
+from .logging_setup import configure_logging
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,19 @@ def run_cli() -> None:
         action='version',
         version=f'PyHabitat {current_version}'
     )
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help="Enable global verbose debug logging"
+    )
+
+    parser.add_argument(
+        '--info',
+        action='store_true',
+        help="Enable informative status logging"
+    )
+
     parser.add_argument(
         "--clear-cache",
         action='store_true',
@@ -41,7 +55,6 @@ def run_cli() -> None:
     # 1. Register a dedicated subparser for the default full system report
     report_parser = subparsers.add_parser("report", help="Run the full pyhabitat environment report (default)")
     report_parser.add_argument("--path", type=str, default=None, help="Path to inspect (defaults to sys.argv[0])")
-    #report_parser.add_argument("--debug", action="store_true", help="Enable verbose debug output")
 
     # 2. Dynamically loop through __all__ and map functions to CLI sub-commands
     for name in pyhabitat.__all__:
@@ -73,12 +86,12 @@ def run_cli() -> None:
                 help="Path to check/evaluate"
             )
             
-        #if "debug" in params:
-        #    cmd_parser.add_argument(
-        #        "--debug", 
-        #        action="store_true", 
-        #        help="Enable verbose function debug output"
-        #    )
+        if "debug" in params:
+            cmd_parser.add_argument(
+                "--debug", 
+                action="store_true", 
+                help="Enable verbose function debug output"
+            )
 
     # Intercept --clear-cache before parsing so it bypasses required subcommands
     if "--clear-cache" in sys.argv:
@@ -95,6 +108,9 @@ def run_cli() -> None:
         return
 
     args = parser.parse_args()
+    # Initialize the zero-dep logging setup
+    from .logging_setup import configure_logging
+    configure_logging(debug=args.debug, info=args.info)
 
     # Execution logic branch
     if args.command == "report":
