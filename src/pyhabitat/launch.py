@@ -297,7 +297,8 @@ def show_system_explorer(path: str | Path = None) -> None:
         #  Android (Termux)
         elif on_termux():
             # termux-open passes the intent to the Android system explorer
-            subprocess.Popen(["termux-open", path])
+            browse_directory(path)
+            #subprocess.Popen(["termux-open", path])
             return
 
         elif on_chromeos_crostini():
