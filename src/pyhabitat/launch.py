@@ -297,8 +297,12 @@ def show_system_explorer(path: str | Path = None) -> None:
             # termux-open passes the intent to the Android system explorer
             subprocess.Popen(["termux-open", path])
             return
+
         elif on_chromeos_crostini():
-            browse_directory(path)
+            if  os.environ.get("PYHABITAT_USE_THUNAR_ON_CROSTINI",None):
+                open_with_thunar(path)
+            else:
+                browse_directory(path)
 
         else:
             # Linux/Other: pyhabitat or xdg-open fallback
@@ -306,6 +310,29 @@ def show_system_explorer(path: str | Path = None) -> None:
             subprocess.Popen(["xdg-open", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception as e:
         print(f"Could not open system explorer. Path: {path}. Error: {e}")
+
+# -----
+
+def open_with_thunar(path: str | Path):
+    path = str(Path(path).expanduser().resolve())
+    
+    # Check if thunar is installed
+    if not shutil.which("thunar"):
+        print("Thunar not found. Installing now...")
+        # We use 'sudo apt-get install -y thunar'
+        # Note: This will only work if the user has sudo rights
+        try:
+            subprocess.run(["sudo", "apt-get", "update"], check=True)
+            subprocess.run(["sudo", "apt-get", "install", "-y", "thunar"], check=True)
+            print("Thunar installed successfully.")
+        except subprocess.CalledProcessError:
+            print("Failed to install Thunar. Please install manually: sudo apt install thunar")
+            return
+
+    # Open the directory
+    subprocess.Popen(["thunar", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# -----
 
 def launch_file(path: Path | str) -> None:
     """
