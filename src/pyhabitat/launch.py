@@ -299,7 +299,8 @@ def show_system_explorer(path: str | Path = None) -> None:
             return
 
         elif on_chromeos_crostini():
-            if  os.environ.get("PYHABITAT_USE_THUNAR_ON_CROSTINI",None):
+            _use_thunar_on_crostini = os.environ.get("PYHABITAT_USE_THUNAR_ON_CROSTINI",None)
+            if _use_thunar_on_crostini in ("1","true","on"):
                 open_with_thunar(path)
             else:
                 browse_directory(path)
