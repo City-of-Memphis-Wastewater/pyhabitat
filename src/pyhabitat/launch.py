@@ -23,6 +23,7 @@ __all__ = [
     'edit_textfile',
     'show_system_explorer',
     'launch_file',
+    'open_with_thunar',
 ]
 
 # --- LAUNCH MECHANISMS BASED ON ENVIRONMENT ---

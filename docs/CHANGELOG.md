@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.3] - 2026-07-05
+### Added:
+- Thunar support on Chrome Crostini Linux dev environment, if the env var is set to "1" or "true" for PYHABITAT_USE_THUNAR_ON_CROSTINI.
+- Add launch.open_with_thunar() to __init__ exposure.
+
+---
+
 ## [1.3.2] - 2026-06-29
 ### Added:
 - logging_setup.py, --debug fix

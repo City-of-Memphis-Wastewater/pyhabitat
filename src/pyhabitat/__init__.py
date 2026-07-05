@@ -61,6 +61,7 @@ __all__ = [
     "edit_textfile",
     "show_system_explorer",
     "launch_file",
+    "open_with_thunar",
 
     # web
     "launch_browser_when_ready",
@@ -121,6 +122,7 @@ _LAUNCH_EXPORTS = {
     "edit_textfile",
     "show_system_explorer",
     "launch_file",
+    "open_with_thunar",
 }
 
 _WEB_EXPORTS = {
