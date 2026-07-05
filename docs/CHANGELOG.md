@@ -10,6 +10,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ### Added:
 - Thunar support on Chrome Crostini Linux dev environment, if the env var is set to "1" or "true" for PYHABITAT_USE_THUNAR_ON_CROSTINI.
 - Add launch.open_with_thunar() to __init__ exposure.
+- use browse_directory(path) for show_system_explorer() when on termux, instead of termux-open, which is good.for files but not directories.
 
 ---
 
