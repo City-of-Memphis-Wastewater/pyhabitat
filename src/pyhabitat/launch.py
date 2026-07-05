@@ -167,10 +167,11 @@ def edit_textfile(path: Path | str | None = None, background: Optional[bool] = N
                 subprocess.run(['xdg-open', str(path)], check=True, capture_output=True)
                 # xdg open is non ideal for editing if it shows the web viewer, which happens to me in wsl; can i first access for which program will be used by WSL? maybe cache it and then alter it for repeat runs.
                 success = True
-            except (subprocess.CalledProcessError, FileNotFoundError, Exception):
-                # If xdg-open fails (like the JSON error you saw), we move to manual fallbacks
+            except subprocess.CalledProcessError:
                 pass
-
+            except FileNotFoundError:
+                pass
+                    # If xdg-open fails, we move to manual fallbacks
             if not success:
                 # 2. Fallback Ladder: Common GUI Editors
                 # These are safe to background (using the 'launcher' Popen/run logic)
