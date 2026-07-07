@@ -285,7 +285,7 @@ def browse_directory(path, **kwargs):
     url = serve_directory(path, **kwargs)
 
     launch_browser(url)
-
+    print(f"url",file=sys.stdout)
     return url
 
 
