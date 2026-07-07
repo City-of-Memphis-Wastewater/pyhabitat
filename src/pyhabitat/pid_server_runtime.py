@@ -1,9 +1,10 @@
-# src/pyhabotat/server_runtime.py
+# src/pyhabitat/server_runtime.py
 from __future__ import annotations
 import subprocess
 import sys
 import json
 from pathlib import Path
+import os
 
 PID_FILE = Path.home() / ".cache/pyhabitat/servedirs.json"
 
