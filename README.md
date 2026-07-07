@@ -14,6 +14,10 @@ Stop writing verbose `sys.platform` and environment variable checks. Use **`pyha
 
 Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabitat/tree/main/src/pyhabitat/). 🌐
 
+**Download binaries here:** [Releases](https://github.com/City-of-Memphis-Wastewater/pyhabitat/releases/)
+
+[![Socket Badge](https://badge.socket.dev/pypi/package/pyhabitat)](https://socket.dev/pypi/package/pyhabitat)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico-alpha.png" width="256px">
 </p>
@@ -28,6 +32,13 @@ Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabita
 ```bash
 pip install pyhabitat
 ```
+
+Or, for the CLI,
+
+```bash
+pipx install pyhabitat
+```
+
 
 ---
 
