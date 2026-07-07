@@ -6,6 +6,15 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.5] - 2026-07-07
+### Changed:
+- Readme improvement: Thunar typo
+- Readme improvement: socket.dev badge
+- Readme improvement: link to releases 
+- Readme improvement: stronger mentions of edit_textfile(), show_system_explorer(), and on_chromeos_crostini()
+
+---
+
 ## [1.3.4] - 2026-07-07
 ### Added:
 - Print url to stdout in web.browse_directory()
