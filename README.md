@@ -4,11 +4,13 @@
 
 **`pyhabitat`** is a **lightweight library for Python build and environment introspection**. It accurately and securely determines the execution context of a running script by providing definitive checks for:
 
-* **OS and Environments:** Operating Systems and common container/emulation environments (e.g., Termux, iSH).
+* **OS and Environments:** Operating Systems and common container/emulation environments (e.g., WSL, macOS, Termux, iSH, Crostini).
 * **Build States:** Application build systems (e.g., PyInstaller, pipx).
 * **GUI Backends:** Availability of graphical toolkits (e.g., Matplotlib, Tkinter).
 
 Stop writing verbose `sys.platform` and environment variable checks. Use **`pyhabitat`** to implement clean, **architectural logic** based on the execution habitat.
+
+Additionally, cross-platform functions are available for editing a textfile and viewing a local directory in the appropriate file explorer.
 
 ---
 
