@@ -205,9 +205,9 @@ You can build PyHabitat in two ways:
 
 ---
 
-<!--p align="center">
+<p align="center">
   <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-help-v1.3.5.svg" width="200" alt="SVG help" />
-</p-->
+</p>
 
 ---
 
