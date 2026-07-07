@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.4] - 2026-07-07
+### Added:
+- Print url to stdout in web.browse_directory()
+
+---
+
 ## [1.3.3] - 2026-07-05
 ### Added:
 - Thunar support on Chrome Crostini Linux dev environment, if the env var is set to "1" or "true" for PYHABITAT_USE_THUNAR_ON_CROSTINI.
