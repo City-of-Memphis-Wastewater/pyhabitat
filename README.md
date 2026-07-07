@@ -47,7 +47,7 @@ pipx install pyhabitat
 ## Env Vars
 
 PYHABITAT_USE_THUNAR_ON_CROSTINI # set to 'true' or '1' or 'on'
-Sie effect: Tgunar installation will be attempted if it has not been yet added to the Crostini environment in question.
+Side effect: Thunar installation will be attempted if it has not been yet added to the Crostini environment in question.
 
 ---
 
@@ -93,6 +93,7 @@ Key question: "What is this running on?"
 | `on_linux()` | Returns `True` on Linux in general. |
 | `on_wsl()` | Returns `True` if running inside Windows Subsystem for Linux (WSL or WSL2). |
 | `on_termux()` | Returns `True` if running in the Termux Android environment. |
+| `on_chromeos_crostini()` | Returns `True` if running in the Penguin Linux Developer environment on a ChromeOS machine. |
 | `on_freebsd()` | Returns `True` on FreeBSD. |
 | `on_ish_alpine()` | Returns `True` if running in the iSH Alpine Linux iOS emulator. |
 | `on_android()` | Returns `True` on any Android-based Linux environment. |
