@@ -27,6 +27,7 @@ Read the code on [github](https://github.com/City-of-Memphis-Wastewater/pyhabita
   <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-ico_256x256.ico" width="200" alt="ICO Version" />
 </p-->
 
+
 ---
 
 ## 📦 Installation
@@ -204,6 +205,11 @@ You can build PyHabitat in two ways:
 
 ---
 
+<!--p align="center">
+  <img src="https://raw.githubusercontent.com/City-of-Memphis-Wastewater/pyhabitat/main/assets/pyhabitat-help-v1.3.5.svg" width="200" alt="SVG help" />
+</p-->
+
+---
 
 🤝 Contributing
 
