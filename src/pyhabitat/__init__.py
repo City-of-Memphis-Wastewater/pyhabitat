@@ -128,8 +128,7 @@ _LAUNCH_EXPORTS = {
 
 _WEB_EXPORTS = {
     "launch_browser_after_http_poll",
-    "launch_browser_nowo
-    ",
+    "launch_browser_now",
     "find_open_port",
     "browse_directory",
 }
