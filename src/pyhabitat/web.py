@@ -131,6 +131,14 @@ def launch_browser(url: str) -> bool:
     """
     Open a URL using the best available launcher.
 
+    Use case: Launching a local file or external website.
+
+    Alternative: If starting a web app, use launch_browser_when_ready().
+
+    Hypothetical alias names:
+    - open_static_or_external_url(url)
+    - launch_browser_now(url)
+    
     Returns
     -------
     bool
@@ -218,6 +226,12 @@ def launch_browser_when_ready(
     Launch a daemon thread which waits for an HTTP server to become
     responsive before opening the user's browser.
 
+    Use case: Spinning up a local web app with consideration for thread management and polling.
+
+    Hypothetical alias names:
+    - open_local_server_url(url)
+    - launch_browser_after_http_poll(url)
+    
     This function returns immediately.
 
     Parameters
