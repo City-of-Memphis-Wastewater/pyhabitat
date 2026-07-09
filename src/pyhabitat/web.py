@@ -231,6 +231,7 @@ def launch_browser_when_ready(
     Hypothetical alias names:
     - open_local_server_url(url)
     - launch_browser_after_http_poll(url)
+    - launch_browser_when_ready(url)
     
     This function returns immediately.
 
