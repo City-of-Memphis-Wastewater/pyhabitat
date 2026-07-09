@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.7] - 2026-07-09
+### Changed:
+- Improve web.find_open_port() to use args: start_port, host, max_attempts, with a default max_attempts of 100.
+
+---
+
 ## [1.3.6] - 2026-07-09
 ### Added:
 - Expose launch_browser_now() in __init__.py
