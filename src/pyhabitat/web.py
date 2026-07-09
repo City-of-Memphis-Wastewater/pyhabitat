@@ -57,28 +57,32 @@ __all__ = [
 # Port utilities
 # ----------------------------------------------------------------------
 def find_open_port(
-    start: int = 0,
+    start_port: int = 0,
     host: str = "127.0.0.1",
+    max_attempts: int = 100
 ) -> int:
     """
-    Return an available TCP port.
+    Return an available TCP port, searching upward defensively if contested.
 
-    If start==0, let the operating system choose an ephemeral port.
+    If start_port==0, let the operating system choose an ephemeral port.
     Otherwise search upward from start.
     """
 
-    if start == 0:
+    if start_port == 0:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.bind((host, 0))
             return sock.getsockname()[1]
 
-    while True:
+    #while True:
+    for attempt in range(max_attempts):
+        port = start_port + attempt
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             try:
-                sock.bind((host, start))
-                return start
+                sock.bind((host, port))
+                return port
             except OSError:
-                start += 1
+                continue
+    raise RuntimeError(f"Could not find an open port starting from {start_port} within {max_attempts} tries.")
 
 
 # ----------------------------------------------------------------------
