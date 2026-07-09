@@ -123,9 +123,9 @@ def wait_until_http_ready(
     return False
 
 
-# ----------------------------------------------------------------------
+# -----------------
 # Browser launching
-# ----------------------------------------------------------------------
+# -----------------
 
 def launch_browser(url: str) -> bool:
     """
@@ -137,9 +137,7 @@ def launch_browser(url: str) -> bool:
         True if a launch command was successfully started.
     """
 
-    #
-    # Termux
-    #
+    # --- Termux ---
     termux_launcher = shutil.which("termux-open-url")
     if on_termux() and termux_launcher:
 
@@ -155,10 +153,7 @@ def launch_browser(url: str) -> bool:
         except Exception:
             logger.exception("termux-open-url failed")
 
-    #
-    # WSL / Windows Edge
-    #
-
+    # --- WSL / Windows Edge ---
     edge = shutil.which("microsoft-edge")
     if on_wsl() and edge: #edge:
         env = os.environ.copy()
@@ -179,15 +174,12 @@ def launch_browser(url: str) -> bool:
                 env=env,
                 start_new_session=True,
             )
-
             return True
 
         except Exception:
             logger.exception("microsoft-edge failed")
 
-    #
-    # Linux desktop
-    #
+    # --- Linux desktop ---
     linux_launcher = shutil.which("xdg-open")
     if on_linux() and linux_launcher:
 
@@ -203,11 +195,7 @@ def launch_browser(url: str) -> bool:
         except Exception:
             logger.exception("xdg-open failed")
 
-    
-    #
-    # Generic Python fallback
-    #
-
+    # --- Generic Python fallback ---
     try:
         webbrowser.open_new_tab(url)
         return True
@@ -215,7 +203,6 @@ def launch_browser(url: str) -> bool:
     except Exception:
         logger.exception("webbrowser failed")
         return False
-
 
 # ----------------------------------------------------------------------
 # Combined helper
