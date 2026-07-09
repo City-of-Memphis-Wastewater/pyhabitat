@@ -6,7 +6,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.3.9] - 2026-07-09
+## [1.3.6] - 2026-07-09
 ### Added:
 - Expose launch_browser_now() in __init__.py
 
