@@ -64,7 +64,8 @@ __all__ = [
     "open_with_thunar",
 
     # web
-    "launch_browser_when_ready",
+    "launch_browser_after_http_poll",
+    "launch_browser_now",
     "find_open_port",
     "browse_directory",
 ]
@@ -126,7 +127,9 @@ _LAUNCH_EXPORTS = {
 }
 
 _WEB_EXPORTS = {
-    "launch_browser_when_ready",
+    "launch_browser_after_http_poll",
+    "launch_browser_nowo
+    ",
     "find_open_port",
     "browse_directory",
 }

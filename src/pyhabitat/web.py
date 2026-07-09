@@ -9,7 +9,7 @@ Typical usage
     from http.server import ThreadingHTTPServer
     from pyhabitat.web import (
         find_open_port,
-        launch_browser_when_ready,
+        launch_browser_after_http_poll,
     )
 
     port = find_open_port(8000)
@@ -18,7 +18,7 @@ Typical usage
 
         url = f"http://127.0.0.1:{port}/"
 
-        launch_browser_when_ready(url)
+        launch_browser_after_http_poll(url)
 
         httpd.serve_forever()
 
@@ -47,8 +47,8 @@ from .environment import on_wsl, on_termux, on_linux
 logger = logging.getLogger(__name__)
 
 __all__ = [
-    'launch_browser_when_ready',
-    'launch_browser',
+    'launch_browser_after_http_poll',
+    'launch_browser_now',
     'find_open_port',
     'browse_directory',
 ]
@@ -127,13 +127,13 @@ def wait_until_http_ready(
 # Browser launching
 # -----------------
 
-def launch_browser(url: str) -> bool:
+def launch_browser_now(url: str) -> bool:
     """
     Open a URL using the best available launcher.
 
     Use case: Launching a local file or external website.
 
-    Alternative: If starting a web app, use launch_browser_when_ready().
+    Alternative: If starting a web app, use launch_browser_after_http_poll().
 
     Hypothetical alias names:
     - open_static_or_external_url(url)
@@ -216,7 +216,7 @@ def launch_browser(url: str) -> bool:
 # Combined helper
 # ----------------------------------------------------------------------
 
-def launch_browser_when_ready(
+def launch_browser_after_http_poll(
     url: str,
     *,
     timeout: float = 5.0,
@@ -262,7 +262,7 @@ def launch_browser_when_ready(
 
             logger.debug("Server ready: %s", url)
 
-            launch_browser(url)
+            launch_browser_now(url)
 
         else:
 
@@ -286,7 +286,7 @@ def browse_directory(path, **kwargs):
 
     url = serve_directory(path, **kwargs)
 
-    launch_browser(url)
+    launch_browser_now(url)
     print(f"{url}",file=sys.stdout)
     return url
 
