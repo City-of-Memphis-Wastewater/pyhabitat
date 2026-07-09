@@ -6,6 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.9] - 2026-07-09
+### Added:
+- Expose launch_browser_now() in __init__.py
+
+### Changed:
+- Function name change: launch_browser() -> launch_browser_now(); this is for launching an external website or a local file.
+- Function name change: launch_browser_when_ready() -> launch_browser_after_http_poll(); this is for starting a local web app server.
+
+---
+
 ## [1.3.5] - 2026-07-07
 ### Added:
 - Readme improvement: Thunar typo
