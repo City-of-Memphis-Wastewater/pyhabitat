@@ -234,7 +234,7 @@ def _run_dos2unix(path: Path | str | None = None):
         # Catch other subprocess errors (e.g. permission issues)
         pass
 
-def send_file_path_to_windows_explorer(path: str | Path)->None:
+def send_file_path_to_windows_explorer_on_wsl(path: str | Path)->None:
     """
     # Locate explorer.exe (Defaulting to /mnt/c/Windows/explorer.exe)
     # This handles cases where System32 is missing from the Linux $PATH.
@@ -248,7 +248,7 @@ def send_file_path_to_windows_explorer(path: str | Path)->None:
     explorer_cmd = "explorer.exe"
     if shutil.which("explorer.exe") is None:
         # Manual path injection for stripped environments
-        logger.debug('Ensure that WSLInterop is enabled in /etc/wsl.conf, with apendWindowsPath=true')
+        logger.warning('Ensure that WSLInterop is enabled in /etc/wsl.conf, with apendWindowsPath=true')
         possible_explorer = Path("/mnt/c/Windows/explorer.exe")
         if possible_explorer.exists():
             explorer_cmd = str(possible_explorer)
@@ -288,7 +288,7 @@ def show_system_explorer(path: str | Path = None) -> None:
                 open_with_thunar(path)
             else:
                 # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
-                send_file_path_to_windows_explorer(path)
+                send_file_path_to_windows_explorer_on_wsl(path)
                 # consider adding thunar message
         elif on_windows():
             # use os.startfile for the most native Windows experience
@@ -353,7 +353,7 @@ def launch_file(path: Path | str) -> None:
 
     # 1. WSL Environment
     if on_wsl():
-        send_file_path_to_windows_explorer(path)
+        send_file_path_to_windows_explorer_on_wsl(path)
         return
 
     # 2. Native Windows Experience
