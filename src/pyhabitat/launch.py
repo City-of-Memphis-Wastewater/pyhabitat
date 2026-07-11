@@ -283,11 +283,13 @@ def show_system_explorer(path: str | Path = None) -> None:
         if on_wsl():
             # When appendWindowsPath=false in wsl.conf, explorer.exe isn't in $PATH.
             # We must find the Windows mount point and call the binary directly.
-            
-            # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
-            send_file_path_to_windows_explorer(path)
-            # consider adding thunar message
-            
+            _use_thunar_on_wsl = os.environ.get("PYHABITAT_USE_THUNAR_ON_WSL",None)
+            if _use_thunar_on_wsl in ("1","true","on"):
+                open_with_thunar(path)
+            else:
+                # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
+                send_file_path_to_windows_explorer(path)
+                # consider adding thunar message
         elif on_windows():
             # use os.startfile for the most native Windows experience
             os.startfile(path)
