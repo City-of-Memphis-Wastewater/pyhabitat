@@ -248,10 +248,10 @@ def send_file_path_to_windows_explorer(path: str | Path)->None:
     explorer_cmd = "explorer.exe"
     if shutil.which("explorer.exe") is None:
         # Manual path injection for stripped environments
+        logger.debug('Ensure that WSLInterop is enabled in /etc/wsl.conf, with apendWindowsPath=true')
         possible_explorer = Path("/mnt/c/Windows/explorer.exe")
         if possible_explorer.exists():
             explorer_cmd = str(possible_explorer)
-
     subprocess.Popen([explorer_cmd, win_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def show_system_explorer(path: str | Path = None) -> None: 
@@ -286,6 +286,7 @@ def show_system_explorer(path: str | Path = None) -> None:
             
             # 1. Convert Linux path to Windows path using wslpath (built-in WSL utility)
             send_file_path_to_windows_explorer(path)
+            # consider adding thunar message
             
         elif on_windows():
             # use os.startfile for the most native Windows experience
