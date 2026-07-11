@@ -48,7 +48,9 @@ pipx install pyhabitat
 ## Env Vars
 
 PYHABITAT_USE_THUNAR_ON_CROSTINI # set to 'true' or '1' or 'on'
-Side effect: Thunar installation will be attempted if it has not been yet added to the Crostini environment in question.
+PYHABITAT_USE_THUNAR_ON_WSL # set to 'true' or '1' or 'on'
+
+Side effect: Thunar installation will be attempted if it has not been yet added to the environment in question.
 
 ---
 
