@@ -92,18 +92,9 @@ def run_cli() -> None:
 
         # ---
         except (ValueError, TypeError):
-            params = {}
-
-            # Adapt path/exec_path parameter signatures seamlessly to standard --path flags
-            if "path" in params or "exec_path" in params:
-                cmd_parser.add_argument(
-                    "--path", 
-                    type=str, 
-                    default=None, 
-                    help="Path to check/evaluate"
-                )
-            
-
+            logger.warning("Cannot inspect %s", func)
+            continue
+        
     # Intercept --clear-cache before parsing so it bypasses required subcommands
     if "--clear-cache" in sys.argv:
         if hasattr(pyhabitat, "clear_mpl_cache"):
