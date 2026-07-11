@@ -38,6 +38,7 @@ import time
 import urllib.request
 import webbrowser
 import urllib.error
+from urllib.parse import urlparse
 import sys
 from pathlib import Path
 from typing import Optional
@@ -131,6 +132,36 @@ def wait_until_http_ready(
 # Browser launching
 # -----------------
 
+def _prepare_url(url: str) -> str:
+    """
+    Normalize user input into a browser-launchable URL.
+    """
+
+    url = url.strip()
+
+    if not url:
+        raise ValueError("URL cannot be empty.")
+
+    parsed = urlparse(url)
+
+    # Already has a scheme.
+    if parsed.scheme:
+        return url
+
+    # Localhost / IP addresses default to HTTP.
+    if (
+        url.startswith(("localhost", "127.", "0.0.0.0", "[::1]"))
+        or ":" in url.split("/")[0]      # host:port
+    ):
+        return f"http://{url}"
+
+    # Bare domains default to HTTPS.
+    if "." in url.split("/")[0]:
+        return f"https://{url}"
+
+    # Otherwise assume it's a local file.
+    return Path(url).expanduser().resolve().as_uri()
+
 def launch_browser_now(url: str) -> bool:
     """
     Open a URL using the best available launcher.
@@ -148,6 +179,7 @@ def launch_browser_now(url: str) -> bool:
     bool
         True if a launch command was successfully started.
     """
+    url = _prepare_url(url)
 
     # --- Termux ---
     termux_launcher = shutil.which("termux-open-url")
