@@ -131,10 +131,23 @@ def wait_until_http_ready(
 # -----------------
 # Browser launching
 # -----------------
+from pathlib import Path
+from urllib.parse import urlparse
+
 
 def _prepare_url(url: str) -> str:
     """
     Normalize user input into a browser-launchable URL.
+
+    Examples
+    --------
+    google.com              -> https://google.com
+    google.com/search       -> https://google.com/search
+    localhost:8000          -> http://localhost:8000
+    127.0.0.1:5000          -> http://127.0.0.1:5000
+    https://example.com     -> unchanged
+    file:///tmp/test.html   -> unchanged
+    README.html             -> file:///.../README.html
     """
 
     url = url.strip()
@@ -144,23 +157,31 @@ def _prepare_url(url: str) -> str:
 
     parsed = urlparse(url)
 
-    # Already has a scheme.
+    # Already a fully-qualified URL.
     if parsed.scheme:
         return url
 
-    # Localhost / IP addresses default to HTTP.
-    if (
-        url.startswith(("localhost", "127.", "0.0.0.0", "[::1]"))
-        or ":" in url.split("/")[0]      # host:port
-    ):
+    host = url.split("/", 1)[0]
+
+    # Local development hosts.
+    if host.startswith(("localhost", "127.", "0.0.0.0", "[::1]")):
         return f"http://{url}"
 
-    # Bare domains default to HTTPS.
-    if "." in url.split("/")[0]:
+    # host:port
+    if host.count(":") == 1 and host.rsplit(":", 1)[1].isdigit():
+        return f"http://{url}"
+
+    # Bare domain names.
+    if "." in host:
         return f"https://{url}"
 
-    # Otherwise assume it's a local file.
-    return Path(url).expanduser().resolve().as_uri()
+    # Existing local file.
+    path = Path(url).expanduser()
+    if path.exists():
+        return path.resolve().as_uri()
+
+    # Last resort: assume HTTPS.
+    return f"https://{url}"
 
 def launch_browser_now(url: str) -> bool:
     """
