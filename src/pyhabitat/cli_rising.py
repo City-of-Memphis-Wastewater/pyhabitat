@@ -128,7 +128,8 @@ def run_cli() -> None:
         report_path = Path(args.path) if args.path else None
         pyhabitat.report(path=report_path, debug=args.debug)
         return
-
+    # ---
+    '''
     if args.command:
         func = getattr(pyhabitat, args.command)
         kwargs = {}
@@ -159,7 +160,8 @@ def run_cli() -> None:
             
         if hasattr(args, "debug") and args.debug and "debug" in params:
             kwargs["debug"] = True
-
+        # ---
+        
         try:
             result = func(**kwargs)
             if result is not None:
@@ -172,3 +174,48 @@ def run_cli() -> None:
                     print(result)
         except Exception as e:
             pyhabitat.safe_notify(f"Error executing '{args.command}': {e}")
+
+
+        # ---
+    '''
+    if args.command:
+        func = getattr(pyhabitat, args.command)
+
+        try:
+            sig = inspect.signature(func)
+            params = sig.parameters
+        except (ValueError, TypeError):
+            params = {}
+
+        kwargs = {}
+
+        # Copy parsed CLI arguments into function arguments
+        for name, param in params.items():
+            if hasattr(args, name):
+                value = getattr(args, name)
+
+                if value is None:
+                    continue
+
+                # Convert path-like arguments back to Path objects
+                if name in {"path", "exec_path"}:
+                    value = Path(value)
+
+                kwargs[name] = value
+
+        try:
+            result = func(**kwargs)
+
+            if result is not None:
+                if hasattr(result, "__dict__") and not isinstance(
+                    result, (str, bool, int, dict, list)
+                ):
+                    import pprint
+                    pprint.pprint(result.__dict__)
+                else:
+                    print(result)
+
+        except Exception as e:
+            pyhabitat.safe_notify(
+                f"Error executing '{args.command}': {e}"
+            )
