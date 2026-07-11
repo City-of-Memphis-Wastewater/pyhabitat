@@ -71,20 +71,37 @@ def run_cli() -> None:
         cmd_parser = subparsers.add_parser(name, help=first_line_doc)
 
         # Inspect the function signature to add targeted parameters automatically
+        # ---
         try:
             sig = inspect.signature(func)
-            params = sig.parameters
+
+            for name, param in sig.parameters.items():
+                arg = f"--{name.replace('_', '-')}"
+
+                kwargs = {
+                    "dest": name,
+                    "type": str,
+                }
+
+                if param.default is inspect.Parameter.empty:
+                    kwargs["required"] = True
+                else:
+                    kwargs["default"] = param.default
+
+                cmd_parser.add_argument(arg, **kwargs)
+
+        # ---
         except (ValueError, TypeError):
             params = {}
 
-        # Adapt path/exec_path parameter signatures seamlessly to standard --path flags
-        if "path" in params or "exec_path" in params:
-            cmd_parser.add_argument(
-                "--path", 
-                type=str, 
-                default=None, 
-                help="Path to check/evaluate"
-            )
+            # Adapt path/exec_path parameter signatures seamlessly to standard --path flags
+            if "path" in params or "exec_path" in params:
+                cmd_parser.add_argument(
+                    "--path", 
+                    type=str, 
+                    default=None, 
+                    help="Path to check/evaluate"
+                )
             
 
     # Intercept --clear-cache before parsing so it bypasses required subcommands
