@@ -35,7 +35,8 @@ import socket
 import subprocess
 import threading
 import time
-import urllib.requestimport webbrowser
+import urllib.request
+import webbrowser
 import urllib.error
 from urllib.parse import urlparse, quote
 import sys

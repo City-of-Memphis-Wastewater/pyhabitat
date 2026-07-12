@@ -68,6 +68,8 @@ __all__ = [
     "launch_browser_now",
     "find_open_port",
     "browse_directory",
+    "serve_directory",
+    "serve_file",
 ]
 
 
@@ -131,6 +133,8 @@ _WEB_EXPORTS = {
     "launch_browser_now",
     "find_open_port",
     "browse_directory",
+    "serve_directory",
+    "serve_file",
 }
 
 
