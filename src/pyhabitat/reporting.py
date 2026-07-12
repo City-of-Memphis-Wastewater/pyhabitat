@@ -38,6 +38,7 @@ def report(path=None, debug=False):
     print(f"on_pydroid(): {ph.on_pydroid()}")
     print(f"on_ish_alpine(): {ph.on_ish_alpine()}")
     print(f"on_freebsd(): {ph.on_freebsd()}")
+    print(f"on_chromeos_crostini(): {ph.on_chromeos_crostini()}")
     print("\nCapability Checks")
     print("-------------------------")
     print(f"tkinter_is_available(): {ph.tkinter_is_available()}")
