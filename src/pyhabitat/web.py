@@ -52,6 +52,8 @@ __all__ = [
     'launch_browser_now',
     'find_open_port',
     'browse_directory',
+    'serve_file',
+    'serve_directory',
 ]
 
 # ----------------------------------------------------------------------
@@ -429,3 +431,15 @@ def serve_directory(
 
     return f"http://{host}:{port}/"
 
+def serve_file(path:str | Path, *, host="127.0.0.1", port=None):
+    path = Path(path).resolve()
+
+    if not path.is_file():
+        raise FileNotFoundError(path)
+
+    root = path.parent
+
+    root_url = serve_directory(root, host=host, port=port)
+
+    return root_url + urllib.parse.quote(path.name)
+    

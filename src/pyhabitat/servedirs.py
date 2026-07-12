@@ -169,7 +169,6 @@ def serve_directory(path: str | Path, host="127.0.0.1", port=8000):
         httpd.server_close()
         print("Server stopped")
 
-
 if __name__ == "__main__":
     import argparse
 
