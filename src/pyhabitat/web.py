@@ -35,10 +35,9 @@ import socket
 import subprocess
 import threading
 import time
-import urllib.request
-import webbrowser
+import urllib.requestimport webbrowser
 import urllib.error
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 import sys
 from pathlib import Path
 from typing import Optional
@@ -441,5 +440,4 @@ def serve_file(path:str | Path, *, host="127.0.0.1", port=None):
 
     root_url = serve_directory(root, host=host, port=port)
 
-    return root_url + urllib.parse.quote(path.name)
-    
+    return root_url + quote(path.name, safe="")
