@@ -9,7 +9,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 ## [1.3.9] - 2026-07-12
 ### Added:
 - web.serve_file() function, to complient web.serve_directory()
-- Expose web.serve_directory and web.serve_file() in __init__.pt
+- Expose web.serve_directory and web.serve_file() in __init__.py
 
 ---
 
