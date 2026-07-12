@@ -94,6 +94,8 @@ def run_cli() -> None:
                 annotation = type_hints.get(name, str)
                 if annotation is bool:
                     kwargs["action"] = argparse.BooleanOptionalAction
+                if annotation is Path:
+                    kwargs["type"] = Path
                 elif annotation in (int, float, str):
                     kwargs["type"] = annotation
                 else:
