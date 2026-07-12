@@ -6,6 +6,13 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.7] - 2026-07-12
+### Added:
+- Dramatic improvement to CLI automatically check function sognature for args and use as flags.
+- Support bool, Path, int, and float as CLI arg types.
+
+---
+
 ## [1.3.6] - 2026-07-09
 ### Added:
 - Expose launch_browser_now() in __init__.py
