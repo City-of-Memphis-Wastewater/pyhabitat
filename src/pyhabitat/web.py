@@ -440,4 +440,9 @@ def serve_file(path:str | Path, *, host="127.0.0.1", port=None):
 
     root_url = serve_directory(root, host=host, port=port)
 
-    return root_url + quote(path.name, safe="")
+    #url = root_url + quote(path.name, safe="")
+    
+    relative = path.relative_to(root)
+    url = root_url + quote(relative.as_posix(), safe="/")
+
+    return url
