@@ -6,10 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.3.7] - 2026-07-12
+## [1.3.8] - 2026-07-12
 ### Added:
 - Dramatic improvement to CLI automatically check function sognature for args and use as flags.
 - Support bool, Path, int, and float as CLI arg types.
+
+---
+
+## [1.3.7] - 2026-07-09
+### Changed:
+- Improve web.find_open_port() to use args: start_port, host, max_attempts, with a default max_attempts of 100.
 
 ---
 
