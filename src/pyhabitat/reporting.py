@@ -6,6 +6,22 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+def should_pause():
+    import pyhabitat as ph
+    if ph.in_repl():
+        return False
+
+    if sys.flags.interactive:
+        return False
+
+    if not sys.stdin or not sys.stdin.isatty():
+        return False
+
+    if not sys.stdout or not sys.stdout.isatty():
+        return False
+
+    return True
+    
 def report(path=None, debug=False):
     """Print a comprehensive environment report.
 
@@ -113,6 +129,10 @@ def report(path=None, debug=False):
     print("=== PyHabitat Report Complete ===")
     print("=================================")
     print("")
+    if should_pause():
+        print("Press Return to Continue...", file=sys.stderr)
+        sys.stdin.readline()
+    '''
     interactive = ph.in_repl() or sys.flags.interactive
     if not interactive:
         # Keep window open.
@@ -122,4 +142,4 @@ def report(path=None, debug=False):
             #input("Press Return to Continue...")
         except Exception as e:
             logging.debug("input() failed")
-               
+    '''
