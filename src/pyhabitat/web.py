@@ -54,6 +54,7 @@ __all__ = [
     'browse_directory',
     'serve_file',
     'serve_directory',
+    'shutdown_server',
 ]
 
 # ----------------------------------------------------------------------
@@ -133,9 +134,6 @@ def wait_until_http_ready(
 # -----------------
 # Browser launching
 # -----------------
-from pathlib import Path
-from urllib.parse import urlparse
-
 
 def _prepare_url(url: str) -> str:
     """
@@ -432,7 +430,7 @@ def serve_directory(
     return f"http://{host}:{port}/"
 
 def serve_file(path:str | Path, *, host="127.0.0.1", port=None):
-    path = Path(path).resolve()
+    path = Path(path).expanduser().resolve()
 
     if not path.is_file():
         raise FileNotFoundError(path)
@@ -447,3 +445,18 @@ def serve_file(path:str | Path, *, host="127.0.0.1", port=None):
     url = root_url + quote(relative.as_posix(), safe="/")
 
     return url
+
+def shutdown_server():
+    global _server, _server_port, _server_root
+
+    if _server is not None and _server.poll() is None:
+        _server.terminate()
+        try:
+            _server.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            _server.kill()
+
+    _server = None
+    _server_port = None
+    _server_root = None
+    
