@@ -55,6 +55,7 @@ __all__ = [
     'serve_file',
     'serve_directory',
     'shutdown_server',
+    'wait_for_server_shutdown',
 ]
 
 # ----------------------------------------------------------------------
@@ -460,3 +461,15 @@ def shutdown_server():
     _server_port = None
     _server_root = None
     
+
+def wait_for_server_shutdown():
+    global _server
+
+    if _server is None:
+        return
+
+    try:
+        _server.wait()
+
+    except KeyboardInterrupt:
+        shutdown_server()
