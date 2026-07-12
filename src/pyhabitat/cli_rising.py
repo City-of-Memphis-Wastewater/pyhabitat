@@ -5,6 +5,8 @@ import inspect
 import logging
 from pathlib import Path
 import sys
+import typing
+
 
 import pyhabitat
 from ._version import __version__
@@ -62,6 +64,8 @@ def run_cli() -> None:
             continue
             
         func = getattr(pyhabitat, name, None)
+        type_hints = typing.get_type_hints(func)
+
         if not callable(func):
             continue
 
@@ -76,8 +80,27 @@ def run_cli() -> None:
             sig = inspect.signature(func)
 
             for name, param in sig.parameters.items():
+
+                # skip debug and info arga because they exist as base command flags
+                if name in {"debug", "info"}:
+                    continue
+
                 arg = f"--{name.replace('_', '-')}"
 
+                kwargs = {
+                    "dest": name,
+                }
+
+                annotation = type_hints.get(name, str)
+                if annotation is bool:
+                    kwargs["action"] = argparse.BooleanOptionalAction
+                elif annotation in (int, float, str):
+                    kwargs["type"] = annotation
+                else:
+                    kwargs["type"] = str
+
+                # ---
+                '''
                 kwargs = {
                     "dest": name,
                     "type": str,
@@ -87,7 +110,7 @@ def run_cli() -> None:
                     kwargs["required"] = True
                 else:
                     kwargs["default"] = param.default
-
+                '''
                 cmd_parser.add_argument(arg, **kwargs)
 
         # ---
