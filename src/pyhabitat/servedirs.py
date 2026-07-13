@@ -11,6 +11,7 @@ from pathlib import Path
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import quote
 from string import Template
+from html import escape
 
 # ----------------------------
 # HTML template
@@ -123,7 +124,8 @@ class ServedirsHandler(SimpleHTTPRequestHandler):
 
         for name in entries:
             full = os.path.join(path, name)
-            display = name + ("/" if os.path.isdir(full) else "")
+            #display = name + ("/" if os.path.isdir(full) else "")
+            display = escape(name) + ("/" if os.path.isdir(full) else "")
             link = quote(name)
 
             if os.path.isdir(full):
@@ -131,7 +133,6 @@ class ServedirsHandler(SimpleHTTPRequestHandler):
 
             items.append(f'<li><a href="{link}">{display}</a></li>')
 
-        #html = HTML_PAGE.format(items="\n".join(items)) # raw string
         html = HTML_PAGE.substitute(items="\n".join(items)) # Template()
         #html = HTML_PAGE.replace("{items}", "\n".join(items)) # no CSS
         encoded = html.encode("utf-8")
