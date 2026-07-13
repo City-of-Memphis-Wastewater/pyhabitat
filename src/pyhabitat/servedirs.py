@@ -9,14 +9,14 @@ import os
 import threading
 from pathlib import Path
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import unquote
-
+from urllib.parse import quote
+from string import Template
 
 # ----------------------------
 # HTML template
 # ----------------------------
 
-HTML_PAGE = """<!doctype html>
+HTML_PAGE = Template("""<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -67,7 +67,7 @@ HTML_PAGE = """<!doctype html>
 <body>
   <div class="bar">
     <h1>servedirs</h1>
-    <button onclick="fetch('/shutdown', {method: 'POST'})
+    <button onclick="fetch('/shutdown', {{method: 'POST'}})
       .then(() => document.body.innerHTML='<h2>Server stopped</h2>')">
       Stop server
     </button>
@@ -78,7 +78,7 @@ HTML_PAGE = """<!doctype html>
   </ul>
 </body>
 </html>
-"""
+""")
 
 
 # ----------------------------
@@ -124,14 +124,16 @@ class ServedirsHandler(SimpleHTTPRequestHandler):
         for name in entries:
             full = os.path.join(path, name)
             display = name + ("/" if os.path.isdir(full) else "")
-            link = unquote(name)
+            link = quote(name)
 
             if os.path.isdir(full):
                 link += "/"
 
             items.append(f'<li><a href="{link}">{display}</a></li>')
 
-        html = HTML_PAGE.format(items="\n".join(items))
+        #html = HTML_PAGE.format(items="\n".join(items)) # raw string
+        html = HTML_PAGE.substitute(items="\n".join(items)) # Template()
+        #html = HTML_PAGE.replace("{items}", "\n".join(items)) # no CSS
         encoded = html.encode("utf-8")
 
         self.send_response(200)
@@ -146,7 +148,7 @@ class ServedirsHandler(SimpleHTTPRequestHandler):
 # Server runner
 # ----------------------------
 
-def serve_directory(path: str | Path, host="127.0.0.1", port=8000):
+def serve_directory_custom(path: str | Path, host="127.0.0.1", port=8000):
     path = Path(path).resolve()
 
     if not path.exists():
@@ -179,4 +181,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    serve_directory(args.path, args.host, args.port)
+    serve_directory_custom(args.path, args.host, args.port)
