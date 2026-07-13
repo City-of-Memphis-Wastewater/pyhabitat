@@ -22,59 +22,59 @@ HTML_PAGE = Template("""<!doctype html>
   <meta charset="utf-8">
   <title>servedirs</title>
   <style>
-    body {{
+    body {
       font-family: system-ui, sans-serif;
       max-width: 900px;
       margin: 40px auto;
       background: #f6f7f9;
       color: #111;
-    }}
-    h1 {{ font-size: 20px; }}
-    .bar {{
+    }
+    h1 { font-size: 20px; }
+    .bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-    }}
-    button {{
+    }
+    button {
       padding: 8px 12px;
       border: 0;
       border-radius: 6px;
       background: #d9534f;
       color: white;
       cursor: pointer;
-    }}
-    button:hover {{
+    }
+    button:hover {
       background: #c9302c;
-    }}
-    ul {{
+    }
+    ul {
       list-style: none;
       padding: 0;
       background: white;
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }}
-    li {{
+    }
+    li {
       padding: 6px 8px;
-    }}
-    a {{
+    }
+    a {
       text-decoration: none;
       color: #0d6efd;
-    }}
+    }
   </style>
 </head>
 <body>
   <div class="bar">
     <h1>servedirs</h1>
-    <button onclick="fetch('/shutdown', {{method: 'POST'}})
+    <button onclick="fetch('/shutdown', {method: 'POST'})
       .then(() => document.body.innerHTML='<h2>Server stopped</h2>')">
       Stop server
     </button>
   </div>
 
   <ul>
-    {items}
+    $items
   </ul>
 </body>
 </html>
