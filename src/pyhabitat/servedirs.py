@@ -74,7 +74,7 @@ HTML_PAGE = """<!doctype html>
   </div>
 
   <ul>
-    {{items}}
+    {items}
   </ul>
 </body>
 </html>
