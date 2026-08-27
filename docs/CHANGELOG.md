@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.10] - 2026-08-27
+### Fixed:
+- logger instantiated in launch.py
+
+---
+
 ## [1.3.9] - 2026-07-12
 ### Added:
 - web.serve_file() function, to complient web.serve_directory()
