@@ -6,7 +6,8 @@ import subprocess
 from pathlib import Path
 import shutil
 from typing import Optional
-
+import logging
+logger = logging.getLogger(__name__)
 # On Windows, we need the msvcrt module for non-blocking I/O
 try:
     import msvcrt
