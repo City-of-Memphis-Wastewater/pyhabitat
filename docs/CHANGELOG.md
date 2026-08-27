@@ -6,6 +6,12 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
+## [1.3.11] - 2026-08-27
+### Fixed:
+- Typo: "apendWindowsPath" -> "appendWindowsPath"
+
+---
+
 ## [1.3.10] - 2026-08-27
 ### Fixed:
 - logger instantiated in launch.py

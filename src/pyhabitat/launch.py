@@ -249,7 +249,7 @@ def send_file_path_to_windows_explorer_on_wsl(path: str | Path)->None:
     explorer_cmd = "explorer.exe"
     if shutil.which("explorer.exe") is None:
         # Manual path injection for stripped environments
-        logger.warning('Ensure that WSLInterop is enabled in /etc/wsl.conf, with apendWindowsPath=true')
+        logger.warning('Ensure that WSLInterop is enabled in /etc/wsl.conf, with appendWindowsPath=true')
         possible_explorer = Path("/mnt/c/Windows/explorer.exe")
         if possible_explorer.exists():
             explorer_cmd = str(possible_explorer)
