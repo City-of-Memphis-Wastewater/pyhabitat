@@ -39,6 +39,8 @@ __all__ = [
     "matplotlib_is_available_for_headless_image_export",
     "tkinter_is_available",
     "web_browser_is_available",
+    "AppMode",
+    "probe_app_mode_mgu",
 
     # file_character
     "is_elf",

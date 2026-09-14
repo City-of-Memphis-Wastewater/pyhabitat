@@ -4,6 +4,8 @@ import os
 import io
 import webbrowser
 import shutil
+import importlib.util
+from enum import Enum, auto
 
 # Backport functools.cache for Python < 3.9
 from ._compat import cache
@@ -20,6 +22,8 @@ __all__ = [
     'matplotlib_is_available_for_headless_image_export',
     'tkinter_is_available',
     'web_browser_is_available',
+    'AppMode',
+    'probe_app_mode_mgu',
 ]
 
 def clear_mpl_cache()->None:
@@ -145,3 +149,15 @@ def web_browser_is_available() -> bool:
         return True
     return False
 
+class AppMode(Enum):
+    GUI = auto()
+    CLI = auto()
+
+def probe_app_mode_mgu(gui_pkg: str = "maxson_gui_utils") -> AppMode:
+    """Determine runtime execution mode based on display capabilities and installed packages."""
+
+    if not tkinter_is_available():
+        return AppMode.CLI
+    if importlib.util.find_spec(gui_pkg) is None:
+        return AppMode.CLI
+    return AppMode.GUI
