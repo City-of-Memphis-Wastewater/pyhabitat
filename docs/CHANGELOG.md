@@ -6,7 +6,7 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 ---
 
-## [1.3.12] - 2026-09-14
+## [1.3.12] - 2026-09-14 
 ### Added:
 - Add AppMode enum class and probe_app_mode_mgu() function to src/pyhabitat/gui_elements.py
 - Expose these new attributes in __init__.py
