@@ -26,6 +26,12 @@ __all__ = [
     'probe_app_mode_mgu',
 ]
 
+class AppMode(Enum):
+    GUI = auto()
+    CLI = auto()
+    TK_GUI = auto()
+    TYPER_CLI = auto()
+
 def clear_mpl_cache()->None:
     """Clear every @cache used in pyhabitat, and call from CLI using --clear-cache"""
     matplotlib_is_available_for_gui_plotting.cache_clear()
@@ -149,9 +155,6 @@ def web_browser_is_available() -> bool:
         return True
     return False
 
-class AppMode(Enum):
-    GUI = auto()
-    CLI = auto()
 
 def probe_app_mode_mgu(gui_pkg: str = "maxson_gui_utils") -> AppMode:
     """Determine runtime execution mode based on display capabilities and installed packages."""
