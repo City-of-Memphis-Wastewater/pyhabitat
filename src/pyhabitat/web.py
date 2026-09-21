@@ -43,7 +43,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from .environment import on_wsl, on_termux, on_linux
+from .environment import on_wsl, on_termux, on_linux, is_android_kivy
 
 logger = logging.getLogger(__name__)
 
@@ -202,6 +202,21 @@ def launch_browser_now(url: str) -> bool:
         True if a launch command was successfully started.
     """
     url = _prepare_url(url)
+
+    # --- Native Android Kivy ---
+    if is_android_kivy():
+        try:
+            from jnius import autoclass
+            PythonActivity = autoclass("org.kivy.android.PythonActivity")
+            Intent = autoclass("android.content.Intent")
+            Uri = autoclass("android.net.Uri")
+            
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            PythonActivity.mActivity.startActivity(intent)
+            return True
+        except Exception:
+            logger.exception("Android JNI intent launch failed")
+            return False
 
     # --- Termux ---
     termux_launcher = shutil.which("termux-open-url")

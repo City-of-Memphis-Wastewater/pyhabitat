@@ -27,6 +27,7 @@ __all__ = [
     'as_pyinstaller',
     'as_frozen',
     'is_msix',
+    'is_android_kivy',
     'in_repl',
     'interp_path',
     'get_interp_shebang'
@@ -285,6 +286,17 @@ def is_msix() -> bool:
     rc = GetCurrentPackageFullName(ctypes.byref(length), buffer)
 
     return rc == 0
+
+def is_android_kivy() -> bool:
+    """Check if running natively inside an Android Kivy app."""
+    # Kivy platform detection (or fallback if Kivy isn't installed in the environment)
+    try:
+        from kivy.utils import platform as KIVY_PLATFORM
+    except ImportError:
+        KIVY_PLATFORM = None
+    if KIVY_PLATFORM == "android":
+        return True
+    return "ANDROID_ARGUMENT" in os.environ or "ANDROID_ENTRYPOINT" in os.environ
 
 # --- BUILD AND EXECUTABLE CHECKS ---
     
