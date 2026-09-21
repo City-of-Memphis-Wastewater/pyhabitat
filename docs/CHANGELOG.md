@@ -6,6 +6,16 @@ The format is (read: strives to be) based on [Keep a Changelog](https://keepacha
 
 --- 
 
+## [1.3.14] - 2026-09-21 
+### Changed:
+- web_browser_is_available() moved from gui_elements.py to web_check.py
+- environment.is_android_kivy() section added to web_check.web_browser_is_available() and exposed in __init__
+
+### Added:
+- environment.is_android_kivy()
+
+--- 
+
 ## [1.3.12] - 2026-09-14 
 ### Added:
 - Add AppMode enum class and probe_app_mode_mgu() function to src/pyhabitat/gui_elements.py
