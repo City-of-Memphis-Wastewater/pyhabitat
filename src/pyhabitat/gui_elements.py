@@ -2,8 +2,6 @@
 from __future__ import annotations # Delays annotation evaluation, allowing modern 3.10+ type syntax and forward references in older Python versions 3.8 and 3.9
 import os
 import io
-import webbrowser
-import shutil
 import importlib.util
 from enum import Enum, auto
 
@@ -133,28 +131,6 @@ def tkinter_is_available() -> bool:
     except Exception:
         # Fails if: tkinter module is missing OR the display backend is unavailable
         return False
-
-# --- Browser Check ---
-def web_browser_is_available() -> bool:
-    """ Check if a web browser can be launched in the current environment."""
-    try:
-        # 1. Standard Python check
-        webbrowser.get()
-        return True
-    except webbrowser.Error:
-        pass
-    except Exception as e:
-        pass
-
-    # Fallback needed. Check for external launchers.
-    # 2. Termux specific check
-    if on_termux() and shutil.which("termux-open-url"):
-        return True
-    # 3. General Linux check
-    if shutil.which("xdg-open") or shutil.which("open") or shutil.which("start"):
-        return True
-    return False
-
 
 def probe_app_mode_mgu(gui_pkg: str = "maxson_gui_utils") -> AppMode:
     """Determine runtime execution mode based on display capabilities and installed packages."""

@@ -38,9 +38,11 @@ __all__ = [
     "matplotlib_is_available_for_gui_plotting",
     "matplotlib_is_available_for_headless_image_export",
     "tkinter_is_available",
-    "web_browser_is_available",
     "AppMode",
     "probe_app_mode_mgu",
+
+    # web_check
+    "web_browser_is_available",
 
     # file_character
     "is_elf",
@@ -108,9 +110,13 @@ _GUI_EXPORTS = {
     "matplotlib_is_available_for_gui_plotting",
     "matplotlib_is_available_for_headless_image_export",
     "tkinter_is_available",
-    "web_browser_is_available",
     "AppMode",
     "probe_app_mode_mgu",
+}
+
+_WEB_CHECK = {
+    "web_browser_is_available",
+
 }
 
 _FILE_CHARACTER_EXPORTS = {
@@ -156,6 +162,10 @@ def __getattr__(name: str):
         from . import gui_elements
         value = getattr(gui_elements, name)
 
+    elif name in _WEB_CHECK:
+        from . import web_check
+        value = getattr(web_check, name)
+    
     elif name in _FILE_CHARACTER_EXPORTS:
         from . import file_character
         value = getattr(file_character, name)
