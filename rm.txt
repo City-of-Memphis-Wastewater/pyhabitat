@@ -1,0 +1,113 @@
+usage: pyhabitat [-h] [-v] [--debug] [--info] [--clear-cache] command ...
+
+PyHabitat: Python environment and build introspection
+
+positional arguments:
+  command               Target function or routine to run
+    report              Run the full pyhabitat environment report (default)
+    on_termux           Detect if running in Termux environment on Android,
+                        based on Termux-specific environmental variables.
+    on_freebsd          Detect if running on FreeBSD.
+    on_linux            Detect if running on Linux.
+    on_pydroid          Return True if running under Pydroid 3 (Android app).
+    on_android          Detect if running on Android.
+    on_windows          Detect if running on Windows.
+    on_wsl              Return True if running inside Windows Subsystem for
+                        Linux (WSL or WSL2).
+    on_macos            Detect if running on MacOS. Does not consider
+                        on_ish_alpine().
+    on_chromeos_crostini
+                        Detects if running within a Crostini Linux container
+                        on ChromeOS.
+    on_ish_alpine       Detect if running in iSH Alpine environment on iOS.
+    as_pyinstaller      Detects if the Python script is running as a 'frozen'
+                        in the course of generating a PyInstaller binary
+                        executable.
+    as_frozen           Detects if the Python script is running as a 'frozen'
+                        (standalone)
+    is_msix             Detect whether the current Python process is running
+                        inside an MSIX
+    in_repl             Detects if the code is running in the Python
+                        interactive REPL (e.g., when 'python' is typed in a
+                        console).
+    interp_path         Returns the path to the Python interpreter binary and
+                        optionally prints it.
+    get_interp_shebang  Returns the most compatible shebang for the current
+                        platform.
+    is_likely_ci_or_non_interactive
+                        Heuristic: are we probably in a CI/CD pipeline or non-
+                        interactive container?
+    interactive_terminal_is_available
+                        Check if the script is running in an interactive
+                        terminal.
+    can_spawn_shell     Check if a shell command can be executed successfully.
+    user_darrin_deyoung
+                        Detect typical demo/kiosk Windows user account on
+                        retail systems (e.g. Walmart demo units).
+    is_running_in_uvicorn
+                        Heuristic check to see if the current code is running
+                        inside a Uvicorn worker process.
+    can_spawn_shell_lite
+                        Check if a shell command can be executed successfully.
+    matplotlib_is_available_for_gui_plotting
+                        Check if Matplotlib is available AND can use a GUI
+                        backend for a popup window.
+    matplotlib_is_available_for_headless_image_export
+                        Check if Matplotlib is available AND can use the Agg
+                        backend for image export.
+    tkinter_is_available
+                        Check if tkinter is available and can successfully
+                        connect to a display.
+    AppMode             Run pyhabitat.AppMode()
+    probe_app_mode_mgu  Determine runtime execution mode based on display
+                        capabilities and installed packages.
+    web_browser_is_available
+                        Check if a web browser can be launched in the current
+                        environment.
+    is_elf              Checks if the currently running executable
+                        (sys.argv[0]) is a standalone PyInstaller-built ELF
+                        binary.
+    is_pyz              Checks if the currently running executable
+                        (sys.argv[0]) is a PYZ zipapp .
+    is_windows_portable_executable
+                        Checks if the specified path or sys.argv[0] is a
+                        Windows Portable Executable (PE) binary.
+    is_macos_executable
+                        Checks if the currently running executable is a
+                        macOS/Darwin Mach-O binary,
+    is_pipx             Checks if the executable is running from a pipx
+                        managed environment.
+    is_python_script    Checks if the specified path or running script is a
+                        Python source file (.py).
+    is_in_git_repo      Checks if a path is in a Git repo.
+    read_magic_bytes    Return the first few bytes of a file for type
+                        detection.
+    check_executable_path
+                        Helper function to resolve an executable path and
+                        perform common checks.
+    SystemInfo          Detects the current OS, distro, and version
+                        information.
+    edit_textfile       Opens a file with the environment's default
+                        application.
+    show_system_explorer
+                        Opens the system file explorer (File Explorer, Finder,
+                        or Nautilus/etc.)
+    launch_file         Opens a file or directory with the host system's
+                        default application.
+    open_with_thunar    Run pyhabitat.open_with_thunar()
+    launch_browser_after_http_poll
+                        Launch a daemon thread which waits for an HTTP server
+                        to become
+    launch_browser_now  Open a URL using the best available launcher.
+    find_open_port      Return an available TCP port, searching upward
+                        defensively if contested.
+    browse_directory    Run pyhabitat.browse_directory()
+    serve_directory     Serve a directory using Python's built-in HTTP server.
+    serve_file          Run pyhabitat.serve_file()
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --debug               Enable global verbose debug logging
+  --info                Enable informative status logging
+  --clear-cache         Force fresh environment checks with cached results.

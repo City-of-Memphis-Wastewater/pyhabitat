@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 import webbrowser
 import shutil
+import logging
+
 from .environment import (
     on_termux, 
     on_linux,
@@ -11,6 +13,13 @@ from .environment import (
     on_wsl,
     is_android_kivy
 )
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    'web_browser_is_available',
+]
+
 def web_browser_is_available() -> bool:
     """Check if a web browser can be launched in the current environment."""
 
