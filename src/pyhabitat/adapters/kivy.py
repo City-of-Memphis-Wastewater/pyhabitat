@@ -38,7 +38,7 @@ def is_android_kivy_activity_active() -> bool:
         return False
 
 def launch_browser_in_kivy():
-    if is_javascript_on_android_with_kivy():
+    if is_android_kivy_activity_active():
         try:
             from jnius import autoclass
             PythonActivity = autoclass("org.kivy.android.PythonActivity")
