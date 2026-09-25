@@ -43,7 +43,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from .environment import on_wsl, on_termux, on_linux, is_android_kivy
+from .environment import on_wsl, on_termux, on_linux
+from .adapters.kivy import is_android_kivy
 
 logger = logging.getLogger(__name__)
 

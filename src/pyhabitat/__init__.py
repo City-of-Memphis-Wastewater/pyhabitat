@@ -92,7 +92,6 @@ _ENVIRONMENT_EXPORTS = {
     "as_pyinstaller",
     "as_frozen",
     "is_msix",
-    "is_android_kivy",
     "in_repl",
     "interp_path",
     "get_interp_shebang",
@@ -149,7 +148,9 @@ _WEB_EXPORTS = {
     "serve_file",
 }
 
-
+_ADAPTER_EXPORTS = {
+    "is_android_kivy",
+}
 def __getattr__(name: str):
 
     if name in _ENVIRONMENT_EXPORTS:
@@ -187,6 +188,10 @@ def __getattr__(name: str):
     elif name in _WEB_EXPORTS:
         from . import web
         value = getattr(web, name)
+
+    elif name in _ADAPTER_EXPORTS:
+        from . import adapters
+        value = getattr(adapters, name)
 
     else:
         raise AttributeError(

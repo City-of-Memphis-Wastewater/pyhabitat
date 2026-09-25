@@ -6,13 +6,14 @@ import shutil
 import logging
 
 from .environment import (
-    on_termux, 
+    on_termux,
     on_linux,
     on_windows,
     on_macos,
     on_wsl,
-    is_android_kivy
 )
+
+from .adapters.kivy import is_android_kivy_activity_active
 
 logger = logging.getLogger(__name__)
 
@@ -22,17 +23,9 @@ __all__ = [
 
 def web_browser_is_available() -> bool:
     """Check if a web browser can be launched in the current environment."""
+    if is_android_kivy_activity_active():
+        return True
 
-    if is_android_kivy():
-        try:
-            from jnius import autoclass
-            # Verify Android's PythonActivity and Intent classes can be resolved
-            autoclass("org.kivy.android.PythonActivity")
-            autoclass("android.content.Intent")
-            return True
-        except Exception:
-            return False
-        
     # Termux on Android
     if on_termux() and shutil.which("termux-open-url"):
         return True
