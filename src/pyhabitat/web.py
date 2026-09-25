@@ -206,7 +206,7 @@ def launch_browser_now(url: str) -> bool:
 
     # --- Native Android Kivy ---
     if is_android_kivy():
-        launch_browser_in_kivy(url)
+        return launch_browser_in_kivy(url)
 
     # --- Termux ---
     termux_launcher = shutil.which("termux-open-url")

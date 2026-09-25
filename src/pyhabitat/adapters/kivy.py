@@ -37,7 +37,7 @@ def is_android_kivy_activity_active() -> bool:
         logger.debug("Failed to verify Android PythonActivity lifecycle: %s", e)
         return False
 
-def launch_browser_in_kivy(url):
+def launch_browser_in_kivy(url: str)->bool:
     """
     Launch the native Android browser or intent handler for the given URL using Pyjnius.
 
