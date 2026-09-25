@@ -44,7 +44,6 @@ from pathlib import Path
 from typing import Optional
 
 from .environment import on_wsl, on_termux, on_linux
-from .adapters.kivy import is_android_kivy, launch_browser_in_kivy
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +195,7 @@ def launch_browser_now(url: str) -> bool:
     Hypothetical alias names:
     - open_static_or_external_url(url)
     - launch_browser_now(url)
-    
+
     Returns
     -------
     bool
@@ -205,8 +204,10 @@ def launch_browser_now(url: str) -> bool:
     url = _prepare_url(url)
 
     # --- Native Android Kivy ---
-    if is_android_kivy():
-        return launch_browser_in_kivy(url)
+    if any(k in os.environ for k in ("ANDROID_ARGUMENT", "ANDROID_ENTRYPOINT")):
+        from .adapters.kivy import is_android_kivy, launch_browser_in_kivy
+        if is_android_kivy():
+            return launch_browser_in_kivy(url)
 
     # --- Termux ---
     termux_launcher = shutil.which("termux-open-url")
