@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is (read: strives to be) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+---
+
+## [1.3.15] - 2026-09-25 
+### Changed:
+- Create src/pyhabitat/adapters/ directory.
+- Allocate kivy-android stuff to src/pyhabitat/adapters/kivy.py
+- Ensure exposure is lazy
+
 --- 
 
 ## [1.3.14] - 2026-09-21 
