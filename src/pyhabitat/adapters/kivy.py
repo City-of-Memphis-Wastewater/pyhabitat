@@ -37,7 +37,23 @@ def is_android_kivy_activity_active() -> bool:
         logger.debug("Failed to verify Android PythonActivity lifecycle: %s", e)
         return False
 
-def launch_browser_in_kivy():
+def launch_browser_in_kivy(url):
+    """
+    Launch the native Android browser or intent handler for the given URL using Pyjnius.
+
+    Args:
+        url: Target web address or URI string to open.
+
+    Returns:
+        bool: True if the JNI Intent was successfully dispatched, False otherwise.
+    """
+    if not is_android_kivy_activity_active():
+        logger.debug("Cannot launch browser in Kivy: Android PythonActivity context is inactive.")
+        return False
+
+    # Ensure URL contains a scheme so Android Uri.parse handles it properly
+    target_url = url if "://" in url else f"http://{url}"
+
     if is_android_kivy_activity_active():
         try:
             from jnius import autoclass
